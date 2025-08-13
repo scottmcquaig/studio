@@ -13,8 +13,8 @@ export default function DailyPracticeCard() {
         </div>
         
         <blockquote className="border-l-4 border-[#3498DB] pl-4 py-2 bg-[#EAF4FB] rounded-r-lg">
-          <p className="italic text-primary/90">"Every new beginning comes from some other beginning's end."</p>
-          <footer className="text-sm text-right mt-2 text-muted-foreground">&mdash; Seneca</footer>
+          <p className="italic text-primary/90">Every new beginning comes from some other beginning's end.</p>
+          <footer className="text-sm text-right mt-2 text-muted-foreground pr-4">&mdash; Seneca</footer>
         </blockquote>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
