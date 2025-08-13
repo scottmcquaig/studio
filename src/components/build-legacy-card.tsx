@@ -5,7 +5,7 @@ import { BookOpen } from 'lucide-react';
 
 export default function BuildLegacyCard() {
   return (
-    <Card className="shadow-sm border-dashed">
+    <Card className="shadow-sm">
       <CardContent className="pt-6 text-center">
         <BookOpen className="h-10 w-10 text-[#3498DB] mx-auto mb-4" />
         <h2 className="text-xl font-bold font-headline text-primary">Build Your Legacy</h2>
