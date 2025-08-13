@@ -26,7 +26,7 @@ export default function BottomNav({day, streak, completed}: BottomNavProps) {
                         <Button
                             key={item.label}
                             variant="ghost"
-                            className={`flex flex-col items-center h-auto px-2 py-1 text-xs font-normal ${item.active ? 'text-primary bg-secondary' : 'text-muted-foreground'}`}
+                            className={`flex flex-col items-center h-auto px-2 py-1 text-xs font-normal ${item.active ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'}`}
                         >
                             <item.icon className="h-5 w-5 mb-1" />
                             <span>{item.label}</span>

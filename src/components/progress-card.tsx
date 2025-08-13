@@ -22,12 +22,12 @@ export default function ProgressCard({ streak, daysCompleted, daysRemaining, pro
             <p className="text-xs text-muted-foreground">Day Streak</p>
           </div>
           <div className="flex flex-col items-center">
-            <CheckCircle2 className="h-8 w-8 text-primary mb-2" />
+            <CheckCircle2 className="h-8 w-8 text-green-600 mb-2" />
             <p className="text-2xl font-bold">{daysCompleted}/30</p>
             <p className="text-xs text-muted-foreground">Days Completed</p>
           </div>
           <div className="flex flex-col items-center">
-            <Calendar className="h-8 w-8 text-primary/70 mb-2" />
+            <Calendar className="h-8 w-8 text-[#3498DB] mb-2" />
             <p className="text-2xl font-bold">{daysRemaining}</p>
             <p className="text-xs text-muted-foreground">Days Remaining</p>
           </div>

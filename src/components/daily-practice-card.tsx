@@ -8,7 +8,7 @@ export default function DailyPracticeCard() {
     <Card className="shadow-sm">
       <CardContent className="pt-6 space-y-6">
         <div className="flex items-start gap-3">
-            <Quote className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+            <Quote className="h-5 w-5 text-[#3498DB] flex-shrink-0" />
             <h3 className="font-headline text-lg font-semibold text-primary">Your Daily Practice</h3>
         </div>
         

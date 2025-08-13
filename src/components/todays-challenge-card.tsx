@@ -17,7 +17,7 @@ export default function TodaysChallengeCard({ day, challenge }: TodaysChallengeC
       <CardContent className="pt-6 flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <Badge variant="secondary" className="font-bold">Day {day}</Badge>
+            <Badge variant="default" className="font-bold">Day {day}</Badge>
             <Badge variant="outline" className="text-primary border-primary">Ready to Start</Badge>
           </div>
           <h2 className="text-xl font-bold font-headline text-primary">Begin Today's Challenge</h2>
