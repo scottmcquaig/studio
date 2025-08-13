@@ -12,7 +12,7 @@ export default function DailyPracticeCard() {
             <h3 className="font-headline text-lg font-semibold text-primary">Your Daily Practice</h3>
         </div>
         
-        <blockquote className="border-l-4 border-primary/20 pl-4 py-2 bg-secondary/30 rounded-r-lg">
+        <blockquote className="border-l-4 border-[#3498DB] pl-4 py-2 bg-[#EAF4FB] rounded-r-lg">
           <p className="italic text-primary/90">"Every new beginning comes from some other beginning's end."</p>
           <footer className="text-sm text-right mt-2 text-muted-foreground">&mdash; Seneca</footer>
         </blockquote>
