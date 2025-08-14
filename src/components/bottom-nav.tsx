@@ -21,7 +21,7 @@ export default function BottomNav({day, streak, completed}: BottomNavProps) {
     return (
         <footer className="sticky bottom-0 left-0 right-0 bg-card border-t z-10">
             <div className="container mx-auto px-4 max-w-3xl">
-                <div className="flex justify-around items-center h-16 pt-2 pb-4">
+                <div className="flex justify-around items-center h-16 py-2">
                     {navItems.map((item) => (
                         <Button
                             key={item.label}
