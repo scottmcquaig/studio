@@ -27,14 +27,14 @@ export default function BottomNav({day, streak, completed}: BottomNavProps) {
                         <Button
                             key={item.label}
                             variant="ghost"
-                            className={`flex flex-col items-center h-auto px-2 py-1 text-xs font-normal hover:bg-[#EAF4FB] ${item.active ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'text-muted-foreground'}`}
+                            className={`flex flex-col items-center justify-center h-14 w-16 px-2 py-1 text-xs font-normal hover:bg-[#EAF4FB] ${item.active ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'text-muted-foreground'}`}
                         >
                             <item.icon className="h-5 w-5 mb-1" />
                             <span>{item.label}</span>
                         </Button>
                     ))}
                 </div>
-                <div className="flex justify-between items-center text-xs text-muted-foreground py-2 px-2 text-center md:text-left">
+                <div className="flex justify-between items-center text-xs text-muted-foreground pt-1 pb-2 px-2 text-center md:text-left">
                     <div className="hidden md:flex gap-2">
                         <Badge variant="outline">Day {day}/30</Badge>
                         <Badge variant="outline" className="flex items-center gap-1"><Flame className="h-4 w-4"/> {streak} streak</Badge>
