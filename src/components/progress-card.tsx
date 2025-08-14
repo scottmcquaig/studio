@@ -13,7 +13,7 @@ interface ProgressCardProps {
 
 export default function ProgressCard({ streak, daysCompleted, daysRemaining, progress }: ProgressCardProps) {
   return (
-    <Card className="bg-[#EAF4FB] border-none shadow-sm">
+    <Card className="bg-secondary/30 border-none shadow-sm">
       <CardContent className="pt-6">
         <div className="grid grid-cols-3 gap-4 text-center mb-4">
           <div className="flex flex-col items-center">
@@ -27,7 +27,7 @@ export default function ProgressCard({ streak, daysCompleted, daysRemaining, pro
             <p className="text-xs text-muted-foreground">Days Completed</p>
           </div>
           <div className="flex flex-col items-center">
-            <Calendar className="h-8 w-8 text-[#3498DB] mb-2" />
+            <Calendar className="h-8 w-8 text-accent mb-2" />
             <p className="text-2xl font-bold">{daysRemaining}</p>
             <p className="text-xs text-muted-foreground">Days Remaining</p>
           </div>
