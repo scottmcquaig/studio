@@ -15,7 +15,7 @@ export default function BottomNav() {
     return (
         <footer className="sticky bottom-0 left-0 right-0 bg-card border-t z-10">
             <div className="container mx-auto px-4 max-w-3xl">
-                <div className="flex justify-around items-center h-20 py-2">
+                <div className="flex justify-around items-center h-20 py-4">
                     {navItems.map((item) => (
                         <Button
                             key={item.label}

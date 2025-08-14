@@ -10,6 +10,7 @@ import TodaysChallengeCard from '@/components/todays-challenge-card';
 import DailyPracticeCard from '@/components/daily-practice-card';
 import BuildLegacyCard from '@/components/build-legacy-card';
 import BottomNav from '@/components/bottom-nav';
+import { Badge } from '@/components/ui/badge';
 
 const MOCK_COMPLETED_DAYS = [1, 2, 3, 5, 6, 8, 9, 10, 11, 14, 15, 16, 18, 20];
 
@@ -64,6 +65,11 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <main className="flex-grow container mx-auto px-4 py-8 max-w-3xl">
+        <div className="text-center mb-4">
+            <Badge style={{ backgroundColor: '#3498DB', color: 'white' }} className="border-none text-sm font-normal">
+                From the book <span className="font-bold italic ml-1">STOIC AF</span>
+            </Badge>
+        </div>
         <AppHeader />
         <div className="space-y-6">
           <ProgressCard
@@ -80,11 +86,7 @@ export default function Home() {
           <BuildLegacyCard />
         </div>
       </main>
-      <BottomNav 
-        day={currentDay}
-        streak={streak}
-        completed={completedDays.size}
-        />
+      <BottomNav />
     </div>
   );
 }
