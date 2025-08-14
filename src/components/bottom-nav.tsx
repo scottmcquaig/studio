@@ -22,7 +22,7 @@ export default function BottomNav({day, streak, completed}: BottomNavProps) {
     return (
         <footer className="sticky bottom-0 left-0 right-0 bg-card border-t z-10">
             <div className="container mx-auto px-4 max-w-3xl">
-                <div className="flex justify-around items-center h-16 py-2">
+                <div className="flex justify-around items-center h-16 pt-2 pb-1">
                     {navItems.map((item) => (
                         <Button
                             key={item.label}
@@ -34,7 +34,7 @@ export default function BottomNav({day, streak, completed}: BottomNavProps) {
                         </Button>
                     ))}
                 </div>
-                <div className="flex justify-between items-center text-xs text-muted-foreground pt-1 pb-2 px-2 text-center md:text-left">
+                <div className="flex justify-between items-center text-xs text-muted-foreground pt-2 pb-2 px-2 text-center md:text-left">
                     <div className="hidden md:flex gap-2">
                         <Badge variant="outline">Day {day}/30</Badge>
                         <Badge variant="outline" className="flex items-center gap-1"><Flame className="h-4 w-4"/> {streak} streak</Badge>
