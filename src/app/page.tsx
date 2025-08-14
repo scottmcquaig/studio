@@ -67,7 +67,7 @@ export default function Home() {
       <main className="flex-grow container mx-auto px-4 py-8 max-w-3xl">
         <div className="text-center mb-4">
             <Badge style={{ backgroundColor: '#3498DB', color: 'white', fontSize: '0.875rem' }} className="border-none font-sans font-normal">
-                From the book <span className="font-bold italic ml-1">STOIC AF</span>
+                From the book <span className="font-bold ml-1">STOIC AF</span>
             </Badge>
         </div>
         <AppHeader />
