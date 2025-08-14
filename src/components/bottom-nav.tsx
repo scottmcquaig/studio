@@ -22,12 +22,12 @@ export default function BottomNav({day, streak, completed}: BottomNavProps) {
     return (
         <footer className="sticky bottom-0 left-0 right-0 bg-card border-t z-10">
             <div className="container mx-auto px-4 max-w-3xl">
-                <div className="flex justify-around items-center h-16">
+                <div className="flex justify-around items-center h-16 py-2">
                     {navItems.map((item) => (
                         <Button
                             key={item.label}
                             variant="ghost"
-                            className={`flex flex-col items-center h-auto px-2 py-1 text-xs font-normal ${item.active ? 'bg-accent/20 text-accent-foreground' : 'text-muted-foreground'}`}
+                            className={`flex flex-col items-center h-auto px-2 py-1 text-xs font-normal hover:bg-accent/50 ${item.active ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'text-muted-foreground'}`}
                         >
                             <item.icon className="h-5 w-5 mb-1" />
                             <span>{item.label}</span>
