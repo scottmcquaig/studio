@@ -2,6 +2,7 @@
 
 import { Book, Calendar, Users, BarChart2, LogOut, Flame } from 'lucide-react';
 import { Button } from './ui/button';
+import { Badge } from './ui/badge';
 
 interface BottomNavProps {
     day: number;
@@ -33,11 +34,13 @@ export default function BottomNav({day, streak, completed}: BottomNavProps) {
                         </Button>
                     ))}
                 </div>
-                <div className="flex justify-between items-center text-xs text-muted-foreground pb-2 px-2 text-center md:text-left">
-                    <span className="hidden md:block">Day {day}/30</span>
-                    <span className="hidden md:flex items-center gap-1"><Flame className="h-4 w-4"/> {streak} streak</span>
-                    <span className="hidden md:block">{completed}/30 complete</span>
-                    <span className="w-full md:w-auto text-right">scottmcquaig@gmail...</span>
+                <div className="flex justify-between items-center text-xs text-muted-foreground py-2 px-2 text-center md:text-left">
+                    <div className="hidden md:flex gap-2">
+                        <Badge variant="outline">Day {day}/30</Badge>
+                        <Badge variant="outline" className="flex items-center gap-1"><Flame className="h-4 w-4"/> {streak} streak</Badge>
+                        <Badge variant="outline">{completed}/30 complete</Badge>
+                    </div>
+                    <Badge variant="outline" className="w-full md:w-auto text-right">scottmcquaig@gmail...</Badge>
                 </div>
             </div>
         </footer>
