@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
 
 interface TodaysChallengeCardProps {
   day: number;
@@ -23,9 +24,11 @@ export default function TodaysChallengeCard({ day, challenge }: TodaysChallengeC
           <h2 className="text-xl font-bold font-headline text-primary">Begin Today's Challenge</h2>
           <p className="text-muted-foreground text-sm mt-1">Set your intention and begin today's stoic practice.</p>
         </div>
-        <Button>
-          Continue Journey
-          <ArrowRight className="ml-2 h-4 w-4" />
+        <Button asChild>
+          <Link href={`/day/${day}`}>
+            Continue Journey
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
         </Button>
       </CardContent>
     </Card>
