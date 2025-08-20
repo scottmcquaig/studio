@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, CheckCircle, BookOpen, Star, Sparkles, MessageCircle } from 'lucide-react';
+import BottomNav from '@/components/bottom-nav';
 
 export default function DailyPromptPage() {
   const params = useParams();
@@ -35,6 +36,7 @@ export default function DailyPromptPage() {
             </Link>
           </Button>
         </main>
+        <BottomNav />
       </div>
     );
   }
@@ -115,6 +117,7 @@ export default function DailyPromptPage() {
           </div>
         </div>
       </main>
+      <BottomNav />
     </div>
   );
 }
