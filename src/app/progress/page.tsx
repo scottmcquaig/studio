@@ -10,11 +10,17 @@ import BottomNav from '@/components/bottom-nav';
 
 const MOCK_COMPLETED_DAYS = [1, 2, 3, 5, 6, 8, 9, 10, 11, 14, 15, 16, 18, 20, 21, 22, 23, 24, 25];
 const MOCK_STREAK = 5;
+const CURRENT_CHALLENGE_DAY = 2; // Assuming Day 2 is the current challenge
 
 export default function ProgressPage() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const completedDaysSet = new Set(MOCK_COMPLETED_DAYS);
   const progress = Math.round((completedDaysSet.size / 30) * 100);
+  
+  const today = new Date();
+  const challengeStartDate = new Date(today.setDate(today.getDate() - (CURRENT_CHALLENGE_DAY - 1) ));
+  const firstDayOfMonth = new Date(challengeStartDate.getFullYear(), challengeStartDate.getMonth(), 1);
+
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -88,16 +94,16 @@ export default function ProgressPage() {
                <Calendar
                 mode="multiple"
                 selected={MOCK_COMPLETED_DAYS.map(day => {
-                  const d = new Date();
-                  // This is a rough mock, assuming challenge starts on 1st of current month
-                  d.setDate(day);
+                  const d = new Date(challengeStartDate);
+                  d.setDate(d.getDate() + (day - CURRENT_CHALLENGE_DAY));
                   return d;
                 })}
+                defaultMonth={challengeStartDate}
                 onSelect={setDate}
                 className="rounded-md border"
                 classNames={{
-                  day_selected: "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90",
-                  day_today: "bg-accent text-accent-foreground",
+                  day_selected: "bg-primary text-primary-foreground border border-primary-foreground/20 hover:bg-primary/90 focus:bg-primary/90",
+                  day_today: "bg-accent/80 text-accent-foreground border border-accent-foreground/20",
                 }}
               />
             </CardContent>
