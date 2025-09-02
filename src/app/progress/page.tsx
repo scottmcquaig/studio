@@ -24,7 +24,7 @@ const achievements = [
     { title: "First Streak", description: "Complete 3 days in a row", icon: Zap, unlocked: false },
     { title: "First Week", description: "Complete your first week", icon: Award, unlocked: false },
     { title: "Week Warrior", description: "7-day streak", icon: Trophy, unlocked: false },
-    { title: "Stoic Master", description: "Complete all 30 days", icon: Star, unlocked: false },
+    { title: "Relationship Master", description: "Complete all 30 days", icon: Star, unlocked: false },
 ]
 
 export default function ProgressPage() {
@@ -87,7 +87,7 @@ export default function ProgressPage() {
               <div>
                 <div className="flex justify-between text-sm mb-1">
                   <span className="font-medium text-muted-foreground">Overall Progress</span>
-                  <span className="font-bold text-foreground">{progress}% Complete</span>
+                  <span className="font-bold text-foreground">{completedDaysSet.size}/30 days</span>
                 </div>
                 <Progress value={progress} className="h-3" />
               </div>
