@@ -3,16 +3,32 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Activity, Flame, CheckCircle2, Target, Award } from 'lucide-react';
+import { Activity, Flame, CheckCircle2, Target, Award, Calendar, Trophy, Zap, Star } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import BottomNav from '@/components/bottom-nav';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
-const MOCK_COMPLETED_DAYS = [1];
+const MOCK_COMPLETED_DAYS = new Set([1]);
 const MOCK_STREAK = 1;
 const CURRENT_CHALLENGE_DAY = 2; // Day 2 is the current day
 
+const weeklyProgress = [
+    { week: 1, title: "Foundation", completed: 1, total: 7 },
+    { week: 2, title: "Discipline", completed: 0, total: 7 },
+    { week: 3, title: "Wisdom", completed: 0, total: 7 },
+    { week: 4, title: "Mastery", completed: 0, total: 7 },
+]
+
+const achievements = [
+    { title: "First Streak", description: "Complete 3 days in a row", icon: Zap, unlocked: false },
+    { title: "First Week", description: "Complete your first week", icon: Award, unlocked: false },
+    { title: "Week Warrior", description: "7-day streak", icon: Trophy, unlocked: false },
+    { title: "Stoic Master", description: "Complete all 30 days", icon: Star, unlocked: false },
+]
+
 export default function ProgressPage() {
-  const completedDaysSet = new Set(MOCK_COMPLETED_DAYS);
+  const completedDaysSet = MOCK_COMPLETED_DAYS;
   const progress = Math.round((completedDaysSet.size / 30) * 100);
 
   return (
@@ -32,7 +48,9 @@ export default function ProgressPage() {
                 <Activity className="h-6 w-6 text-accent" />
                 <CardTitle className="font-headline text-2xl text-primary">Challenge Overview</CardTitle>
               </div>
-              <CardDescription className="pl-9">A look at your journey so far.</CardDescription>
+               <div className="pl-9">
+                 <Badge variant="outline">Relationship Track</Badge>
+               </div>
             </CardHeader>
             <CardContent className="space-y-6 pl-9">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
@@ -59,7 +77,7 @@ export default function ProgressPage() {
                 </div>
                 <div className="flex flex-col items-center p-4 bg-secondary/30 rounded-lg">
                     <div className="p-2 bg-background rounded-full mb-2">
-                        <Award className="h-8 w-8 text-yellow-500" />
+                        <Trophy className="h-8 w-8 text-yellow-500" />
                     </div>
                   <p className="text-2xl font-bold">4</p>
                   <p className="text-xs text-muted-foreground">Badges Earned</p>
@@ -74,6 +92,86 @@ export default function ProgressPage() {
               </div>
             </CardContent>
           </Card>
+
+           <Card>
+                <CardHeader>
+                    <div className="flex items-center gap-3">
+                        <Calendar className="h-6 w-6 text-accent" />
+                        <CardTitle className="font-headline text-2xl text-primary">Weekly Progress</CardTitle>
+                    </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {weeklyProgress.map((week) => (
+                        <div key={week.week} className="flex items-center p-3 bg-secondary/30 rounded-lg">
+                            <Badge variant="default" className="mr-4">Week {week.week}</Badge>
+                            <p className="flex-grow font-semibold text-primary">{week.title}</p>
+                            <p className="text-muted-foreground">{week.completed}/{week.total}</p>
+                        </div>
+                    ))}
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <div className="flex items-center gap-3">
+                        <Calendar className="h-6 w-6 text-accent" />
+                        <CardTitle className="font-headline text-2xl text-primary">Daily Activity Calendar</CardTitle>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <div className="grid grid-cols-7 gap-2">
+                        {Array.from({ length: 30 }, (_, i) => {
+                            const day = i + 1;
+                            const isCompleted = completedDaysSet.has(day);
+                            const isActive = day === CURRENT_CHALLENGE_DAY;
+                            const today = new Date();
+                            const completionDate = new Date(today.setDate(today.getDate() - (CURRENT_CHALLENGE_DAY - day)));
+                            
+                            return (
+                                <div
+                                    key={day}
+                                    className={cn(
+                                        "aspect-square flex flex-col items-center justify-center p-2 rounded-lg text-center",
+                                        isActive ? "bg-accent text-accent-foreground" : "bg-secondary/30",
+                                        isCompleted && "bg-green-600 text-white",
+                                    )}
+                                >
+                                    <p className="font-bold text-lg">{day}</p>
+                                    {isCompleted && (
+                                        <p className="text-xs mt-1">
+                                            {completionDate.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })}
+                                        </p>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <div className="flex items-center gap-3">
+                        <Trophy className="h-6 w-6 text-accent" />
+                        <CardTitle className="font-headline text-2xl text-primary">Achievements</CardTitle>
+                    </div>
+                </CardHeader>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {achievements.map((ach) => (
+                         <div key={ach.title} className={cn("flex items-center gap-4 p-4 rounded-lg bg-secondary/30", !ach.unlocked && "opacity-50")}>
+                            <div className="p-2 bg-background rounded-full">
+                                <ach.icon className="h-6 w-6 text-yellow-500" />
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-primary">{ach.title}</h4>
+                                <p className="text-sm text-muted-foreground">{ach.description}</p>
+                            </div>
+                        </div>
+                    ))}
+                </CardContent>
+            </Card>
+
+
         </div>
       </main>
       <BottomNav activeTab="Progress" />
