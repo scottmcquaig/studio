@@ -138,7 +138,7 @@ export default function ProgressPage() {
                                 >
                                     <div className="h-4"></div>
                                     <div className="flex-grow flex items-center justify-center">
-                                        <p className={cn("text-lg", isActive || isCompleted ? 'font-bold' : 'font-normal')}>{day}</p>
+                                        <p className={cn("text-base", isActive || isCompleted ? 'font-bold' : 'font-normal')}>{day}</p>
                                     </div>
                                     <div className="text-xs h-4">
                                         {isCompleted && (
