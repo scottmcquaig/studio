@@ -86,7 +86,7 @@ export default function Home() {
           <BuildLegacyCard />
         </div>
       </main>
-      <BottomNav />
+      <BottomNav activeTab="Journal" />
     </div>
   );
 }

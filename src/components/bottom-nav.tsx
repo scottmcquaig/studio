@@ -2,14 +2,19 @@
 
 import { Book, Calendar, Users, BarChart2, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
+import Link from 'next/link';
 
-export default function BottomNav() {
+interface BottomNavProps {
+    activeTab?: 'Journal' | 'Daily' | 'Community' | 'Progress' | 'Sign Out';
+}
+
+export default function BottomNav({ activeTab = 'Journal' }: BottomNavProps) {
     const navItems = [
-        { icon: Book, label: 'Journal', active: true },
-        { icon: Calendar, label: 'Daily' },
-        { icon: Users, label: 'Community' },
-        { icon: BarChart2, label: 'Progress' },
-        { icon: LogOut, label: 'Sign Out' },
+        { icon: Book, label: 'Journal', href: '/' },
+        { icon: Calendar, label: 'Daily', href: '/day/1' },
+        { icon: Users, label: 'Community', href: '#' },
+        { icon: BarChart2, label: 'Progress', href: '#' },
+        { icon: LogOut, label: 'Sign Out', href: '#' },
     ];
 
     return (
@@ -20,10 +25,13 @@ export default function BottomNav() {
                         <Button
                             key={item.label}
                             variant="ghost"
-                            className={`flex flex-col items-center justify-center h-14 w-16 px-2 py-1 text-xs font-normal hover:bg-[#EAF4FB] ${item.active ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'text-muted-foreground'}`}
+                            className={`flex flex-col items-center justify-center h-14 w-16 px-2 py-1 text-xs font-normal hover:bg-[#EAF4FB] ${activeTab === item.label ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'text-muted-foreground'}`}
+                            asChild
                         >
-                            <item.icon className="h-5 w-5 mb-1" />
-                            <span>{item.label}</span>
+                            <Link href={item.href}>
+                                <item.icon className="h-5 w-5 mb-1" />
+                                <span>{item.label}</span>
+                            </Link>
                         </Button>
                     ))}
                 </div>

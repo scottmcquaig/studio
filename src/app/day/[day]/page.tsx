@@ -36,7 +36,7 @@ export default function DailyPromptPage() {
             </Link>
           </Button>
         </main>
-        <BottomNav />
+        <BottomNav activeTab="Daily" />
       </div>
     );
   }
@@ -117,7 +117,7 @@ export default function DailyPromptPage() {
           </div>
         </div>
       </main>
-      <BottomNav />
+      <BottomNav activeTab="Daily" />
     </div>
   );
 }
