@@ -17,9 +17,8 @@ const CURRENT_CHALLENGE_DAY = 2; // Day 2 is the current day
 
 function DayLink(props: DayProps) {
   const challengeStartDate = subDays(new Date(), CURRENT_CHALLENGE_DAY - 1);
-  const dayNumber = props.date.getDate() - challengeStartDate.getDate() + 1;
-  const challengeDayForDate = addDays(challengeStartDate, dayNumber - 1);
-  
+  const dayNumber = Math.round((props.date.getTime() - challengeStartDate.setHours(0,0,0,0)) / (1000 * 60 * 60 * 24)) + 1;
+
   // Only link dates that are part of the challenge
   if (props.date.getMonth() === challengeStartDate.getMonth() && dayNumber > 0 && dayNumber <= 30) {
     return (
@@ -110,10 +109,10 @@ export default function ProgressPage() {
             </CardHeader>
             <CardContent className="flex justify-center">
                <Calendar
-                mode="multiple"
-                selected={completedDates}
-                defaultMonth={today}
+                mode="single"
+                selected={date}
                 onSelect={setDate}
+                defaultMonth={today}
                 className="rounded-md border"
                 components={{
                   Day: DayLink,
@@ -125,12 +124,7 @@ export default function ProgressPage() {
                 modifiersClassNames={{
                   completed: 'day-completed',
                   missed: 'day-missed',
-                  today: 'day-today',
-                }}
-                classNames={{
-                  cell: "h-9 w-9 text-center text-sm p-0 relative first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20 mx-0.5",
-                  day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 rounded-md",
-                  day_selected: "day-completed",
+                  today: 'bg-accent text-accent-foreground rounded-md border-accent',
                 }}
               />
             </CardContent>
