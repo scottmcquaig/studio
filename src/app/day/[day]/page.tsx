@@ -11,12 +11,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, ArrowRight, CheckCircle, Edit, Lock, Heart, Sunrise, Sunset } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, Edit, Lock, Heart, Sunrise, Sunset, Flame, Calendar } from 'lucide-react';
 import BottomNav from '@/components/bottom-nav';
+import { Progress } from '@/components/ui/progress';
 
 // This is a placeholder for a more robust state management
 const MOCK_COMPLETED_DAYS = new Set([1]);
 const CURRENT_CHALLENGE_DAY = 2; // Assuming Day 2 is the current challenge
+const MOCK_STREAK = 1;
 
 export default function DailyPromptPage() {
   const params = useParams();
@@ -36,7 +38,7 @@ export default function DailyPromptPage() {
   const today = new Date();
   today.setDate(today.getDate() - (CURRENT_CHALLENGE_DAY - day));
   const formattedDate = today.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' });
-
+  const progress = Math.round((MOCK_COMPLETED_DAYS.size / 30) * 100);
 
   if (!challenge) {
     return (
@@ -81,11 +83,25 @@ export default function DailyPromptPage() {
 
       <main className="flex-grow container mx-auto px-4 py-8 max-w-3xl">
         <div className="space-y-8">
+
+          <div className="space-y-4">
+              <div className="flex justify-between items-center text-sm">
+                  <div className="flex items-center gap-2 text-destructive font-semibold">
+                      <Flame className="h-5 w-5" />
+                      <span>{MOCK_STREAK} day streak</span>
+                  </div>
+                  <Badge variant="outline" className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      Day {day} of 30
+                  </Badge>
+              </div>
+              <Progress value={progress} className="h-2" />
+          </div>
           
           <Card>
             <CardHeader>
                 <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                         {challenge.week && <Badge variant="outline">Week {challenge.week}</Badge>}
                         <Badge variant="secondary">Day {challenge.day}</Badge>
                         {challenge.track && <Badge style={{ backgroundColor: '#EF4444', color: 'white' }} className="border-none">{challenge.track} Track</Badge>}

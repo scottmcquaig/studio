@@ -110,15 +110,14 @@ export default function ProgressPage() {
                             <div key={week.week} className="flex flex-col gap-2 p-3 bg-secondary/30 rounded-lg">
                                 <div className="flex items-center">
                                     <Badge
-                                        variant={isCurrentWeek ? "default" : "outline"}
                                         className={cn(
                                             "mr-4",
                                             isCurrentWeek ? "bg-accent text-primary-foreground" : ""
                                         )}
                                     >
-                                        Week {week.week}
+                                        Week {week.week} - {week.title}
                                     </Badge>
-                                    <p className="flex-grow font-semibold text-primary">{week.title}</p>
+                                    <p className="flex-grow font-semibold text-primary"></p>
                                     <p className="text-sm text-muted-foreground">{week.completed}/{week.total}</p>
                                 </div>
                                 <Progress value={weekProgress} className="h-2" />
@@ -148,7 +147,7 @@ export default function ProgressPage() {
                             const dayContent = (
                                 <div
                                     className={cn(
-                                        "aspect-square flex flex-col p-2 rounded-lg w-full h-full",
+                                        "aspect-square flex flex-col p-2 rounded-lg w-full h-full justify-between",
                                         isActive ? "bg-accent" : "bg-secondary/30",
                                         isCompleted && "bg-green-600",
                                     )}
