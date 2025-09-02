@@ -97,6 +97,7 @@ export default function ProgressPage() {
                 onSelect={setDate}
                 className="rounded-md border"
                 modifiers={{
+                  today: today,
                   completed: completedDates,
                   missed: [missedDate],
                 }}
