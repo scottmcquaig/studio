@@ -1,19 +1,19 @@
 'use client';
 
-import { Book, Calendar, Users, BarChart2, LogOut } from 'lucide-react';
+import { Book, Calendar, Layers, BarChart2, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
 import Link from 'next/link';
 
 interface BottomNavProps {
-    activeTab?: 'Journal' | 'Daily' | 'Community' | 'Progress' | 'Sign Out';
+    activeTab?: 'Journal' | 'Daily' | 'Programs' | 'Progress' | 'Sign Out';
 }
 
 export default function BottomNav({ activeTab = 'Journal' }: BottomNavProps) {
     const navItems = [
         { icon: Book, label: 'Journal', href: '/' },
         { icon: Calendar, label: 'Daily', href: '/day/1' },
-        { icon: Users, label: 'Community', href: '#' },
-        { icon: BarChart2, label: 'Progress', href: '#' },
+        { icon: Layers, label: 'Programs', href: '/programs' },
+        { icon: BarChart2, label: 'Progress', href: '/progress' },
         { icon: LogOut, label: 'Sign Out', href: '#' },
     ];
 
