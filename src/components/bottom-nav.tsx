@@ -12,8 +12,8 @@ export default function BottomNav({ activeTab = 'Journal' }: BottomNavProps) {
     const navItems = [
         { icon: Book, label: 'Journal', href: '/' },
         { icon: Calendar, label: 'Daily', href: '/day/1' },
-        { icon: Layers, label: 'Programs', href: '/programs' },
         { icon: BarChart2, label: 'Progress', href: '/progress' },
+        { icon: Layers, label: 'Programs', href: '/programs' },
         { icon: LogOut, label: 'Sign Out', href: '#' },
     ];
 
