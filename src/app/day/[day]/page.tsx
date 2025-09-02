@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useParams } from 'next/navigation';
@@ -151,7 +152,7 @@ export default function DailyPromptPage() {
                     Complete Day {challenge.day}
                   </Button>
               ) : (
-                  <Button size="lg" variant="secondary">
+                  <Button size="lg" variant="outline">
                     <Edit className="mr-2" />
                     Edit Day {challenge.day}
                   </Button>
@@ -165,7 +166,7 @@ export default function DailyPromptPage() {
                 <Link href={navLinks.prev}><ArrowLeft className="mr-2" /> Day {day-1}</Link>
               </Button>
             ) : <div />}
-            {navLinks.next && isCompleted ? (
+            {navLinks.next && isCompleted && day < CURRENT_CHALLENGE_DAY ? (
               <Button variant="outline" asChild>
                 <Link href={navLinks.next}>Day {day+1} <ArrowRight className="ml-2" /></Link>
               </Button>
