@@ -25,7 +25,7 @@ export default function BottomNav({ activeTab = 'Journal' }: BottomNavProps) {
                         <Button
                             key={item.label}
                             variant="ghost"
-                            className={`flex flex-col items-center justify-center h-14 w-16 px-2 py-1 text-xs font-normal hover:bg-[#EAF4FB] ${activeTab === item.label ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'text-muted-foreground'}`}
+                            className={`flex flex-col items-center justify-center h-14 w-16 px-2 py-1 text-xs font-normal ${activeTab === item.label ? 'bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground' : 'text-muted-foreground hover:bg-accent/20'}`}
                             asChild
                         >
                             <Link href={item.href}>
