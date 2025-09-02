@@ -37,22 +37,30 @@ export default function ProgressPage() {
             <CardContent className="space-y-6 pl-9">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                 <div className="flex flex-col items-center p-4 bg-secondary/30 rounded-lg">
-                  <Flame className="h-8 w-8 text-destructive mb-2" />
+                    <div className="p-2 bg-background rounded-full mb-2">
+                        <Flame className="h-8 w-8 text-destructive" />
+                    </div>
                   <p className="text-2xl font-bold">{MOCK_STREAK}</p>
                   <p className="text-xs text-muted-foreground">Current Streak</p>
                 </div>
                 <div className="flex flex-col items-center p-4 bg-secondary/30 rounded-lg">
-                  <CheckCircle2 className="h-8 w-8 text-green-600 mb-2" />
+                    <div className="p-2 bg-background rounded-full mb-2">
+                        <CheckCircle2 className="h-8 w-8 text-green-600" />
+                    </div>
                   <p className="text-2xl font-bold">{completedDaysSet.size}</p>
                   <p className="text-xs text-muted-foreground">Days Completed</p>
                 </div>
                  <div className="flex flex-col items-center p-4 bg-secondary/30 rounded-lg">
-                  <Target className="h-8 w-8 text-primary mb-2" />
+                    <div className="p-2 bg-background rounded-full mb-2">
+                        <Target className="h-8 w-8 text-primary" />
+                    </div>
                   <p className="text-2xl font-bold">{30 - completedDaysSet.size}</p>
                   <p className="text-xs text-muted-foreground">Days Remaining</p>
                 </div>
                 <div className="flex flex-col items-center p-4 bg-secondary/30 rounded-lg">
-                  <Award className="h-8 w-8 text-yellow-500 mb-2" />
+                    <div className="p-2 bg-background rounded-full mb-2">
+                        <Award className="h-8 w-8 text-yellow-500" />
+                    </div>
                   <p className="text-2xl font-bold">4</p>
                   <p className="text-xs text-muted-foreground">Badges Earned</p>
                 </div>
