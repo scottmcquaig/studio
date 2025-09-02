@@ -2,41 +2,18 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Activity, Flame, CheckCircle2, Target, Award } from 'lucide-react';
-import { Calendar } from '@/components/ui/calendar';
 import { Progress } from '@/components/ui/progress';
 import BottomNav from '@/components/bottom-nav';
-import { addDays, subDays, format } from 'date-fns';
-import type { DayPickerProps, DayProps } from 'react-day-picker';
 
 const MOCK_COMPLETED_DAYS = [1];
 const MOCK_STREAK = 1;
 const CURRENT_CHALLENGE_DAY = 2; // Day 2 is the current day
 
-function DayLink(props: DayProps) {
-  const challengeStartDate = subDays(new Date(), CURRENT_CHALLENGE_DAY - 1);
-  const dayNumber = Math.round((props.date.getTime() - challengeStartDate.setHours(0,0,0,0)) / (1000 * 60 * 60 * 24)) + 1;
-
-  // Only link dates that are part of the challenge
-  if (props.date.getMonth() === challengeStartDate.getMonth() && dayNumber > 0 && dayNumber <= 30) {
-    return (
-      <Link href={`/day/${dayNumber}`} className="w-full h-full flex items-center justify-center">
-        {format(props.date, "d")}
-      </Link>
-    );
-  }
-  return <>{format(props.date, "d")}</>;
-}
-
-
 export default function ProgressPage() {
-  const [date, setDate] = useState<Date | undefined>(new Date());
   const completedDaysSet = new Set(MOCK_COMPLETED_DAYS);
   const progress = Math.round((completedDaysSet.size / 30) * 100);
-  
-  const today = new Date();
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -97,26 +74,6 @@ export default function ProgressPage() {
               </div>
             </CardContent>
           </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-headline text-2xl text-primary">Completion Calendar</CardTitle>
-              <CardDescription>Your journey, day by day. Click a date to view the entry.</CardDescription>
-            </CardHeader>
-            <CardContent className="flex justify-center">
-               <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
-                defaultMonth={today}
-                className="rounded-md border"
-                components={{
-                  Day: DayLink,
-                }}
-              />
-            </CardContent>
-          </Card>
-
         </div>
       </main>
       <BottomNav activeTab="Progress" />
