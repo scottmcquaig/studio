@@ -6,12 +6,13 @@ import Link from 'next/link';
 
 interface BottomNavProps {
     activeTab?: 'Journal' | 'Daily' | 'Programs' | 'Progress' | 'Sign Out';
+    currentDay?: number;
 }
 
-export default function BottomNav({ activeTab = 'Journal' }: BottomNavProps) {
+export default function BottomNav({ activeTab = 'Journal', currentDay = 1 }: BottomNavProps) {
     const navItems = [
         { icon: Book, label: 'Journal', href: '/' },
-        { icon: Calendar, label: 'Daily', href: '/day/1' },
+        { icon: Calendar, label: 'Daily', href: `/day/${currentDay}` },
         { icon: BarChart2, label: 'Progress', href: '/progress' },
         { icon: Layers, label: 'Programs', href: '/programs' },
         { icon: LogOut, label: 'Sign Out', href: '#' },

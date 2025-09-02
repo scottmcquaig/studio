@@ -15,9 +15,9 @@ import { Badge } from '@/components/ui/badge';
 const MOCK_COMPLETED_DAYS = [1, 2, 3, 5, 6, 8, 9, 10, 11, 14, 15, 16, 18, 20];
 
 export default function Home() {
-  const [currentDay, setCurrentDay] = useState(1);
+  const [currentDay, setCurrentDay] = useState(2);
   const [challengeStartDate, setChallengeStartDate] = useState<Date | null>(null);
-  const [completedDays, setCompletedDays] = useState<Set<number>>(new Set(MOCK_COMPLETED_DAYS));
+  const [completedDays, setCompletedDays] = useState<Set<number>>(new Set([1, ...MOCK_COMPLETED_DAYS]));
   const [streak, setStreak] = useState(0);
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <main className="flex-grow container mx-auto px-4 py-8 max-w-3xl">
         <div className="text-center mb-4">
-            <Badge style={{ backgroundColor: '#3498DB', color: 'white', fontSize: '0.875rem' }} className="border-none font-sans font-normal">
+            <Badge style={{ backgroundColor: '#3498DB', color: 'white' }} className="border-none font-sans font-normal text-[.875rem]">
                 From the book <span className="font-bold ml-1">STOIC AF</span>
             </Badge>
         </div>
@@ -86,7 +86,7 @@ export default function Home() {
           <BuildLegacyCard />
         </div>
       </main>
-      <BottomNav activeTab="Journal" />
+      <BottomNav activeTab="Journal" currentDay={currentDay} />
     </div>
   );
 }
