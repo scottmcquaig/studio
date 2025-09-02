@@ -102,8 +102,10 @@ export default function ProgressPage() {
                 onSelect={setDate}
                 className="rounded-md border"
                 classNames={{
-                  day_selected: "bg-primary text-primary-foreground border border-primary-foreground/20 hover:bg-primary/90 focus:bg-primary/90",
-                  day_today: "bg-accent/80 text-accent-foreground border border-accent-foreground/20",
+                  cell: "h-9 w-9 text-center text-sm p-0 relative first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20 mx-0.5",
+                  day_selected: "bg-primary text-primary-foreground rounded-md border border-primary-foreground/20 hover:bg-primary/90 focus:bg-primary/90",
+                  day_today: "bg-accent text-accent-foreground rounded-md border border-accent-foreground/20",
+                  day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 rounded-md",
                 }}
               />
             </CardContent>
