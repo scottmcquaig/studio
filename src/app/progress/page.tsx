@@ -51,7 +51,7 @@ export default function ProgressPage() {
                 <CardTitle className="font-headline text-2xl text-primary">Challenge Overview</CardTitle>
               </div>
                <div className="pl-9">
-                 <Badge variant="outline">Relationship Track</Badge>
+                 <Badge style={{ backgroundColor: '#EF4444', color: 'white' }} className="border-none">Relationship Track</Badge>
                </div>
             </CardHeader>
             <CardContent className="space-y-6 pl-9">

@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, ArrowRight, CheckCircle, Edit, Lock, Star, Sunrise, Sunset } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, Edit, Lock, Heart, Sunrise, Sunset } from 'lucide-react';
 import BottomNav from '@/components/bottom-nav';
 
 // This is a placeholder for a more robust state management
@@ -88,7 +88,7 @@ export default function DailyPromptPage() {
                     <div className="flex items-center gap-2">
                         {challenge.week && <Badge variant="outline">Week {challenge.week}</Badge>}
                         <Badge variant="secondary">Day {challenge.day}</Badge>
-                        {challenge.track && <Badge variant="default">{challenge.track}</Badge>}
+                        {challenge.track && <Badge style={{ backgroundColor: '#EF4444', color: 'white' }} className="border-none">{challenge.track}</Badge>}
                     </div>
                     <p className="text-sm text-muted-foreground">{formattedDate}</p>
                 </div>
@@ -157,7 +157,7 @@ export default function DailyPromptPage() {
               <Card>
                 <CardHeader>
                     <div className="flex items-center gap-3">
-                        <Star className="h-6 w-6 text-accent" />
+                        <Heart className="h-6 w-6 text-red-500" />
                         <CardTitle className="font-headline text-2xl text-primary">{challenge.winsTitle || "Today's Wins"}</CardTitle>
                     </div>
                 </CardHeader>
