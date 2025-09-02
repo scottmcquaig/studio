@@ -78,7 +78,7 @@ export default function ProgramsPage() {
                         </CardHeader>
                         <CardFooter className="mt-auto">
                             {program.owned ? (
-                                <Button variant="secondary" className="w-full">
+                                <Button variant="secondary" className="w-full bg-accent/20 text-accent-foreground hover:bg-accent/30">
                                     View Dashboard
                                 </Button>
                             ) : (
@@ -103,7 +103,7 @@ export default function ProgramsPage() {
                 </CardHeader>
                  <CardFooter className="flex flex-col sm:flex-row items-center gap-4">
                     <div className="flex-grow text-center sm:text-left">
-                        <p><span className="font-bold">One-time purchase:</span> <span className="line-through">$16.00</span> $9.00</p>
+                        <p><span className="font-bold">One-time purchase:</span> <span className="line-through">$16.00</span> <span className="font-bold text-accent">$9.00</span></p>
                     </div>
                     <Button size="lg" className="w-full sm:w-auto">
                         Unlock Everything
