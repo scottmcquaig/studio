@@ -12,22 +12,19 @@ import BuildLegacyCard from '@/components/build-legacy-card';
 import BottomNav from '@/components/bottom-nav';
 import { Badge } from '@/components/ui/badge';
 
-const MOCK_COMPLETED_DAYS = [1, 2, 3, 5, 6, 8, 9, 10, 11, 14, 15, 16, 18, 20];
+const MOCK_COMPLETED_DAYS = [1];
+const CURRENT_CHALLENGE_DAY = 2;
 
 export default function Home() {
-  const [currentDay, setCurrentDay] = useState(2);
+  const [currentDay, setCurrentDay] = useState(CURRENT_CHALLENGE_DAY);
   const [challengeStartDate, setChallengeStartDate] = useState<Date | null>(null);
-  const [completedDays, setCompletedDays] = useState<Set<number>>(new Set([1, ...MOCK_COMPLETED_DAYS]));
+  const [completedDays, setCompletedDays] = useState<Set<number>>(new Set(MOCK_COMPLETED_DAYS));
   const [streak, setStreak] = useState(0);
 
   useEffect(() => {
     const today = new Date();
-    const mockStartDate = new Date(today.setDate(today.getDate() - (MOCK_COMPLETED_DAYS[MOCK_COMPLETED_DAYS.length-1] || 1) ));
+    const mockStartDate = new Date(today.setDate(today.getDate() - (currentDay - 1) ));
     setChallengeStartDate(mockStartDate);
-    
-    const now = new Date();
-    const diff = Math.floor((now.getTime() - mockStartDate.getTime()) / (1000 * 60 * 60 * 24));
-    setCurrentDay(Math.min(30, Math.max(1, diff + 1)));
 
     let currentStreak = 0;
     const sortedCompleted = Array.from(completedDays).sort((a,b) => b-a);
@@ -45,7 +42,7 @@ export default function Home() {
     }
     setStreak(currentStreak);
 
-  }, [completedDays]);
+  }, [completedDays, currentDay]);
 
   const currentChallenge: Challenge = useMemo(() => {
     return allChallenges[currentDay - 1];

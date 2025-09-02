@@ -13,7 +13,7 @@ import { ArrowLeft, ArrowRight, CheckCircle, BookOpen, Star, Sparkles, MessageCi
 import BottomNav from '@/components/bottom-nav';
 
 // This is a placeholder for a more robust state management
-const MOCK_COMPLETED_DAYS = new Set([1, 2, 3, 5, 6, 8, 9, 10, 11, 14, 15, 16, 18, 20]);
+const MOCK_COMPLETED_DAYS = new Set([1]);
 const CURRENT_CHALLENGE_DAY = 2; // Assuming Day 2 is the current challenge
 
 export default function DailyPromptPage() {
@@ -165,7 +165,7 @@ export default function DailyPromptPage() {
                 <Link href={navLinks.prev}><ArrowLeft className="mr-2" /> Day {day-1}</Link>
               </Button>
             ) : <div />}
-            {navLinks.next && (isCompleted || isCurrentDay) ? (
+            {navLinks.next && isCompleted ? (
               <Button variant="outline" asChild>
                 <Link href={navLinks.next}>Day {day+1} <ArrowRight className="ml-2" /></Link>
               </Button>
