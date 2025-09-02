@@ -1,0 +1,44 @@
+{
+  "tracks": [
+    {
+      "id": "MONEY",
+      "slug": "money",
+      "display_name": "Money",
+      "full_name": "Money & Wealth Mindset",
+      "order": 1,
+      "color": "#16A34A",
+      "icon": "dollar-sign",
+      "description": "Master your relationship with money - from scarcity to abundance"
+    },
+    {
+      "id": "RELATIONSHIPS",
+      "slug": "relationships",
+      "display_name": "Relationships",
+      "full_name": "Relationships & Connection",
+      "order": 2,
+      "color": "#DC2626",
+      "icon": "heart",
+      "description": "Stop trying to control others and start controlling yourself"
+    },
+    {
+      "id": "DISCIPLINE",
+      "slug": "discipline",
+      "display_name": "Discipline",
+      "full_name": "Discipline & Self-Mastery",
+      "order": 3,
+      "color": "#2563EB",
+      "icon": "target",
+      "description": "Build unbreakable habits and mental toughness"
+    },
+    {
+      "id": "EGO",
+      "slug": "ego",
+      "display_name": "Ego",
+      "full_name": "Ego & Identity",
+      "order": 4,
+      "color": "#7C3AED",
+      "icon": "brain",
+      "description": "Kill the ego that's killing your potential"
+    }
+  ]
+}
