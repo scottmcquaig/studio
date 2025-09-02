@@ -73,7 +73,7 @@ export default function DailyPromptPage() {
             </Link>
           </Button>
           <div className="text-center">
-            <h1 className="text-xl font-bold font-headline text-primary">Daily Challenge: Day {day}</h1>
+            <h1 className="text-xl font-bold font-headline text-primary">Daily Challenge</h1>
           </div>
           <div className="w-16"></div>
         </div>
@@ -87,6 +87,7 @@ export default function DailyPromptPage() {
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
                         {challenge.week && <Badge variant="outline">Week {challenge.week}</Badge>}
+                        <Badge variant="secondary">Day {challenge.day}</Badge>
                         {challenge.track && <Badge variant="default">{challenge.track}</Badge>}
                     </div>
                     <p className="text-sm text-muted-foreground">{formattedDate}</p>
