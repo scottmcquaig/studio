@@ -73,7 +73,7 @@ export default function DailyPromptPage() {
             </Link>
           </Button>
           <div className="text-center">
-            <h1 className="text-xl font-bold font-headline text-primary">Daily Entry</h1>
+            <h1 className="text-xl font-bold font-headline text-primary">Daily Challenge: Day {day}</h1>
           </div>
           <div className="w-16"></div>
         </div>
@@ -82,10 +82,6 @@ export default function DailyPromptPage() {
       <main className="flex-grow container mx-auto px-4 py-8 max-w-3xl">
         <div className="space-y-8">
           
-          <div className="text-center">
-            <h2 className="text-xl font-bold font-headline text-primary">Day {challenge.day}: {challenge.title}</h2>
-          </div>
-
           <Card>
             <CardHeader>
                 <div className="flex justify-between items-center">

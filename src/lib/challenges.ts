@@ -6,7 +6,7 @@ export const challenges: Challenge[] = [
     week: 1,
     track: "Relationship",
     title: "You Can't Control Them (Stop Trying)",
-    description: "Your first practice is to recognize the ultimate boundary: you are not in charge of anyone else's feelings, reactions, or choices.",
+    description: "You Can't Control Them (Stop Trying)",
     quote: { 
       text: "Whenever you want to cheer yourself up, consider the good qualities of your companions, for instance, the energy of one, the modesty of another, the generosity of yet another. Nothing gives as much pleasure as the image of the virtues displayed in the character of our contemporaries.", 
       author: "Marcus Aurelius" 
