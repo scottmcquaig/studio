@@ -37,10 +37,6 @@ export default function ProgressPage() {
   const progress = Math.round((completedDaysSet.size / 30) * 100);
   
   const today = new Date();
-  const challengeStartDate = subDays(today, CURRENT_CHALLENGE_DAY - 1);
-
-  const completedDates = MOCK_COMPLETED_DAYS.map(day => addDays(challengeStartDate, day - 1));
-  const missedDate = subDays(today, 2); // Represents 8/31 if today is 9/2
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -116,15 +112,6 @@ export default function ProgressPage() {
                 className="rounded-md border"
                 components={{
                   Day: DayLink,
-                }}
-                modifiers={{
-                  completed: completedDates,
-                  missed: [missedDate],
-                }}
-                modifiersClassNames={{
-                  completed: 'day-completed',
-                  missed: 'day-missed',
-                  today: 'bg-accent text-accent-foreground rounded-md border-accent',
                 }}
               />
             </CardContent>

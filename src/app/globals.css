@@ -65,12 +65,3 @@
     -moz-osx-font-smoothing: grayscale;
   }
 }
-
-@layer components {
-  .day-completed {
-    @apply bg-primary text-primary-foreground rounded-md border border-primary-foreground/20;
-  }
-  .day-missed {
-    @apply bg-muted text-muted-foreground rounded-md border;
-  }
-}
