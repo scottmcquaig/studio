@@ -1,8 +1,9 @@
+
 'use client';
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Calendar as CalendarIcon, Flame, CheckCircle2, Target, Award, Activity } from 'lucide-react';
+import { Activity, Flame, CheckCircle2, Target, Award } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { Progress } from '@/components/ui/progress';
 import BottomNav from '@/components/bottom-nav';
@@ -78,7 +79,7 @@ export default function ProgressPage() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-3">
-                <CalendarIcon className="h-6 w-6 text-accent" />
+                <Activity className="h-6 w-6 text-accent" />
                 <CardTitle className="font-headline text-2xl text-primary">Completion Calendar</CardTitle>
               </div>
               <CardDescription className="pl-9">Your journey, day by day.</CardDescription>
@@ -96,7 +97,7 @@ export default function ProgressPage() {
                 className="rounded-md border"
                 classNames={{
                   day_selected: "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary/90",
-                  day_today: "bg-accent/50 text-accent-foreground",
+                  day_today: "bg-accent text-accent-foreground",
                 }}
               />
             </CardContent>
