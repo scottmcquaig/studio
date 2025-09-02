@@ -7,10 +7,11 @@ import { Activity, Flame, CheckCircle2, Target, Award } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { Progress } from '@/components/ui/progress';
 import BottomNav from '@/components/bottom-nav';
+import { addDays, subDays } from 'date-fns';
 
-const MOCK_COMPLETED_DAYS = [1, 2, 3, 5, 6, 8, 9, 10, 11, 14, 15, 16, 18, 20, 21, 22, 23, 24, 25];
-const MOCK_STREAK = 5;
-const CURRENT_CHALLENGE_DAY = 2; // Assuming Day 2 is the current challenge
+const MOCK_COMPLETED_DAYS = [1];
+const MOCK_STREAK = 1;
+const CURRENT_CHALLENGE_DAY = 2; // Day 2 is the current day
 
 export default function ProgressPage() {
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -18,9 +19,10 @@ export default function ProgressPage() {
   const progress = Math.round((completedDaysSet.size / 30) * 100);
   
   const today = new Date();
-  const challengeStartDate = new Date(today.setDate(today.getDate() - (CURRENT_CHALLENGE_DAY - 1) ));
-  const firstDayOfMonth = new Date(challengeStartDate.getFullYear(), challengeStartDate.getMonth(), 1);
+  const challengeStartDate = subDays(today, CURRENT_CHALLENGE_DAY - 1);
 
+  const completedDates = MOCK_COMPLETED_DAYS.map(day => addDays(challengeStartDate, day - 1));
+  const missedDate = subDays(today, 2); // Represents 8/31 if today is 9/2
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -84,23 +86,25 @@ export default function ProgressPage() {
 
           <Card>
             <CardHeader>
-              <div className="flex items-center gap-3">
-                <Activity className="h-6 w-6 text-accent" />
-                <CardTitle className="font-headline text-2xl text-primary">Completion Calendar</CardTitle>
-              </div>
-              <CardDescription className="pl-9">Your journey, day by day.</CardDescription>
+              <CardTitle className="font-headline text-2xl text-primary">Completion Calendar</CardTitle>
+              <CardDescription>Your journey, day by day.</CardDescription>
             </CardHeader>
             <CardContent className="flex justify-center">
                <Calendar
                 mode="multiple"
-                selected={MOCK_COMPLETED_DAYS.map(day => {
-                  const d = new Date(challengeStartDate);
-                  d.setDate(d.getDate() + (day - CURRENT_CHALLENGE_DAY));
-                  return d;
-                })}
-                defaultMonth={challengeStartDate}
+                selected={completedDates}
+                defaultMonth={today}
                 onSelect={setDate}
                 className="rounded-md border"
+                modifiers={{
+                  completed: completedDates,
+                  missed: [missedDate],
+                }}
+                modifiersClassNames={{
+                  today: 'day-today',
+                  completed: 'day-completed',
+                  missed: 'day-missed',
+                }}
                 classNames={{
                   cell: "h-9 w-9 text-center text-sm p-0 relative first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20 mx-0.5",
                   day_selected: "bg-primary text-primary-foreground rounded-md border border-primary-foreground/20 hover:bg-primary/90 focus:bg-primary/90",
