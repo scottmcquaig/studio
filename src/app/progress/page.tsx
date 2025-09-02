@@ -30,6 +30,7 @@ const achievements = [
 export default function ProgressPage() {
   const completedDaysSet = MOCK_COMPLETED_DAYS;
   const progress = Math.round((completedDaysSet.size / 30) * 100);
+  const currentWeek = Math.ceil(CURRENT_CHALLENGE_DAY / 7);
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -101,13 +102,28 @@ export default function ProgressPage() {
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    {weeklyProgress.map((week) => (
-                        <div key={week.week} className="flex items-center p-3 bg-secondary/30 rounded-lg">
-                            <Badge variant="default" className="mr-4">Week {week.week}</Badge>
-                            <p className="flex-grow font-semibold text-primary">{week.title}</p>
-                            <p className="text-muted-foreground">{week.completed}/{week.total}</p>
-                        </div>
-                    ))}
+                    {weeklyProgress.map((week) => {
+                        const isCurrentWeek = week.week === currentWeek;
+                        const weekProgress = (week.completed / week.total) * 100;
+                        return (
+                            <div key={week.week} className="flex flex-col gap-2 p-3 bg-secondary/30 rounded-lg">
+                                <div className="flex items-center">
+                                    <Badge
+                                        variant={isCurrentWeek ? "default" : "outline"}
+                                        className={cn(
+                                            "mr-4",
+                                            isCurrentWeek ? "bg-accent text-accent-foreground" : "bg-card text-card-foreground border-border"
+                                        )}
+                                    >
+                                        Week {week.week}
+                                    </Badge>
+                                    <p className="flex-grow font-semibold text-primary">{week.title}</p>
+                                    <p className="text-sm text-muted-foreground">{week.completed}/{week.total}</p>
+                                </div>
+                                <Progress value={weekProgress} className="h-2" />
+                            </div>
+                        );
+                    })}
                 </CardContent>
             </Card>
 
@@ -131,18 +147,22 @@ export default function ProgressPage() {
                                 <div
                                     key={day}
                                     className={cn(
-                                        "aspect-square flex flex-col p-2 rounded-lg text-center",
-                                        isActive ? "bg-accent text-white" : "bg-secondary/30",
-                                        isCompleted && "bg-green-600 text-white",
+                                        "aspect-square flex flex-col p-2 rounded-lg",
+                                        isActive ? "bg-accent" : "bg-secondary/30",
+                                        isCompleted && "bg-green-600",
                                     )}
                                 >
                                     <div className="h-4"></div>
                                     <div className="flex-grow flex items-center justify-center">
-                                        <p className={cn("text-base", isActive || isCompleted ? 'font-bold' : 'font-normal')}>{day}</p>
+                                        <p className={cn(
+                                            "text-base", 
+                                            isActive ? "text-white" : "text-foreground",
+                                            isCompleted ? 'font-bold text-white' : 'font-normal'
+                                        )}>{day}</p>
                                     </div>
-                                    <div className="text-xs h-4">
+                                    <div className="text-xs h-4 text-center">
                                         {isCompleted && (
-                                            <p>
+                                            <p className="text-white">
                                                 {completionDate.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })}
                                             </p>
                                         )}
