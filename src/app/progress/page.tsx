@@ -131,7 +131,7 @@ export default function ProgressPage() {
                                 <div
                                     key={day}
                                     className={cn(
-                                        "aspect-square flex flex-col items-center justify-center p-1 rounded-lg text-center",
+                                        "aspect-square flex flex-col items-center justify-between p-2 rounded-lg text-center",
                                         isActive ? "bg-accent text-white" : "bg-secondary/30",
                                         isCompleted && "bg-green-600 text-white",
                                     )}
@@ -139,7 +139,7 @@ export default function ProgressPage() {
                                     <p className={cn("text-lg", isActive || isCompleted ? 'font-bold' : 'font-normal')}>{day}</p>
                                     <div className="text-xs h-4">
                                         {isCompleted && (
-                                            <p className="mt-1">
+                                            <p>
                                                 {completionDate.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })}
                                             </p>
                                         )}
