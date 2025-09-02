@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ const programs = [
     icon: Heart,
     color: "text-red-500",
     price: 4,
+    owned: true,
   },
   {
     title: "Stoic Ego",
@@ -75,9 +77,15 @@ export default function ProgramsPage() {
                             <CardDescription className="pt-2">{program.description}</CardDescription>
                         </CardHeader>
                         <CardFooter className="mt-auto">
-                            <Button className="w-full">
-                                Get for ${program.price} <ArrowRight className="ml-2" />
-                            </Button>
+                            {program.owned ? (
+                                <Button variant="secondary" className="w-full">
+                                    View Dashboard
+                                </Button>
+                            ) : (
+                                <Button className="w-full">
+                                    Get for ${program.price} <ArrowRight className="ml-2" />
+                                </Button>
+                            )}
                         </CardFooter>
                     </Card>
                 ))}
@@ -95,8 +103,7 @@ export default function ProgramsPage() {
                 </CardHeader>
                  <CardFooter className="flex flex-col sm:flex-row items-center gap-4">
                     <div className="flex-grow text-center sm:text-left">
-                        <p><span className="font-bold">One-time purchase:</span> $12.00</p>
-                        <p className="text-sm text-muted-foreground">Or $9.00 if you have a code from the book.</p>
+                        <p><span className="font-bold">One-time purchase:</span> <span className="line-through">$16.00</span> $9.00</p>
                     </div>
                     <Button size="lg" className="w-full sm:w-auto">
                         Unlock Everything
