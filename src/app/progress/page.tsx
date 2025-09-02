@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Activity, Flame, CheckCircle2, Target, Award, Calendar, Trophy, Zap, Star } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
@@ -112,7 +113,7 @@ export default function ProgressPage() {
                                         variant={isCurrentWeek ? "default" : "outline"}
                                         className={cn(
                                             "mr-4",
-                                            isCurrentWeek ? "bg-accent text-primary-foreground" : "bg-card text-card-foreground border-border"
+                                            isCurrentWeek ? "bg-accent text-primary-foreground" : ""
                                         )}
                                     >
                                         Week {week.week}
@@ -140,14 +141,14 @@ export default function ProgressPage() {
                             const day = i + 1;
                             const isCompleted = completedDaysSet.has(day);
                             const isActive = day === CURRENT_CHALLENGE_DAY;
+                            const isClickable = day <= CURRENT_CHALLENGE_DAY;
                             const today = new Date();
                             const completionDate = new Date(today.setDate(today.getDate() - (CURRENT_CHALLENGE_DAY - day)));
                             
-                            return (
+                            const dayContent = (
                                 <div
-                                    key={day}
                                     className={cn(
-                                        "aspect-square flex flex-col p-2 rounded-lg",
+                                        "aspect-square flex flex-col p-2 rounded-lg w-full h-full",
                                         isActive ? "bg-accent" : "bg-secondary/30",
                                         isCompleted && "bg-green-600",
                                     )}
@@ -169,6 +170,20 @@ export default function ProgressPage() {
                                     </div>
                                 </div>
                             );
+
+                            if (isClickable) {
+                                return (
+                                    <Link key={day} href={`/day/${day}`}>
+                                        {dayContent}
+                                    </Link>
+                                );
+                            }
+
+                            return (
+                                <div key={day}>
+                                    {dayContent}
+                                </div>
+                            )
                         })}
                     </div>
                 </CardContent>
