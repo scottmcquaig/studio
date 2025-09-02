@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Activity, Flame, CheckCircle2, Target, Award, Calendar, Trophy, Zap, Star } from 'lucide-react';
+import { Activity, Flame, CheckCircle2, Target, Award, Calendar, Trophy, Zap, Star, BarChart2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import BottomNav from '@/components/bottom-nav';
 import { Badge } from '@/components/ui/badge';
@@ -98,7 +98,7 @@ export default function ProgressPage() {
            <Card>
                 <CardHeader>
                     <div className="flex items-center gap-3">
-                        <Calendar className="h-6 w-6 text-accent" />
+                        <BarChart2 className="h-6 w-6 text-accent" />
                         <CardTitle className="font-headline text-2xl text-primary">Weekly Progress</CardTitle>
                     </div>
                 </CardHeader>
@@ -158,7 +158,7 @@ export default function ProgressPage() {
                                         <p className={cn(
                                             "text-base", 
                                             isActive ? "text-white" : "text-foreground",
-                                            isCompleted ? 'font-bold text-white' : 'font-normal'
+                                            isCompleted ? 'font-bold text-white' : ''
                                         )}>{day}</p>
                                     </div>
                                     <div className="text-xs h-4 text-center">

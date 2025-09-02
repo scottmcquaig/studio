@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, ArrowRight, CheckCircle, Edit, Lock, MessageCircle, Star } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle, Edit, Lock, Star, Sunrise, Sunset } from 'lucide-react';
 import BottomNav from '@/components/bottom-nav';
 
 // This is a placeholder for a more robust state management
@@ -131,7 +131,7 @@ export default function DailyPromptPage() {
              <Card>
                 <CardHeader>
                     <div className="flex items-center gap-3">
-                        <MessageCircle className="h-6 w-6 text-accent" />
+                        <Sunrise className="h-6 w-6 text-accent" />
                         <CardTitle className="font-headline text-2xl text-primary">Morning Intention</CardTitle>
                     </div>
                 </CardHeader>
@@ -144,7 +144,7 @@ export default function DailyPromptPage() {
               <Card>
                 <CardHeader>
                     <div className="flex items-center gap-3">
-                        <MessageCircle className="h-6 w-6 text-accent" />
+                        <Sunset className="h-6 w-6 text-accent" />
                         <CardTitle className="font-headline text-2xl text-primary">Evening Reflection</CardTitle>
                     </div>
                 </CardHeader>
