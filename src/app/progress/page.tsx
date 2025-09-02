@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Calendar as CalendarIcon, Flame, CheckCircle2, Target, Award, Activity } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { Progress } from '@/components/ui/progress';
-import { Flame, CheckCircle2, Target, Award, Activity } from 'lucide-react';
 import BottomNav from '@/components/bottom-nav';
 
 const MOCK_COMPLETED_DAYS = [1, 2, 3, 5, 6, 8, 9, 10, 11, 14, 15, 16, 18, 20, 21, 22, 23, 24, 25];
@@ -70,7 +70,7 @@ export default function ProgressPage() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-3">
-                <Calendar className="h-6 w-6 text-accent" />
+                <CalendarIcon className="h-6 w-6 text-accent" />
                 <CardTitle className="font-headline text-2xl text-primary">Completion Calendar</CardTitle>
               </div>
               <CardDescription className="pl-9">Your journey, day by day.</CardDescription>
