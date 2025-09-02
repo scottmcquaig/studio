@@ -112,7 +112,7 @@ export default function ProgressPage() {
                                         variant={isCurrentWeek ? "default" : "outline"}
                                         className={cn(
                                             "mr-4",
-                                            isCurrentWeek ? "bg-accent text-accent-foreground" : "bg-card text-card-foreground border-border"
+                                            isCurrentWeek ? "bg-accent text-primary-foreground" : "bg-card text-card-foreground border-border"
                                         )}
                                     >
                                         Week {week.week}
