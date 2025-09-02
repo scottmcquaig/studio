@@ -6,6 +6,13 @@ export interface Challenge {
     text: string;
     author: string;
   };
+  broTranslation?: string;
+  challenge?: string;
+  morningPrompt?: string;
+  eveningPrompt?: string;
+  winsTitle?: string;
+  week?: number;
+  track?: string;
 }
 
 export interface JournalEntry {

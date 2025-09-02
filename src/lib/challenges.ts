@@ -3,9 +3,27 @@ import type { Challenge } from './types';
 export const challenges: Challenge[] = [
   {
     day: 1,
-    title: 'Practice Negative Visualization',
-    description: "Spend a few minutes contemplating the loss of things you value. This isn't to be morbid, but to appreciate what you have right now.",
-    quote: { text: "He is a wise man who does not grieve for the things which he has not, but rejoices for those which he has.", author: "Epictetus" }
+    week: 1,
+    track: "Relationship",
+    title: "You Can't Control Them (Stop Trying)",
+    description: "Your first practice is to recognize the ultimate boundary: you are not in charge of anyone else's feelings, reactions, or choices.",
+    quote: { 
+      text: "Whenever you want to cheer yourself up, consider the good qualities of your companions, for instance, the energy of one, the modesty of another, the generosity of yet another. Nothing gives as much pleasure as the image of the virtues displayed in the character of our contemporaries.", 
+      author: "Marcus Aurelius" 
+    },
+    broTranslation: "Stop obsessing over everyone's flaws and fuck-ups. Yeah, people are messy, inconsistent, and disappointing. But guess what? So are you. Marcus is saying: instead of keeping a mental scorecard of how everyone's failing you, start noticing what they're actually good at. Your girl's always late? Maybe she also always shows up when shit gets real. Your friend's terrible with money? Perhaps he'd also give you his last dollar. You're so busy cataloging disappointments that you're blind to the good stuff right in front of you.",
+    challenge: `The Flip List: Pick your three most frustrating relationships right now. For each person:
+- Write their most annoying trait/behavior
+- Now write two genuine strengths they have (not backhanded compliments - real shit)
+- Write one time they came through when it mattered
+
+If you can't think of strengths or good moments, that's data too. Maybe it's time to audit who's in your circle.`,
+    morningPrompt: "Today when someone irritates me, I'll pause and ask: What am I trying to control that isn't mine to control?",
+    eveningPrompt: `Answer these three questions:
+1. Which expectation did I have of someone today that was actually unfair?
+2. When did I react to someone based on my mood, not their actual behavior?
+3. What relationship problem am I complaining about that I'm actively contributing to?`,
+    winsTitle: "One relationship I fostered today:"
   },
   {
     day: 2,

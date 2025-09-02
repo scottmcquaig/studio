@@ -10,7 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, ArrowRight, CheckCircle, BookOpen, Star, Sparkles, MessageCircle, Edit, Lock } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, ArrowRight, CheckCircle, Edit, Lock, MessageCircle, Star } from 'lucide-react';
 import BottomNav from '@/components/bottom-nav';
 
 // This is a placeholder for a more robust state management
@@ -31,6 +32,11 @@ export default function DailyPromptPage() {
   const isCompleted = MOCK_COMPLETED_DAYS.has(day);
   const isCurrentDay = day === CURRENT_CHALLENGE_DAY;
   const isFutureDay = day > CURRENT_CHALLENGE_DAY;
+  
+  const today = new Date();
+  today.setDate(today.getDate() - (CURRENT_CHALLENGE_DAY - day));
+  const formattedDate = today.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' });
+
 
   if (!challenge) {
     return (
@@ -75,24 +81,39 @@ export default function DailyPromptPage() {
 
       <main className="flex-grow container mx-auto px-4 py-8 max-w-3xl">
         <div className="space-y-8">
-
+          
           <div className="text-center">
             <h2 className="text-xl font-bold font-headline text-primary">Day {challenge.day}: {challenge.title}</h2>
           </div>
 
           <Card>
             <CardHeader>
-              <div className="flex items-center gap-3 mb-2">
-                <BookOpen className="h-6 w-6 text-accent" />
-                <CardTitle className="font-headline text-2xl text-primary">Today's Stoic Practice</CardTitle>
-              </div>
-              <CardDescription className="pl-9">{challenge.description}</CardDescription>
+                <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                        {challenge.week && <Badge variant="outline">Week {challenge.week}</Badge>}
+                        {challenge.track && <Badge variant="default">{challenge.track}</Badge>}
+                    </div>
+                    <p className="text-sm text-muted-foreground">{formattedDate}</p>
+                </div>
+              <CardTitle className="font-headline text-2xl text-primary pt-4">{challenge.description}</CardTitle>
             </CardHeader>
             <CardContent>
-                <blockquote className="border-l-4 border-accent pl-4 py-2 bg-secondary/30 rounded-r-lg ml-9">
+                <blockquote className="border-l-4 border-accent pl-4 py-2 bg-secondary/30 rounded-r-lg">
                   <p className="italic text-primary/90">"{challenge.quote.text}"</p>
                   <footer className="text-sm text-right mt-2 text-muted-foreground pr-4">&mdash; {challenge.quote.author}</footer>
                 </blockquote>
+                {challenge.broTranslation && (
+                    <div className="mt-6">
+                        <h3 className="font-bold font-headline text-lg text-primary mb-2">The Bro Translation</h3>
+                        <p className="text-muted-foreground whitespace-pre-line">{challenge.broTranslation}</p>
+                    </div>
+                )}
+                {challenge.challenge && (
+                    <div className="mt-6 p-4 bg-secondary/30 rounded-lg">
+                        <h3 className="font-bold font-headline text-lg text-primary mb-2">Today's Challenge</h3>
+                        <p className="text-muted-foreground whitespace-pre-line">{challenge.challenge}</p>
+                    </div>
+                )}
             </CardContent>
           </Card>
           
@@ -109,38 +130,45 @@ export default function DailyPromptPage() {
                 </CardContent>
             </Card>
           ) : (
+            <>
              <Card>
                 <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <Sparkles className="h-6 w-6 text-accent" />
-                    <CardTitle className="font-headline text-2xl text-primary">Your Journal</CardTitle>
-                  </div>
-                  <CardDescription className="pl-9">Document your thoughts and reflections for the day.</CardDescription>
+                    <div className="flex items-center gap-3">
+                        <MessageCircle className="h-6 w-6 text-accent" />
+                        <CardTitle className="font-headline text-2xl text-primary">Morning Intention</CardTitle>
+                    </div>
                 </CardHeader>
-                <CardContent className="space-y-6 pl-9">
-                  <div className="space-y-2">
-                    <Label htmlFor="morning-intention" className="flex items-center gap-2 font-semibold text-primary">
-                        <MessageCircle className="h-4 w-4" />
-                        Morning Intention
-                    </Label>
-                    <Textarea id="morning-intention" placeholder="What is your primary goal for today? How will you practice virtue?" className="min-h-[100px]" readOnly={isCompleted && !isCurrentDay} defaultValue={isCompleted ? "This is a pre-filled entry for a completed day." : ""} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="evening-reflection" className="flex items-center gap-2 font-semibold text-primary">
-                        <MessageCircle className="h-4 w-4" />
-                        Evening Reflection
-                    </Label>
-                    <Textarea id="evening-reflection" placeholder="What did you learn? Where did you succeed? Where did you fail? How can you improve tomorrow?" className="min-h-[100px]" readOnly={isCompleted && !isCurrentDay} defaultValue={isCompleted ? "This is a pre-filled entry for a completed day." : ""} />
-                  </div>
-                   <div className="space-y-2">
-                    <Label htmlFor="wins" className="flex items-center gap-2 font-semibold text-primary">
-                        <Star className="h-4 w-4" />
-                        Today's Wins
-                    </Label>
-                    <Textarea id="wins" placeholder="What small victories did you achieve today? Acknowledge your progress." className="min-h-[70px]" readOnly={isCompleted && !isCurrentDay} defaultValue={isCompleted ? "This is a pre-filled win for a completed day." : ""} />
-                  </div>
+                <CardContent className="space-y-6">
+                  {challenge.morningPrompt && <p className="text-muted-foreground">{challenge.morningPrompt}</p>}
+                  <Textarea id="morning-intention" placeholder="What is your primary goal for today? How will you practice virtue?" className="min-h-[100px]" readOnly={isCompleted && !isCurrentDay} defaultValue={isCompleted ? "This is a pre-filled entry for a completed day." : ""} />
                 </CardContent>
               </Card>
+
+              <Card>
+                <CardHeader>
+                    <div className="flex items-center gap-3">
+                        <MessageCircle className="h-6 w-6 text-accent" />
+                        <CardTitle className="font-headline text-2xl text-primary">Evening Reflection</CardTitle>
+                    </div>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {challenge.eveningPrompt && <p className="text-muted-foreground whitespace-pre-line">{challenge.eveningPrompt}</p>}
+                  <Textarea id="evening-reflection" placeholder="What did you learn? Where did you succeed? Where did you fail? How can you improve tomorrow?" className="min-h-[100px]" readOnly={isCompleted && !isCurrentDay} defaultValue={isCompleted ? "This is a pre-filled entry for a completed day." : ""} />
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                    <div className="flex items-center gap-3">
+                        <Star className="h-6 w-6 text-accent" />
+                        <CardTitle className="font-headline text-2xl text-primary">{challenge.winsTitle || "Today's Wins"}</CardTitle>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                   <Textarea id="wins" placeholder="What small victories did you achieve today? Acknowledge your progress." className="min-h-[70px]" readOnly={isCompleted && !isCurrentDay} defaultValue={isCompleted ? "This is a pre-filled win for a completed day." : ""} />
+                </CardContent>
+              </Card>
+            </>
           )}
 
 
