@@ -45,7 +45,7 @@ export default function ProgramsPage() {
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <header className="py-4 bg-card border-b">
         <div className="container mx-auto px-4 max-w-3xl text-center">
-          <h1 className="text-xl font-bold font-headline text-primary">STOIC AF Challenge Programs</h1>
+          <h1 className="text-xl font-bold font-headline text-primary">Stoic AF Challenges</h1>
         </div>
       </header>
 
@@ -79,7 +79,7 @@ export default function ProgramsPage() {
                         </CardHeader>
                         <CardFooter className="mt-auto">
                             {program.owned ? (
-                                <Link href="/" className="w-full">
+                                <Link href="/" className="w-full" passHref>
                                     <Button variant="secondary" className="w-full bg-accent/20 text-accent-foreground hover:bg-accent/30">
                                         View Dashboard
                                     </Button>
