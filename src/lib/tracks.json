@@ -1,3 +1,4 @@
+
 {
   "tracks": [
     {
@@ -8,7 +9,8 @@
       "order": 1,
       "color": "#16A34A",
       "icon": "dollar-sign",
-      "description": "Master your relationship with money - from scarcity to abundance"
+      "description": "Master your relationship with money - from scarcity to abundance",
+      "category": "30-Day Stoic-AF Challenge"
     },
     {
       "id": "RELATIONSHIPS",
@@ -18,7 +20,8 @@
       "order": 2,
       "color": "#DC2626",
       "icon": "heart",
-      "description": "Stop trying to control others and start controlling yourself"
+      "description": "Stop trying to control others and start controlling yourself",
+      "category": "30-Day Stoic-AF Challenge"
     },
     {
       "id": "DISCIPLINE",
@@ -28,7 +31,8 @@
       "order": 3,
       "color": "#2563EB",
       "icon": "target",
-      "description": "Build unbreakable habits and mental toughness"
+      "description": "Build unbreakable habits and mental toughness",
+      "category": "30-Day Stoic-AF Challenge"
     },
     {
       "id": "EGO",
@@ -38,7 +42,8 @@
       "order": 4,
       "color": "#7C3AED",
       "icon": "brain",
-      "description": "Kill the ego that's killing your potential"
+      "description": "Kill the ego that's killing your potential",
+      "category": "30-Day Stoic-AF Challenge"
     }
   ]
 }

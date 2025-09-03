@@ -1,11 +1,19 @@
+
 'use client';
 
-import { Book, Calendar, Layers, BarChart2, LogOut } from 'lucide-react';
+import { Book, Calendar, Layers, BarChart2, User, LogOut, Shield } from 'lucide-react';
 import { Button } from './ui/button';
 import Link from 'next/link';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
 
 interface BottomNavProps {
-    activeTab?: 'Journal' | 'Daily' | 'Programs' | 'Progress' | 'Sign Out';
+    activeTab?: 'Journal' | 'Daily' | 'Programs' | 'Progress' | 'User';
     currentDay?: number;
 }
 
@@ -15,7 +23,6 @@ export default function BottomNav({ activeTab = 'Journal', currentDay = 1 }: Bot
         { icon: Calendar, label: 'Daily', href: `/day/${currentDay}` },
         { icon: BarChart2, label: 'Progress', href: '/progress' },
         { icon: Layers, label: 'Programs', href: '/programs' },
-        { icon: LogOut, label: 'Sign Out', href: '#' },
     ];
 
     return (
@@ -35,6 +42,29 @@ export default function BottomNav({ activeTab = 'Journal', currentDay = 1 }: Bot
                             </Link>
                         </Button>
                     ))}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                             <Button
+                                variant="ghost"
+                                className={`flex flex-col items-center justify-center h-14 w-16 px-2 py-1 text-xs font-normal ${activeTab === 'User' ? 'bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground' : 'text-muted-foreground hover:bg-accent/20'}`}
+                            >
+                                <User className="h-5 w-5 mb-1" />
+                                <span>User</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-40 mb-2">
+                             <DropdownMenuItem asChild>
+                                <Link href="/backstage">
+                                    <Shield className="mr-2" />
+                                    Admin
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <LogOut className="mr-2" />
+                                Sign Out
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
         </footer>
