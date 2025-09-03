@@ -3,7 +3,7 @@
 
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import type { Challenge } from '@/lib/types';
 import { challenges as allChallenges } from '@/lib/challenges';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -23,6 +23,15 @@ const MOCK_STREAK = 1;
 export default function DailyPromptPage() {
   const params = useParams();
   const day = parseInt(params.day as string, 10);
+  const [formattedDate, setFormattedDate] = useState('');
+
+  useEffect(() => {
+    if (day) {
+      const today = new Date();
+      today.setDate(today.getDate() - (CURRENT_CHALLENGE_DAY - day));
+      setFormattedDate(today.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' }));
+    }
+  }, [day]);
 
   const challenge: Challenge | undefined = useMemo(() => {
     if (isNaN(day) || day < 1 || day > 30) {
@@ -35,9 +44,6 @@ export default function DailyPromptPage() {
   const isCurrentDay = day === CURRENT_CHALLENGE_DAY;
   const isFutureDay = day > CURRENT_CHALLENGE_DAY;
   
-  const today = new Date();
-  today.setDate(today.getDate() - (CURRENT_CHALLENGE_DAY - day));
-  const formattedDate = today.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' });
   const progress = Math.round((MOCK_COMPLETED_DAYS.size / 30) * 100);
 
   if (!challenge) {
