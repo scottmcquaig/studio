@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Activity, Flame, CheckCircle2, Target, Award, Calendar, Trophy, Zap, Star, BarChart2 } from 'lucide-react';
@@ -28,10 +28,40 @@ const achievements = [
     { title: "Relationship Master", description: "Complete all 30 days", icon: Star, unlocked: false },
 ]
 
+interface CalendarDay {
+  day: number;
+  isCompleted: boolean;
+  isActive: boolean;
+  isClickable: boolean;
+  completionDate?: string;
+}
+
 export default function ProgressPage() {
+  const [calendarDays, setCalendarDays] = useState<CalendarDay[]>([]);
   const completedDaysSet = MOCK_COMPLETED_DAYS;
   const progress = Math.round((completedDaysSet.size / 30) * 100);
   const currentWeek = Math.ceil(CURRENT_CHALLENGE_DAY / 7);
+
+  useEffect(() => {
+    const today = new Date();
+    const days: CalendarDay[] = Array.from({ length: 30 }, (_, i) => {
+        const day = i + 1;
+        const isCompleted = completedDaysSet.has(day);
+        const isActive = day === CURRENT_CHALLENGE_DAY;
+        const isClickable = day <= CURRENT_CHALLENGE_DAY;
+        const completionDate = new Date(today);
+        completionDate.setDate(today.getDate() - (CURRENT_CHALLENGE_DAY - day));
+        
+        return {
+            day,
+            isCompleted,
+            isActive,
+            isClickable,
+            completionDate: isCompleted ? completionDate.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' }) : undefined,
+        };
+    });
+    setCalendarDays(days);
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -143,13 +173,8 @@ export default function ProgressPage() {
                 </CardHeader>
                 <CardContent>
                     <div className="grid grid-cols-7 gap-2">
-                        {Array.from({ length: 30 }, (_, i) => {
-                            const day = i + 1;
-                            const isCompleted = completedDaysSet.has(day);
-                            const isActive = day === CURRENT_CHALLENGE_DAY;
-                            const isClickable = day <= CURRENT_CHALLENGE_DAY;
-                            const today = new Date();
-                            const completionDate = new Date(today.setDate(today.getDate() - (CURRENT_CHALLENGE_DAY - day)));
+                        {calendarDays.length > 0 ? calendarDays.map((dayInfo) => {
+                            const { day, isCompleted, isActive, isClickable, completionDate } = dayInfo;
                             
                             const dayContent = (
                                 <div
@@ -168,9 +193,9 @@ export default function ProgressPage() {
                                         )}>{day}</p>
                                     </div>
                                     <div className="text-xs h-4 text-center">
-                                        {isCompleted && (
+                                        {isCompleted && completionDate && (
                                             <p className="text-white">
-                                                {completionDate.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })}
+                                                {completionDate}
                                             </p>
                                         )}
                                     </div>
@@ -190,7 +215,12 @@ export default function ProgressPage() {
                                     {dayContent}
                                 </div>
                             )
-                        })}
+                        }) : (
+                            // Render placeholders or skeletons while waiting for client-side hydration
+                            Array.from({ length: 30 }, (_, i) => (
+                                <div key={i} className="aspect-square bg-secondary/30 rounded-lg" />
+                            ))
+                        )}
                     </div>
                 </CardContent>
             </Card>
