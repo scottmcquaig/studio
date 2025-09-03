@@ -65,6 +65,9 @@ export default function BackstagePage() {
             setIsSheetOpen(false);
             setSelectedTrack(null);
             
+            // Reload the page to reflect changes and avoid HMR issues
+            window.location.reload();
+            
         } catch (error) {
             console.error("Error updating track:", error);
             // Optionally, show an error message to the user
