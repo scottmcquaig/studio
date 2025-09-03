@@ -10,10 +10,13 @@ import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger, SheetFooter, SheetClose } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { tracks as allTracks } from "@/lib/tracks.json";
-import { Edit, Archive, PlusCircle, FolderPlus, DollarSign, Heart, Target, Brain, KeyRound, Check } from "lucide-react";
+import { Edit, Archive, PlusCircle, FolderPlus, DollarSign, Heart, Target, Brain, KeyRound, Check, Loader2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useToast } from "@/hooks/use-toast";
+import { generateUnlockCode } from "@/ai/flows/generate-unlock-code";
+import { Toaster } from "@/components/ui/toaster";
 
 // Helper to get the correct icon component
 const iconMap: { [key: string]: React.ComponentType<any> } = {
@@ -26,12 +29,15 @@ const iconMap: { [key: string]: React.ComponentType<any> } = {
 type Track = typeof allTracks[0];
 
 export default function BackstagePage() {
+    const { toast } = useToast();
     const [tracks, setTracks] = useState<Track[]>(allTracks);
     const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [isGenerateCodeOpen, setIsGenerateCodeOpen] = useState(false);
-    const [accessType, setAccessType] = useState("user_choice_one");
+    const [accessType, setAccessType] = useState("userOne");
     const [selectedPaths, setSelectedPaths] = useState<string[]>([]);
+    const [isGenerating, setIsGenerating] = useState(false);
+
 
     const tracksByCategory = useMemo(() => {
         return tracks.reduce((acc, track) => {
@@ -86,32 +92,59 @@ export default function BackstagePage() {
         }
     };
 
-    const handleGenerateCode = (e: React.FormEvent<HTMLFormElement>) => {
+     const handleGenerateCode = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsGenerating(true);
         const formData = new FormData(e.currentTarget);
-        const email = formData.get('email');
+        const email = formData.get('email') as string;
         
-        const codeDetails = {
-            email,
-            accessType,
-            paths: accessType === 'admin_choice_one' || accessType === 'admin_choice_multiple' ? selectedPaths : 'all'
-        };
+        let paths: string[] | 'all' = 'all';
+        if (accessType === 'adminOne' || accessType === 'adminMulti') {
+            paths = selectedPaths;
+        }
 
-        console.log("Generating Code with details:", codeDetails);
-        // We will implement the actual code generation logic in the next step.
-        
-        setIsGenerateCodeOpen(false);
+        try {
+            const result = await generateUnlockCode({ email, accessType, paths });
+            toast({
+                title: "Code Generated Successfully!",
+                description: (
+                    <div>
+                        <p>Share this code with {email}:</p>
+                        <p className="font-mono text-lg bg-secondary p-2 rounded-md mt-2">{result.code}</p>
+                    </div>
+                ),
+            });
+            setIsGenerateCodeOpen(false);
+        } catch (error) {
+            console.error("Error generating code:", error);
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: "There was a problem generating the code. Please try again.",
+            });
+        } finally {
+            setIsGenerating(false);
+        }
     };
 
     const handlePathSelection = (trackId: string) => {
-        if (accessType === 'admin_choice_one') {
+        if (accessType === 'adminOne') {
             setSelectedPaths([trackId]);
-        } else if (accessType === 'admin_choice_multiple') {
+        } else if (accessType === 'adminMulti') {
             setSelectedPaths(prev => 
                 prev.includes(trackId) ? prev.filter(id => id !== trackId) : [...prev, trackId]
             );
         }
     };
+
+    const accessOptions = [
+        { id: 'userOne', label: 'Single Path: User Selects'},
+        { id: 'adminOne', label: 'Single Path: Admin Selects'},
+        { id: 'adminMulti', label: 'Multiple Paths: Admin Selects'},
+        { id: 'allCurrent', label: 'All Current Paths'},
+        { id: 'allEvergreen', label: 'All Paths (Evergreen)'},
+    ];
+
 
     return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -130,7 +163,7 @@ export default function BackstagePage() {
                 <DialogHeader>
                   <DialogTitle>Generate Unlock Code</DialogTitle>
                   <DialogDescription>
-                    Create a one-time code for a user to unlock access to challenge paths.
+                    Create a one-time code for a user to unlock challenge paths.
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleGenerateCode}>
@@ -139,32 +172,18 @@ export default function BackstagePage() {
                             <Label htmlFor="email" className="text-right">User's Email</Label>
                             <Input id="email" name="email" type="email" required className="col-span-3" />
                         </div>
-                        <RadioGroup value={accessType} onValueChange={setAccessType} className="grid grid-cols-1 gap-2 p-2 border rounded-md">
+                        <RadioGroup value={accessType} onValueChange={(value) => {setAccessType(value); setSelectedPaths([])}} className="grid grid-cols-1 gap-2 p-2 border rounded-md">
                             <Label className="font-semibold mb-2">Access Level</Label>
-                             <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="user_choice_one" id="r1" />
-                                <Label htmlFor="r1">User choice of 1 path</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="admin_choice_one" id="r2" />
-                                <Label htmlFor="r2">Admin choice of 1 specific path</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="admin_choice_multiple" id="r3" />
-                                <Label htmlFor="r3">Admin choice of multiple paths</Label>
-                            </div>
-                             <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="all_current" id="r4" />
-                                <Label htmlFor="r4">Access to all current paths</Label>
-                            </div>
-                             <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="all_indefinite" id="r5" />
-                                <Label htmlFor="r5">Indefinite access to all paths</Label>
-                            </div>
+                            {accessOptions.map(opt => (
+                                <div key={opt.id} className="flex items-center space-x-2">
+                                    <RadioGroupItem value={opt.id} id={opt.id} />
+                                    <Label htmlFor={opt.id}>{opt.label}</Label>
+                                </div>
+                            ))}
                         </RadioGroup>
                         
-                        {(accessType === 'admin_choice_one' || accessType === 'admin_choice_multiple') && (
-                            <div className="grid grid-cols-1 gap-2 p-2 border rounded-md">
+                        {(accessType === 'adminOne' || accessType === 'adminMulti') && (
+                            <div className="grid grid-cols-1 gap-2 p-2 border rounded-md max-h-48 overflow-y-auto">
                                 <Label className="font-semibold mb-2">Select Paths</Label>
                                 {allTracks.map(track => (
                                     <div key={track.id} className="flex items-center space-x-2">
@@ -180,10 +199,10 @@ export default function BackstagePage() {
                         )}
                     </div>
                     <DialogFooter>
-                        <Button type="button" variant="outline" onClick={() => setIsGenerateCodeOpen(false)}>Cancel</Button>
-                        <Button type="submit">
-                            <Check className="mr-2" />
-                            Generate Code
+                        <Button type="button" variant="outline" onClick={() => setIsGenerateCodeOpen(false)} disabled={isGenerating}>Cancel</Button>
+                        <Button type="submit" disabled={isGenerating}>
+                            {isGenerating ? <Loader2 className="mr-2 animate-spin" /> : <Check className="mr-2" />}
+                            {isGenerating ? 'Generating...' : 'Generate Code'}
                         </Button>
                     </DialogFooter>
                 </form>
@@ -294,6 +313,8 @@ export default function BackstagePage() {
       </Sheet>
 
       <BottomNav activeTab="User" />
+      <Toaster />
     </div>
   );
 }
+    

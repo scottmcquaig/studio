@@ -1,5 +1,6 @@
 import type {Metadata} from 'next';
 import './globals.css';
+import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
   title: 'Stoic AF',
@@ -20,7 +21,10 @@ export default function RootLayout({
       </head>
       <body className="font-body">
         {children}
+        <Toaster />
       </body>
     </html>
   );
 }
+
+    
