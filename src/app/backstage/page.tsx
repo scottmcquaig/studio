@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetFooter, SheetClose } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { tracks as allTracks } from "@/lib/tracks.json";
-import { Edit, Archive, PlusCircle, FolderPlus, DollarSign, Heart, Target, Brain, KeyRound, Check, Loader2, Copy, Send, Settings, BookCopy } from "lucide-react";
+import { Edit, Archive, PlusCircle, FolderPlus, DollarSign, Heart, Target, Brain, KeyRound, Check, Loader2, Copy, Send, Settings } from "lucide-react";
 import { useMemo, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,6 +19,7 @@ import { generateUnlockCode } from "@/ai/flows/generate-unlock-code";
 import { Toaster } from "@/components/ui/toaster";
 import type { GenerateUnlockCodeInput } from "@/lib/types";
 import Link from "next/link";
+import { BookCopy } from "lucide-react";
 
 
 // Helper to get the correct icon component
