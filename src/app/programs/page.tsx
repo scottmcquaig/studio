@@ -235,7 +235,7 @@ export default function ProgramsPage() {
         setSelectedTrack(null);
     }
     
-    const handleUnlockClick = (track: Track) => {
+    const handleUnlockClick = (track: Track | null) => { // Allow null for "Unlock All"
         setSelectedTrack(track);
         setUnlockCode("");
         setIsUnlockPromptOpen(true);
@@ -455,7 +455,7 @@ export default function ProgramsPage() {
                     <div className="flex-grow text-center sm:text-left">
                         <p><span className="font-bold">One-time purchase:</span> <span className="line-through">${lockedPathsCount * 4}.00</span> <span className="font-bold text-accent">${bundlePrice}.00</span></p>
                     </div>
-                    <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent/90" disabled>
+                    <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent/90" onClick={() => handleUnlockClick(null)}>
                         Unlock All
                     </Button>
                 </CardFooter>
@@ -466,7 +466,7 @@ export default function ProgramsPage() {
       <Dialog open={isUnlockPromptOpen} onOpenChange={setIsUnlockPromptOpen}>
         <DialogContent>
             <DialogHeader>
-                <DialogTitle>Unlock: {selectedTrack?.full_name}</DialogTitle>
+                <DialogTitle>Unlock: {selectedTrack?.full_name || 'Challenge Paths'}</DialogTitle>
                  <DialogDescription>
                     Enter your one-time access code to unlock this challenge path.
                 </DialogDescription>
