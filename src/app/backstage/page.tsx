@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger, SheetFooter, SheetClose } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetFooter, SheetClose } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { tracks as allTracks } from "@/lib/tracks.json";
 import { Edit, Archive, PlusCircle, FolderPlus, DollarSign, Heart, Target, Brain, KeyRound, Check, Loader2 } from "lucide-react";
@@ -17,6 +17,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { generateUnlockCode } from "@/ai/flows/generate-unlock-code";
 import { Toaster } from "@/components/ui/toaster";
+import type { GenerateUnlockCodeInput } from "@/lib/types";
+
 
 // Helper to get the correct icon component
 const iconMap: { [key: string]: React.ComponentType<any> } = {
@@ -34,7 +36,7 @@ export default function BackstagePage() {
     const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [isGenerateCodeOpen, setIsGenerateCodeOpen] = useState(false);
-    const [accessType, setAccessType] = useState("userOne");
+    const [accessType, setAccessType] = useState<GenerateUnlockCodeInput['accessType']>("userOne");
     const [selectedPaths, setSelectedPaths] = useState<string[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
 
@@ -172,7 +174,7 @@ export default function BackstagePage() {
                             <Label htmlFor="email" className="text-right">User's Email</Label>
                             <Input id="email" name="email" type="email" required className="col-span-3" />
                         </div>
-                        <RadioGroup value={accessType} onValueChange={(value) => {setAccessType(value); setSelectedPaths([])}} className="grid grid-cols-1 gap-2 p-2 border rounded-md">
+                        <RadioGroup value={accessType} onValueChange={(value) => {setAccessType(value as GenerateUnlockCodeInput['accessType']); setSelectedPaths([])}} className="grid grid-cols-1 gap-2 p-2 border rounded-md">
                             <Label className="font-semibold mb-2">Access Level</Label>
                             {accessOptions.map(opt => (
                                 <div key={opt.id} className="flex items-center space-x-2">
@@ -317,4 +319,3 @@ export default function BackstagePage() {
     </div>
   );
 }
-    

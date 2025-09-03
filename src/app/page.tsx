@@ -2,7 +2,7 @@
 'use client'
 
 import { useState, useMemo, useEffect } from 'react';
-import type { Challenge, JournalEntry } from '@/lib/types';
+import type { Challenge } from '@/lib/types';
 import { challenges as allChallenges } from '@/lib/challenges';
 
 import AppHeader from '@/components/app-header';

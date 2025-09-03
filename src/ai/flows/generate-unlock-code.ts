@@ -5,28 +5,12 @@
  * @fileOverview A flow to generate and store one-time unlock codes for users.
  *
  * - generateUnlockCode - Creates a unique code and saves it to Firestore.
- * - GenerateUnlockCodeInput - The input type for the flow.
- * - GenerateUnlockCodeOutput - The return type for the flow.
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
 import { db } from '@/lib/firebase';
-import { collection, doc, setDoc, getDoc } from 'firebase/firestore';
-
-export const GenerateUnlockCodeInputSchema = z.object({
-  email: z.string().email().describe("The user's email address."),
-  accessType: z.enum(['userOne', 'adminOne', 'adminMulti', 'allCurrent', 'allEvergreen']),
-  paths: z.union([z.array(z.string()), z.literal('all')]).describe('Array of track IDs or "all".'),
-});
-export type GenerateUnlockCodeInput = z.infer<typeof GenerateUnlockCodeInputSchema>;
-
-export const GenerateUnlockCodeOutputSchema = z.object({
-  code: z.string().describe('The generated unique unlock code.'),
-  email: z.string().email(),
-  accessType: z.string(),
-});
-export type GenerateUnlockCodeOutput = z.infer<typeof GenerateUnlockCodeOutputSchema>;
+import { GenerateUnlockCodeInput, GenerateUnlockCodeInputSchema, GenerateUnlockCodeOutput, GenerateUnlockCodeOutputSchema } from '@/lib/types';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 // Helper function to generate a formatted random code
 const generateCode = (): string => {
@@ -74,5 +58,3 @@ const generateUnlockCodeFlow = ai.defineFlow(
     };
   }
 );
-
-    

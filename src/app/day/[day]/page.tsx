@@ -110,7 +110,7 @@ export default function DailyPromptPage() {
                     <div className="flex items-center gap-2 flex-wrap">
                         {challenge.week && <Badge variant="default">Week {challenge.week}</Badge>}
                         <Badge variant="secondary">Day {challenge.day}</Badge>
-                        {challenge.track && <Badge style={{ backgroundColor: '#EF4444', color: 'white' }} className="border-none">{challenge.track} Track</Badge>}
+                        {challenge.track && <Badge style={{ backgroundColor: '#EF4444', color: 'white' }} className="border-none">{challenge.track}</Badge>}
                     </div>
                     <p className="text-sm text-muted-foreground">{formattedDate}</p>
                 </div>

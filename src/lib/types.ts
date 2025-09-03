@@ -1,3 +1,4 @@
+
 export interface Challenge {
   day: number;
   title: string;
@@ -20,3 +21,19 @@ export interface JournalEntry {
   evening: string;
   wins: string;
 }
+
+import { z } from 'zod';
+
+export const GenerateUnlockCodeInputSchema = z.object({
+  email: z.string().email().describe("The user's email address."),
+  accessType: z.enum(['userOne', 'adminOne', 'adminMulti', 'allCurrent', 'allEvergreen']),
+  paths: z.union([z.array(z.string()), z.literal('all')]).describe('Array of track IDs or "all".'),
+});
+export type GenerateUnlockCodeInput = z.infer<typeof GenerateUnlockCodeInputSchema>;
+
+export const GenerateUnlockCodeOutputSchema = z.object({
+  code: z.string().describe('The generated unique unlock code.'),
+  email: z.string().email(),
+  accessType: z.string(),
+});
+export type GenerateUnlockCodeOutput = z.infer<typeof GenerateUnlockCodeOutputSchema>;
