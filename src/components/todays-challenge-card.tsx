@@ -11,10 +11,12 @@ import Link from 'next/link';
 interface TodaysChallengeCardProps {
   day: number;
   challenge: Challenge;
+  isMock?: boolean;
 }
 
-export default function TodaysChallengeCard({ day, challenge }: TodaysChallengeCardProps) {
+export default function TodaysChallengeCard({ day, challenge, isMock = false }: TodaysChallengeCardProps) {
   const week = Math.ceil(day / 7);
+  const prefix = isMock ? '/mock' : '';
 
   return (
     <Card className="shadow-sm">
@@ -31,7 +33,7 @@ export default function TodaysChallengeCard({ day, challenge }: TodaysChallengeC
           <p className="text-muted-foreground text-sm mt-1">Set your intention and begin today's stoic practice.</p>
         </div>
         <Button asChild className="w-full sm:w-auto mt-2 sm:mt-0 flex-shrink-0">
-          <Link href={`/day/${day}`}>
+          <Link href={`${prefix}/day/${day}`}>
             Continue Journey
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>

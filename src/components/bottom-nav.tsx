@@ -19,15 +19,18 @@ import { useRouter } from 'next/navigation';
 interface BottomNavProps {
     activeTab?: 'Dashboard' | 'Daily' | 'Challenges' | 'Progress' | 'User';
     currentDay?: number;
+    isMock?: boolean;
 }
 
-export default function BottomNav({ activeTab = 'Dashboard', currentDay = 1 }: BottomNavProps) {
+export default function BottomNav({ activeTab = 'Dashboard', currentDay = 1, isMock = false }: BottomNavProps) {
     const router = useRouter();
+    const prefix = isMock ? '/mock' : '';
+
     const navItems = [
-        { icon: Book, label: 'Dashboard', href: '/' },
-        { icon: Calendar, label: 'Daily', href: `/day/${currentDay}` },
-        { icon: BarChart2, label: 'Progress', href: '/progress' },
-        { icon: Layers, label: 'Challenges', href: '/programs' },
+        { icon: Book, label: 'Dashboard', href: `${prefix}/` },
+        { icon: Calendar, label: 'Daily', href: `${prefix}/day/${currentDay}` },
+        { icon: BarChart2, label: 'Progress', href: `${prefix}/progress` },
+        { icon: Layers, label: 'Challenges', href: `${prefix}/programs` },
     ];
 
     const handleSignOut = async () => {
@@ -64,7 +67,7 @@ export default function BottomNav({ activeTab = 'Dashboard', currentDay = 1 }: B
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-40 mb-2">
                              <DropdownMenuItem asChild>
-                                <Link href="/settings">
+                                <Link href={`${prefix}/settings`}>
                                     <Settings className="mr-2" />
                                     Settings
                                 </Link>
