@@ -102,7 +102,7 @@ export default function DailyPromptPage() {
             <CardHeader>
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2 flex-wrap">
-                        {challenge.week && <Badge variant="outline">Week {challenge.week}</Badge>}
+                        {challenge.week && <Badge variant="default">Week {challenge.week}</Badge>}
                         <Badge variant="secondary">Day {challenge.day}</Badge>
                         {challenge.track && <Badge style={{ backgroundColor: '#EF4444', color: 'white' }} className="border-none">{challenge.track} Track</Badge>}
                     </div>
