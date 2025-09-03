@@ -1,10 +1,11 @@
+
 import type { Challenge } from './types';
 
 export const challenges: Challenge[] = [
   {
     day: 1,
     week: 1,
-    track: "Relationship",
+    track: "Relationships",
     title: "You Can't Control Them (Stop Trying)",
     description: "You Can't Control Them (Stop Trying)",
     quote: { 
@@ -27,9 +28,19 @@ If you can't think of strengths or good moments, that's data too. Maybe it's tim
   },
   {
     day: 2,
-    title: 'The Dichotomy of Control',
-    description: "Throughout your day, distinguish between what is in your control and what isn't. Focus your energy solely on the former.",
-    quote: { text: "Some things are in our control and others not. Things in our control are opinion, pursuit, desire, aversion, and, in a word, whatever are our own actions.", author: "Epictetus" }
+    week: 1,
+    track: "Relationships",
+    title: 'The Expectation Trap',
+    description: "The Expectation Trap: Why Your Disappointment Is Your Fault",
+    quote: { text: "When another blames you or hates you, or people voice similar criticisms, go to their souls, penetrate inside and see what sort of people they are. You will realize that there is no need to be racked with anxiety that they should hold any particular opinion about you.", author: "Marcus Aurelius" },
+    broTranslation: "When someone's talking shit or coming at you sideways, don't defend yourself yet. First, look at who's talking. Are they miserable? Insecure? Fighting their own demons? Nine times out of ten, their beef with you is really beef with themselves. Stop losing sleep over opinions from people who can't even stand their own company. Their criticism says more about their inner chaos than your actual worth.",
+    challenge: "The Source Check: Today, when someone criticizes you or pisses you off, before you react, write down: 1) What they said/did, 2) What might be going on in THEIR life, 3) Why this might not actually be about you. Practice seeing past the attack to the pain behind it.",
+    morningPrompt: "Today I will remember that hurt people hurt people, and their reactions are about their inner state, not my worth.",
+    eveningPrompt: `Answer these three questions:
+1. What criticism did I take personally today that was really about the other person's issues?
+2. When did I create disappointment by expecting someone to act differently than they always do?
+3. How did my ego make a relationship moment harder than it needed to be?`,
+    winsTitle: "One expectation I released today:"
   },
   {
     day: 3,
