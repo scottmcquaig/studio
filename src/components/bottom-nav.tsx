@@ -10,6 +10,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { signOut } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { useRouter } from 'next/navigation';
 
 
 interface BottomNavProps {
@@ -18,12 +21,18 @@ interface BottomNavProps {
 }
 
 export default function BottomNav({ activeTab = 'Dashboard', currentDay = 1 }: BottomNavProps) {
+    const router = useRouter();
     const navItems = [
         { icon: Book, label: 'Dashboard', href: '/' },
         { icon: Calendar, label: 'Daily', href: `/day/${currentDay}` },
         { icon: BarChart2, label: 'Progress', href: '/progress' },
         { icon: Layers, label: 'Challenges', href: '/programs' },
     ];
+
+    const handleSignOut = async () => {
+        await signOut(auth);
+        router.push('/login');
+    }
 
     return (
         <footer className="sticky bottom-0 left-0 right-0 bg-card border-t z-10">
@@ -59,7 +68,7 @@ export default function BottomNav({ activeTab = 'Dashboard', currentDay = 1 }: B
                                     Admin
                                 </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleSignOut}>
                                 <LogOut className="mr-2" />
                                 Sign Out
                             </DropdownMenuItem>
