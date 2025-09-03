@@ -75,6 +75,7 @@ export const CreateUserAndClaimCodeInputSchema = z.object({
         emailEnabled: z.boolean(),
         morningTime: z.string(),
         eveningTime: z.string(),
+        timezone: z.string(),
     }),
     unlockCode: z.string().nullable().describe("The unlock code used, if any.")
 });

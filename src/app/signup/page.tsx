@@ -17,6 +17,7 @@ import { validateUnlockCode } from "@/ai/flows/validate-unlock-code";
 import type { ValidatedCode } from "@/lib/types";
 import { Switch } from "@/components/ui/switch";
 import { createUserAndClaimCode } from "@/ai/flows/create-user-and-claim-code";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 
 const iconMap: { [key: string]: React.ComponentType<any> } = {
@@ -27,6 +28,15 @@ const iconMap: { [key: string]: React.ComponentType<any> } = {
 };
 
 type Track = typeof allTracks[0];
+
+const timezones = [
+    { value: 'America/New_York', label: 'EST (UTC-5)' },
+    { value: 'America/Chicago', label: 'CST (UTC-6)' },
+    { value: 'America/Denver', label: 'MST (UTC-7)' },
+    { value: 'America/Los_Angeles', label: 'PST (UTC-8)' },
+    { value: 'Europe/London', label: 'GMT (UTC+0)' },
+    { value: 'Europe/Paris', label: 'CET (UTC+1)' },
+]
 
 export default function SignupPage() {
   const [step, setStep] = useState(0);
@@ -49,6 +59,7 @@ export default function SignupPage() {
   const [enableEmail, setEnableEmail] = useState(false);
   const [morningTime, setMorningTime] = useState('07:00');
   const [eveningTime, setEveningTime] = useState('21:00');
+  const [timezone, setTimezone] = useState('America/New_York');
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,6 +126,7 @@ export default function SignupPage() {
                 emailEnabled: enableEmail,
                 morningTime,
                 eveningTime,
+                timezone,
             },
             unlockCode: unlockCode || null,
         });
@@ -280,6 +292,21 @@ export default function SignupPage() {
                            </div>
                            <Switch id="email-reminders" checked={enableEmail} onCheckedChange={setEnableEmail} />
                         </div>
+
+                         <div className="space-y-2 pt-2">
+                            <Label htmlFor="timezone">Your Timezone</Label>
+                             <Select value={timezone} onValueChange={setTimezone}>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select your timezone" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {timezones.map(tz => (
+                                        <SelectItem key={tz.value} value={tz.value}>{tz.label}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        
                         <div className="grid grid-cols-2 gap-4 pt-2">
                              <div className="space-y-2">
                                 <Label htmlFor="morning-time">Morning Intention Time</Label>
@@ -333,6 +360,7 @@ export default function SignupPage() {
                             <h4 className="font-semibold mb-2">Reminder Settings</h4>
                             <p className="text-sm text-muted-foreground">Morning Intention: {morningTime}</p>
                             <p className="text-sm text-muted-foreground">Evening Reflection: {eveningTime}</p>
+                             <p className="text-sm text-muted-foreground">Timezone: {timezones.find(tz => tz.value === timezone)?.label}</p>
                             <p className="text-sm text-muted-foreground pt-2">You can change these later in your profile.</p>
                          </div>
                     </CardContent>
