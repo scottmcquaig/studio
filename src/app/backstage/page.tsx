@@ -4,13 +4,16 @@
 import BottomNav from "@/components/bottom-nav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger, SheetFooter, SheetClose } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { tracks as allTracks } from "@/lib/tracks.json";
-import { Edit, Archive, PlusCircle, FolderPlus, DollarSign, Heart, Target, Brain } from "lucide-react";
+import { Edit, Archive, PlusCircle, FolderPlus, DollarSign, Heart, Target, Brain, KeyRound, Check } from "lucide-react";
 import { useMemo, useState } from "react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 
 // Helper to get the correct icon component
 const iconMap: { [key: string]: React.ComponentType<any> } = {
@@ -26,6 +29,9 @@ export default function BackstagePage() {
     const [tracks, setTracks] = useState<Track[]>(allTracks);
     const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
+    const [isGenerateCodeOpen, setIsGenerateCodeOpen] = useState(false);
+    const [accessType, setAccessType] = useState("user_choice_one");
+    const [selectedPaths, setSelectedPaths] = useState<string[]>([]);
 
     const tracksByCategory = useMemo(() => {
         return tracks.reduce((acc, track) => {
@@ -80,6 +86,32 @@ export default function BackstagePage() {
         }
     };
 
+    const handleGenerateCode = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const email = formData.get('email');
+        
+        const codeDetails = {
+            email,
+            accessType,
+            paths: accessType === 'admin_choice_one' || accessType === 'admin_choice_multiple' ? selectedPaths : 'all'
+        };
+
+        console.log("Generating Code with details:", codeDetails);
+        // We will implement the actual code generation logic in the next step.
+        
+        setIsGenerateCodeOpen(false);
+    };
+
+    const handlePathSelection = (trackId: string) => {
+        if (accessType === 'admin_choice_one') {
+            setSelectedPaths([trackId]);
+        } else if (accessType === 'admin_choice_multiple') {
+            setSelectedPaths(prev => 
+                prev.includes(trackId) ? prev.filter(id => id !== trackId) : [...prev, trackId]
+            );
+        }
+    };
 
     return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -87,6 +119,76 @@ export default function BackstagePage() {
         <div className="container mx-auto px-4 max-w-5xl flex justify-between items-center">
           <h1 className="text-xl font-bold font-headline text-primary">Backstage Admin</h1>
           <div className="flex gap-2">
+            <Dialog open={isGenerateCodeOpen} onOpenChange={setIsGenerateCodeOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline">
+                    <KeyRound className="mr-2" />
+                    Generate Code
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Generate Unlock Code</DialogTitle>
+                  <DialogDescription>
+                    Create a one-time code for a user to unlock access to challenge paths.
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleGenerateCode}>
+                    <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="email" className="text-right">User's Email</Label>
+                            <Input id="email" name="email" type="email" required className="col-span-3" />
+                        </div>
+                        <RadioGroup value={accessType} onValueChange={setAccessType} className="grid grid-cols-1 gap-2 p-2 border rounded-md">
+                            <Label className="font-semibold mb-2">Access Level</Label>
+                             <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="user_choice_one" id="r1" />
+                                <Label htmlFor="r1">User choice of 1 path</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="admin_choice_one" id="r2" />
+                                <Label htmlFor="r2">Admin choice of 1 specific path</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="admin_choice_multiple" id="r3" />
+                                <Label htmlFor="r3">Admin choice of multiple paths</Label>
+                            </div>
+                             <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="all_current" id="r4" />
+                                <Label htmlFor="r4">Access to all current paths</Label>
+                            </div>
+                             <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="all_indefinite" id="r5" />
+                                <Label htmlFor="r5">Indefinite access to all paths</Label>
+                            </div>
+                        </RadioGroup>
+                        
+                        {(accessType === 'admin_choice_one' || accessType === 'admin_choice_multiple') && (
+                            <div className="grid grid-cols-1 gap-2 p-2 border rounded-md">
+                                <Label className="font-semibold mb-2">Select Paths</Label>
+                                {allTracks.map(track => (
+                                    <div key={track.id} className="flex items-center space-x-2">
+                                        <Checkbox 
+                                            id={track.id}
+                                            checked={selectedPaths.includes(track.id)}
+                                            onCheckedChange={() => handlePathSelection(track.id)}
+                                        />
+                                        <Label htmlFor={track.id}>{track.full_name}</Label>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                    <DialogFooter>
+                        <Button type="button" variant="outline" onClick={() => setIsGenerateCodeOpen(false)}>Cancel</Button>
+                        <Button type="submit">
+                            <Check className="mr-2" />
+                            Generate Code
+                        </Button>
+                    </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
             <Button variant="outline">
                 <FolderPlus className="mr-2" />
                 Add Category
