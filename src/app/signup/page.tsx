@@ -61,6 +61,22 @@ export default function SignupPage() {
   const [eveningTime, setEveningTime] = useState('21:00');
   const [timezone, setTimezone] = useState('America/New_York');
 
+  const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value;
+    const numbers = input.replace(/\D/g, '');
+    let formatted = '';
+    if (numbers.length > 0) {
+        formatted = numbers.substring(0, 4);
+    }
+    if (numbers.length > 4) {
+        formatted += '-' + numbers.substring(4, 8);
+    }
+    if (numbers.length > 8) {
+        formatted += '-' + numbers.substring(8, 12);
+    }
+    setUnlockCode(formatted);
+  };
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -190,7 +206,7 @@ export default function SignupPage() {
                     </div>
                     <div className="space-y-2">
                     <Label htmlFor="unlock-code">Unlock Code</Label>
-                    <Input id="unlock-code" type="text" placeholder="Enter Your Unlock Code" value={unlockCode} onChange={(e) => setUnlockCode(e.target.value)} required />
+                    <Input id="unlock-code" type="tel" placeholder="XXXX-XXXX-XXXX" value={unlockCode} onChange={handleCodeChange} maxLength={14} required />
                     </div>
                 </CardContent>
                 <CardFooter>
@@ -397,3 +413,5 @@ export default function SignupPage() {
     </div>
   );
 }
+
+    

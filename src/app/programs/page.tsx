@@ -79,6 +79,22 @@ export default function ProgramsPage() {
         }
     }, [user]);
 
+    const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const input = e.target.value;
+        const numbers = input.replace(/\D/g, '');
+        let formatted = '';
+        if (numbers.length > 0) {
+            formatted = numbers.substring(0, 4);
+        }
+        if (numbers.length > 4) {
+            formatted += '-' + numbers.substring(4, 8);
+        }
+        if (numbers.length > 8) {
+            formatted += '-' + numbers.substring(8, 12);
+        }
+        setUnlockCode(formatted);
+    };
+
     const handleValidateCode = async () => {
         if (!unlockCode) return;
         setIsValidating(true);
@@ -385,11 +401,12 @@ export default function ProgramsPage() {
                 </CardHeader>
                 <CardContent className="flex gap-2">
                     <Input 
-                        type="text" 
-                        placeholder="Enter Your Code" 
+                        type="tel"
+                        placeholder="XXXX-XXXX-XXXX" 
                         className="flex-grow"
                         value={unlockCode}
-                        onChange={(e) => setUnlockCode(e.target.value)}
+                        onChange={handleCodeChange}
+                        maxLength={14}
                         disabled={isValidating}
                     />
                     <Button onClick={handleValidateCode} disabled={isValidating || !unlockCode}>
@@ -457,9 +474,11 @@ export default function ProgramsPage() {
                     <Label htmlFor="code">Access Code</Label>
                     <Input 
                         id="code" 
+                        type="tel"
                         value={unlockCode}
-                        onChange={(e) => setUnlockCode(e.target.value)}
+                        onChange={handleCodeChange}
                         placeholder="XXXX-XXXX-XXXX"
+                        maxLength={14}
                         disabled={isValidating}
                     />
                 </div>
