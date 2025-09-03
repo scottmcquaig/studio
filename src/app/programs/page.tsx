@@ -293,7 +293,7 @@ export default function ProgramsPage() {
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>Are you sure you want to mark this challenge as complete?</AlertDialogTitle>
                                         <AlertDialogDescription>
-                                            This will abandon your current path and archive your progress. You will be able to start a new challenge. Are you sure you want to proceed?
+                                            This will abandon your current path and archive your progress. You will be able to start a new challenge. This action cannot be undone. Are you sure you want to proceed?
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
