@@ -1,0 +1,74 @@
+
+'use server';
+
+/**
+ * @fileOverview A flow to add newly unlocked paths to a user's profile and burn the code.
+ * 
+ * - unlockAndAddPaths - Updates user doc and access code doc.
+ */
+
+import { ai } from '@/ai/genkit';
+import { db } from '@/lib/firebase';
+import { doc, updateDoc, getDoc, Timestamp, arrayUnion } from 'firebase/firestore';
+import { z } from 'zod';
+
+const UnlockAndAddPathsInputSchema = z.object({
+  uid: z.string().describe("The user's unique ID."),
+  pathsToAdd: z.array(z.string()).describe("An array of new track IDs to add to the user's unlocked paths."),
+  unlockCode: z.string().describe("The code being used to unlock these paths."),
+});
+
+const UnlockAndAddPathsOutputSchema = z.object({
+  success: z.boolean(),
+  message: z.string(),
+});
+
+export async function unlockAndAddPaths(input: z.infer<typeof UnlockAndAddPathsInputSchema>): Promise<z.infer<typeof UnlockAndAddPathsOutputSchema>> {
+  return unlockAndAddPathsFlow(input);
+}
+
+const unlockAndAddPathsFlow = ai.defineFlow(
+  {
+    name: 'unlockAndAddPathsFlow',
+    inputSchema: UnlockAndAddPathsInputSchema,
+    outputSchema: UnlockAndAddPathsOutputSchema,
+  },
+  async ({ uid, pathsToAdd, unlockCode }) => {
+    const userDocRef = doc(db, 'users', uid);
+    const codeDocRef = doc(db, 'accessCodes', unlockCode);
+
+    const userDoc = await getDoc(userDocRef);
+    if (!userDoc.exists()) {
+        throw new Error("User profile not found.");
+    }
+    const userData = userDoc.data();
+
+    // Don't add paths if the user already has 'all' access
+    if (userData.unlockedPaths === 'all') {
+        // Still burn the code
+        await updateDoc(codeDocRef, {
+            isClaimed: true,
+            claimedBy: uid,
+            claimedAt: Timestamp.now(),
+        });
+        return { success: true, message: "User already has all paths. Code claimed." };
+    }
+    
+    // Update user's unlockedPaths
+    await updateDoc(userDocRef, {
+      unlockedPaths: arrayUnion(...pathsToAdd)
+    });
+
+    // Burn the code
+    await updateDoc(codeDocRef, {
+      isClaimed: true,
+      claimedBy: uid,
+      claimedAt: Timestamp.now(),
+    });
+
+    return {
+      success: true,
+      message: "Successfully unlocked new paths and claimed the code.",
+    };
+  }
+);
