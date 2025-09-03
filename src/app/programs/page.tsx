@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Heart, DollarSign, Brain, Shield, Lock, ArrowRight } from "lucide-react";
 import BottomNav from "@/components/bottom-nav";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 const programs = [
   {
@@ -78,9 +79,11 @@ export default function ProgramsPage() {
                         </CardHeader>
                         <CardFooter className="mt-auto">
                             {program.owned ? (
-                                <Button variant="secondary" className="w-full bg-accent/20 text-accent-foreground hover:bg-accent/30">
-                                    View Dashboard
-                                </Button>
+                                <Link href="/" className="w-full">
+                                    <Button variant="secondary" className="w-full bg-accent/20 text-accent-foreground hover:bg-accent/30">
+                                        View Dashboard
+                                    </Button>
+                                </Link>
                             ) : (
                                 <Button className="w-full">
                                     Get for ${program.price} <ArrowRight className="ml-2" />
