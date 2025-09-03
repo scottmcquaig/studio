@@ -54,30 +54,29 @@ export default function SignupPage() {
     e.preventDefault();
     setIsLoading(true);
 
-    // 1. Validate code if provided
-    if (unlockCode) {
-      try {
-        const validationResult = await validateUnlockCode({ code: unlockCode });
-        if (!validationResult.isValid) {
-          toast({
-            variant: "destructive",
-            title: "Unlock Code Invalid",
-            description: validationResult.error,
-          });
-          setIsLoading(false);
-          return;
-        }
-        setValidatedCode(validationResult);
-      } catch (error: any) {
+    // 1. Validate code
+    try {
+      const validationResult = await validateUnlockCode({ code: unlockCode });
+      if (!validationResult.isValid) {
         toast({
           variant: "destructive",
-          title: "Validation Error",
-          description: error.message,
+          title: "Unlock Code Invalid",
+          description: validationResult.error,
         });
         setIsLoading(false);
         return;
       }
+      setValidatedCode(validationResult);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "There was an issue validating your code. Please try again or contact support@stoic-af.com.",
+      });
+      setIsLoading(false);
+      return;
     }
+
 
     // 2. Create Firebase user
     try {
@@ -169,8 +168,8 @@ export default function SignupPage() {
                     <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="6+ characters" />
                     </div>
                     <div className="space-y-2">
-                    <Label htmlFor="unlock-code">Have a code?</Label>
-                    <Input id="unlock-code" type="text" placeholder="Enter Unlock Code (Optional)" value={unlockCode} onChange={(e) => setUnlockCode(e.target.value)} />
+                    <Label htmlFor="unlock-code">Unlock Code</Label>
+                    <Input id="unlock-code" type="text" placeholder="Enter Your Unlock Code" value={unlockCode} onChange={(e) => setUnlockCode(e.target.value)} required />
                     </div>
                 </CardContent>
                 <CardFooter>
@@ -269,7 +268,7 @@ export default function SignupPage() {
                                     <p className="text-sm text-muted-foreground">Get alerts on your phone. (Coming soon)</p>
                                 </div>
                            </div>
-                           <Switch id="push-notifications" checked={enablePush} onCheckedChange={setEnablePush} disabled/>
+                           <Switch id="push-notifications" checked={enablePush} onCheckedChange={setEnablePush} />
                         </div>
                          <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-lg">
                            <div className="flex items-center gap-4">
@@ -279,7 +278,7 @@ export default function SignupPage() {
                                     <p className="text-sm text-muted-foreground">Daily prompts in your inbox. (Coming soon)</p>
                                 </div>
                            </div>
-                           <Switch id="email-reminders" checked={enableEmail} onCheckedChange={setEnableEmail} disabled/>
+                           <Switch id="email-reminders" checked={enableEmail} onCheckedChange={setEnableEmail} />
                         </div>
                         <div className="grid grid-cols-2 gap-4 pt-2">
                              <div className="space-y-2">
