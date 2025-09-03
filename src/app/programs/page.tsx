@@ -409,7 +409,7 @@ export default function ProgramsPage() {
                         maxLength={14}
                         disabled={isValidating}
                     />
-                    <Button onClick={handleValidateCode} disabled={isValidating || !unlockCode}>
+                    <Button onClick={handleValidateCode} disabled={isValidating || unlockCode.replace(/-/g, '').length < 12}>
                         {isValidating ? <Loader2 className="mr-2 animate-spin" /> : <Lock className="mr-2" />}
                         Unlock
                     </Button>
@@ -494,7 +494,7 @@ export default function ProgramsPage() {
             </div>
             <DialogFooter>
                 <Button variant="outline" onClick={() => setIsUnlockPromptOpen(false)} disabled={isValidating}>Cancel</Button>
-                <Button onClick={handleValidateCode} disabled={isValidating || !unlockCode}>
+                <Button onClick={handleValidateCode} disabled={isValidating || unlockCode.replace(/-/g, '').length < 12}>
                      {isValidating ? <Loader2 className="mr-2 animate-spin" /> : <Lock className="mr-2" />}
                     Submit Code
                 </Button>
@@ -560,5 +560,3 @@ export default function ProgramsPage() {
     </div>
   );
 }
-
-    

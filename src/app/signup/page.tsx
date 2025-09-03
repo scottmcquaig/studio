@@ -210,7 +210,7 @@ export default function SignupPage() {
                     </div>
                 </CardContent>
                 <CardFooter>
-                    <Button type="submit" className="w-full" disabled={isLoading}>
+                    <Button type="submit" className="w-full" disabled={isLoading || unlockCode.replace(/-/g, '').length < 12}>
                     {isLoading ? <Loader2 className="animate-spin" /> : "Create Account & Continue"}
                     </Button>
                 </CardFooter>
@@ -413,5 +413,3 @@ export default function SignupPage() {
     </div>
   );
 }
-
-    
