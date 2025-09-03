@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 const MOCK_COMPLETED_DAYS = new Set([1]);
 const MOCK_STREAK = 1;
 const CURRENT_CHALLENGE_DAY = 2; // Day 2 is the current day
+const TOTAL_CHALLENGE_DAYS = 30;
 
 const weeklyProgress = [
     { week: 1, title: "Foundation", completed: 1, total: 7 },
@@ -39,25 +40,34 @@ interface CalendarDay {
 export default function ProgressPage() {
   const [calendarDays, setCalendarDays] = useState<CalendarDay[]>([]);
   const completedDaysSet = MOCK_COMPLETED_DAYS;
-  const progress = Math.round((completedDaysSet.size / 30) * 100);
+  const progress = Math.round((completedDaysSet.size / TOTAL_CHALLENGE_DAYS) * 100);
   const currentWeek = Math.ceil(CURRENT_CHALLENGE_DAY / 7);
+
+  const totalDaysInWeeks = weeklyProgress.reduce((acc, week) => acc + week.total, 0);
+  const remainingDays = Array.from({ length: TOTAL_CHALLENGE_DAYS - totalDaysInWeeks }, (_, i) => totalDaysInWeeks + i + 1);
+
 
   useEffect(() => {
     const today = new Date();
-    const days: CalendarDay[] = Array.from({ length: 30 }, (_, i) => {
+    const days: CalendarDay[] = Array.from({ length: TOTAL_CHALLENGE_DAYS }, (_, i) => {
         const day = i + 1;
         const isCompleted = completedDaysSet.has(day);
         const isActive = day === CURRENT_CHALLENGE_DAY;
         const isClickable = day <= CURRENT_CHALLENGE_DAY;
-        const completionDate = new Date(today);
-        completionDate.setDate(today.getDate() - (CURRENT_CHALLENGE_DAY - day));
+        
+        let completionDateStr: string | undefined;
+        if (isCompleted) {
+            const completionDate = new Date(today);
+            completionDate.setDate(today.getDate() - (CURRENT_CHALLENGE_DAY - day));
+            completionDateStr = completionDate.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
+        }
         
         return {
             day,
             isCompleted,
             isActive,
             isClickable,
-            completionDate: isCompleted ? completionDate.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' }) : undefined,
+            completionDate: completionDateStr,
         };
     });
     setCalendarDays(days);
@@ -103,7 +113,7 @@ export default function ProgressPage() {
                     <div className="p-2 bg-background rounded-full mb-2">
                         <Target className="h-8 w-8 text-primary" />
                     </div>
-                  <p className="text-2xl font-bold">{30 - completedDaysSet.size}</p>
+                  <p className="text-2xl font-bold">{TOTAL_CHALLENGE_DAYS - completedDaysSet.size}</p>
                   <p className="text-xs text-muted-foreground">Days Remaining</p>
                 </div>
                 <div className="flex flex-col items-center p-4 bg-secondary/30 rounded-lg">
@@ -121,7 +131,7 @@ export default function ProgressPage() {
                     <Badge style={{ backgroundColor: '#EF4444', color: 'white' }} className="border-none">Relationships</Badge>
                     <Badge variant="outline" className="font-normal">
                       <span className="font-bold text-foreground">{completedDaysSet.size}</span>
-                      <span className="text-muted-foreground">/30 days complete</span>
+                      <span className="text-muted-foreground">/{TOTAL_CHALLENGE_DAYS} days complete</span>
                     </Badge>
                   </div>
                 </div>
@@ -140,7 +150,6 @@ export default function ProgressPage() {
                 <CardContent className="space-y-4">
                     {weeklyProgress.map((week) => {
                         const isCurrentWeek = week.week === currentWeek;
-                        const isCompleted = week.completed === week.total;
                         const weekProgress = (week.completed / week.total) * 100;
                         return (
                             <div key={week.week} className="flex flex-col gap-2 p-3 bg-secondary/30 rounded-lg">
@@ -161,6 +170,18 @@ export default function ProgressPage() {
                             </div>
                         );
                     })}
+                     {remainingDays.length > 0 && (
+                        <div className="flex justify-center items-center gap-2 pt-2">
+                            {remainingDays.map(day => {
+                                const isCompleted = completedDaysSet.has(day);
+                                return (
+                                     <Badge key={day} variant="outline" className="bg-background text-foreground border">
+                                        Day {day}
+                                     </Badge>
+                                )
+                            })}
+                        </div>
+                    )}
                 </CardContent>
             </Card>
 
@@ -217,7 +238,7 @@ export default function ProgressPage() {
                             )
                         }) : (
                             // Render placeholders or skeletons while waiting for client-side hydration
-                            Array.from({ length: 30 }, (_, i) => (
+                            Array.from({ length: TOTAL_CHALLENGE_DAYS }, (_, i) => (
                                 <div key={i} className="aspect-square bg-secondary/30 rounded-lg" />
                             ))
                         )}
