@@ -106,7 +106,7 @@ export default function SignupPage() {
   };
   
   const handleFinalize = async () => {
-      if (!user || !selectedTrack) {
+      if (!user || !selectedTrack || !validatedCode) {
         toast({
             variant: 'destructive',
             title: 'Missing Information',
@@ -116,11 +116,20 @@ export default function SignupPage() {
       }
 
       setIsLoading(true);
+
+      let pathsToUnlock: string[] | 'all' = [];
+      if (validatedCode.accessType === 'userOne') {
+          pathsToUnlock = [selectedTrack.id];
+      } else {
+          pathsToUnlock = validatedCode.paths || [selectedTrack.id];
+      }
+
+
       try {
         await createUserAndClaimCode({
             uid: user.uid,
             selectedTrackId: selectedTrack.id,
-            unlockedPaths: validatedCode?.paths || [selectedTrack.id],
+            unlockedPaths: pathsToUnlock,
             reminders: {
                 pushEnabled: enablePush,
                 emailEnabled: enableEmail,
