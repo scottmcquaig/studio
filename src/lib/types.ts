@@ -18,6 +18,17 @@ export interface Challenge {
   track?: string;
 }
 
+export interface UserChallenge extends Challenge {
+    isComplete: boolean;
+    completedAt: Date | null;
+    lastEditedAt: Date | null;
+    entries: {
+        morning: string;
+        evening: string;
+        wins: string;
+    }
+}
+
 export interface JournalEntry {
   morning: string;
   evening: string;
