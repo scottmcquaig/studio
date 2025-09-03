@@ -9,7 +9,7 @@
 
 import { ai } from '@/ai/genkit';
 import { db } from '@/lib/firebase';
-import { doc, getDoc, Timestamp } from 'firebase/firestore';
+import { doc, getDoc, Timestamp, updateDoc } from 'firebase/firestore';
 import { z } from 'zod';
 
 const GetUserProfileInputSchema = z.object({
@@ -26,7 +26,7 @@ const GetUserProfileOutputSchema = z.object({
     morningTime: z.string(),
     eveningTime: z.string(),
     timezone: z.string(),
-  }).optional(),
+  }),
   createdAt: z.string().optional(), 
 });
 
@@ -49,9 +49,16 @@ const getUserProfileFlow = ai.defineFlow(
     }
 
     const data = docSnap.data();
+    let activePath = data.activePath || null;
+    let unlockedPaths = data.unlockedPaths || [];
 
-    // Ensure unlockedPaths is always an array or 'all'
-    const unlockedPaths = data.unlockedPaths || [];
+    // If user has unlocked paths but no active path, set the first one as active
+    if (!activePath && Array.isArray(unlockedPaths) && unlockedPaths.length > 0) {
+        activePath = unlockedPaths[0];
+        // Asynchronously update the document in the background. No need to wait.
+        updateDoc(userDocRef, { activePath: activePath }).catch(console.error);
+    }
+    
 
     // Convert Firestore Timestamp to a serializable format (ISO string)
     let createdAtString: string | undefined = undefined;
@@ -61,10 +68,18 @@ const getUserProfileFlow = ai.defineFlow(
         createdAtString = data.createdAt;
     }
 
+    const defaultReminders = {
+        pushEnabled: false,
+        emailEnabled: false,
+        morningTime: '07:00',
+        eveningTime: '21:00',
+        timezone: 'America/New_York',
+    };
+
     return {
-      activePath: data.activePath || null,
+      activePath,
       unlockedPaths,
-      reminders: data.reminders,
+      reminders: { ...defaultReminders, ...data.reminders },
       createdAt: createdAtString,
     };
   }
