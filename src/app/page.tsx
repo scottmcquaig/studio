@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState, useMemo, useEffect } from 'react';
@@ -11,6 +12,7 @@ import DailyPracticeCard from '@/components/daily-practice-card';
 import BuildLegacyCard from '@/components/build-legacy-card';
 import BottomNav from '@/components/bottom-nav';
 import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
 
 const MOCK_COMPLETED_DAYS = [1];
 const CURRENT_CHALLENGE_DAY = 2;
@@ -64,7 +66,9 @@ export default function Home() {
       <main className="flex-grow container mx-auto px-4 py-8 max-w-3xl">
         <div className="text-center mb-4">
             <Badge style={{ backgroundColor: '#3498DB', color: 'white' }} className="border-none font-sans font-normal text-[.875rem]">
-                From the book <span className="font-bold ml-1">STOIC AF</span>
+                <a href="https://stoic-af.com" target="_blank" rel="noopener noreferrer" className="flex items-center">
+                    From the book <span className="font-bold ml-1">STOIC AF</span>
+                </a>
             </Badge>
         </div>
         <AppHeader />
