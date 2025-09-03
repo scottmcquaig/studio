@@ -88,7 +88,7 @@ export default function ProgressPage() {
               <div>
                 <div className="flex justify-between text-sm mb-1">
                   <span className="font-medium text-muted-foreground">Overall Progress</span>
-                  <span className="font-bold text-foreground">{completedDaysSet.size}/30 days</span>
+                  <span className="font-bold text-foreground">{completedDaysSet.size} of 30 days completed</span>
                 </div>
                 <Progress value={progress} className="h-3" />
               </div>
