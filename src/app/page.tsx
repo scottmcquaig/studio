@@ -13,11 +13,12 @@ import BuildLegacyCard from '@/components/build-legacy-card';
 import BottomNav from '@/components/bottom-nav';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import PrivateRoute from '@/components/private-route';
 
 const MOCK_COMPLETED_DAYS = [1];
 const CURRENT_CHALLENGE_DAY = 2;
 
-export default function Home() {
+function HomePageContent() {
   const [currentDay, setCurrentDay] = useState(CURRENT_CHALLENGE_DAY);
   const [challengeStartDate, setChallengeStartDate] = useState<Date | null>(null);
   const [completedDays, setCompletedDays] = useState<Set<number>>(new Set(MOCK_COMPLETED_DAYS));
@@ -90,5 +91,13 @@ export default function Home() {
       </main>
       <BottomNav activeTab="Dashboard" currentDay={currentDay} />
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <PrivateRoute>
+      <HomePageContent />
+    </PrivateRoute>
   );
 }

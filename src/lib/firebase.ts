@@ -1,5 +1,6 @@
 import { initializeApp, getApps, getApp, App } from "firebase/app";
 import { getFirestore, enableIndexedDbPersistence, Firestore } from "firebase/firestore";
+import { getAuth, Auth } from "firebase/auth";
 
 const firebaseConfig = {
   projectId: "stoic-af",
@@ -12,11 +13,13 @@ const firebaseConfig = {
 
 let app: App;
 let db: Firestore;
+let auth: Auth;
 
 if (typeof window !== 'undefined') {
   // Client-side initialization
   app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
   db = getFirestore(app);
+  auth = getAuth(app);
   enableIndexedDbPersistence(db)
     .catch((err) => {
       if (err.code == 'failed-precondition') {
@@ -29,8 +32,7 @@ if (typeof window !== 'undefined') {
   // Server-side initialization
   app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
   db = getFirestore(app);
+  auth = getAuth(app);
 }
 
-export { app, db };
-
-    
+export { app, db, auth };

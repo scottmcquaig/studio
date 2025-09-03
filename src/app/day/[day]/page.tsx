@@ -14,13 +14,14 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, ArrowRight, CheckCircle, Edit, Lock, Heart, Sunrise, Sunset, Flame, Calendar } from 'lucide-react';
 import BottomNav from '@/components/bottom-nav';
 import { Progress } from '@/components/ui/progress';
+import PrivateRoute from '@/components/private-route';
 
 // This is a placeholder for a more robust state management
 const MOCK_COMPLETED_DAYS = new Set([1]);
 const CURRENT_CHALLENGE_DAY = 2; // Assuming Day 2 is the current challenge
 const MOCK_STREAK = 1;
 
-export default function DailyPromptPage() {
+function DailyPromptPageContent() {
   const params = useParams();
   const day = parseInt(params.day as string, 10);
   const [formattedDate, setFormattedDate] = useState('');
@@ -224,4 +225,12 @@ export default function DailyPromptPage() {
       <BottomNav activeTab="Daily" currentDay={CURRENT_CHALLENGE_DAY}/>
     </div>
   );
+}
+
+export default function DailyPromptPage() {
+  return (
+    <PrivateRoute>
+      <DailyPromptPageContent />
+    </PrivateRoute>
+  )
 }
