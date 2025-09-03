@@ -88,9 +88,10 @@ export default function ProgressPage() {
               <div>
                 <div className="flex justify-between text-sm mb-1">
                   <span className="font-medium text-muted-foreground">Overall Progress</span>
-                  <span className="text-sm text-muted-foreground">
-                    <span className="font-bold text-foreground">{completedDaysSet.size}</span>/30 days complete
-                  </span>
+                  <Badge variant="outline" className="font-normal">
+                    <span className="font-bold text-foreground">{completedDaysSet.size}</span>
+                    <span className="text-muted-foreground">/30 days complete</span>
+                  </Badge>
                 </div>
                 <Progress value={progress} className="h-3" />
               </div>
