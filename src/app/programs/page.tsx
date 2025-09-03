@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, DollarSign, Brain, Target, Lock, ArrowRight, Check, Loader2, AlertTriangle, Info, CheckCircle, Trash2, Star } from "lucide-react";
+import { Heart, DollarSign, Brain, Target, Lock, ArrowRight, Check, Loader2, AlertTriangle, Info, CheckCircle, Trash2, Star, Pause } from "lucide-react";
 import BottomNav from "@/components/bottom-nav";
 import Link from "next/link";
 import { tracks as allTracks } from "@/lib/tracks.json";
@@ -243,10 +243,12 @@ export default function ProgramsPage() {
 
 
     const handleAbandonChallenge = async () => {
-        // Placeholder for future Genkit flow
+        // This is now a placeholder, the prompt will guide the user to another challenge.
         toast({ title: "Challenge Abandoned (Archived)", description: "Your progress has been archived."});
+        // We'd need a flow to set activePath to null, and maybe archive the old path data
         // await abandonChallengeFlow({ uid: user.uid });
         // await fetchProfile();
+        setUserProfile(prev => prev ? { ...prev, activePath: null } : null); // Optimistic update
     }
 
     const handleDeleteChallenge = async () => {
@@ -351,20 +353,20 @@ export default function ProgramsPage() {
                         <div className="flex items-center ml-4">
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <Button variant="ghost" size="icon" aria-label="Mark Complete">
-                                        <CheckCircle className="h-5 w-5 text-green-600"/>
+                                    <Button variant="ghost" size="icon" aria-label="Pause Challenge">
+                                        <Pause className="h-5 w-5 text-accent"/>
                                     </Button>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
                                     <AlertDialogHeader>
-                                        <AlertDialogTitle>Are you sure you want to mark this challenge as complete?</AlertDialogTitle>
+                                        <AlertDialogTitle>Are you sure you want to switch challenges?</AlertDialogTitle>
                                         <AlertDialogDescription>
-                                            This will abandon your current path and archive your progress. You will be able to start a new challenge. This action cannot be undone. Are you sure you want to proceed?
+                                            Your progress on the current challenge will be saved. You can always switch back later. A new challenge path will begin for this track.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction onClick={handleAbandonChallenge} className="bg-green-600 hover:bg-green-700">Mark Complete</AlertDialogAction>
+                                        <AlertDialogAction onClick={handleAbandonChallenge} className="bg-accent hover:bg-accent/90">Switch Challenge</AlertDialogAction>
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
                             </AlertDialog>
