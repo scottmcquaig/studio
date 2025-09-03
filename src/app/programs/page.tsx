@@ -45,7 +45,7 @@ export default function ProgramsPage() {
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <header className="py-4 bg-card border-b">
         <div className="container mx-auto px-4 max-w-3xl text-center">
-          <h1 className="text-xl font-bold font-headline text-primary">Stoic Programs</h1>
+          <h1 className="text-xl font-bold font-headline text-primary">STOIC AF Challenge Programs</h1>
         </div>
       </header>
 
