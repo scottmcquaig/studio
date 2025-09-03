@@ -97,8 +97,6 @@ export default function BackstagePage() {
      const handleGenerateCode = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsGenerating(true);
-        const formData = new FormData(e.currentTarget);
-        const email = formData.get('email') as string;
         
         let paths: string[] | 'all' = 'all';
         if (accessType === 'adminOne' || accessType === 'adminMulti') {
@@ -106,12 +104,12 @@ export default function BackstagePage() {
         }
 
         try {
-            const result = await generateUnlockCode({ email, accessType, paths });
+            const result = await generateUnlockCode({ accessType, paths });
             toast({
                 title: "Code Generated Successfully!",
                 description: (
                     <div>
-                        <p>Share this code with {email}:</p>
+                        <p>Share this one-time unlock code:</p>
                         <p className="font-mono text-lg bg-secondary p-2 rounded-md mt-2">{result.code}</p>
                     </div>
                 ),
@@ -170,10 +168,6 @@ export default function BackstagePage() {
                 </DialogHeader>
                 <form onSubmit={handleGenerateCode}>
                     <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="email" className="text-right">User's Email</Label>
-                            <Input id="email" name="email" type="email" required className="col-span-3" />
-                        </div>
                         <RadioGroup value={accessType} onValueChange={(value) => {setAccessType(value as GenerateUnlockCodeInput['accessType']); setSelectedPaths([])}} className="grid grid-cols-1 gap-2 p-2 border rounded-md">
                             <Label className="font-semibold mb-2">Access Level</Label>
                             {accessOptions.map(opt => (

@@ -44,7 +44,6 @@ const generateUnlockCodeFlow = ai.defineFlow(
     // Save the new code to Firestore
     const newCodeDocRef = doc(db, 'accessCodes', code);
     await setDoc(newCodeDocRef, {
-      email: input.email,
       accessType: input.accessType,
       paths: input.paths,
       isClaimed: false,
@@ -53,7 +52,6 @@ const generateUnlockCodeFlow = ai.defineFlow(
 
     return {
       code,
-      email: input.email,
       accessType: input.accessType,
     };
   }
