@@ -9,13 +9,14 @@
 
 import { ai } from '@/ai/genkit';
 import { db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, Timestamp } from 'firebase/firestore';
 import { z } from 'zod';
 
 const GetUserProfileInputSchema = z.object({
   uid: z.string().describe("The user's unique ID."),
 });
 
+// Changed createdAt to be a string, as Timestamp objects are not serializable
 const GetUserProfileOutputSchema = z.object({
   activePath: z.string().nullable(),
   unlockedPaths: z.union([z.array(z.string()), z.literal('all')]),
@@ -26,7 +27,7 @@ const GetUserProfileOutputSchema = z.object({
     eveningTime: z.string(),
     timezone: z.string(),
   }).optional(),
-  createdAt: z.any().optional(),
+  createdAt: z.string().optional(), 
 });
 
 export async function getUserProfile(input: z.infer<typeof GetUserProfileInputSchema>): Promise<z.infer<typeof GetUserProfileOutputSchema>> {
@@ -52,11 +53,19 @@ const getUserProfileFlow = ai.defineFlow(
     // Ensure unlockedPaths is always an array or 'all'
     const unlockedPaths = data.unlockedPaths || [];
 
+    // Convert Firestore Timestamp to a serializable format (ISO string)
+    let createdAtString: string | undefined = undefined;
+    if (data.createdAt && data.createdAt instanceof Timestamp) {
+        createdAtString = data.createdAt.toDate().toISOString();
+    } else if (typeof data.createdAt === 'string') {
+        createdAtString = data.createdAt;
+    }
+
     return {
       activePath: data.activePath || null,
       unlockedPaths,
       reminders: data.reminders,
-      createdAt: data.createdAt,
+      createdAt: createdAtString,
     };
   }
 );
