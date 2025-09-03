@@ -5,12 +5,13 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, DollarSign, Brain, Target, Lock, ArrowRight, Check, Loader2, AlertTriangle, Info, CheckCircle } from "lucide-react";
+import { Heart, DollarSign, Brain, Target, Lock, ArrowRight, Check, Loader2, AlertTriangle, Info, CheckCircle, Trash2 } from "lucide-react";
 import BottomNav from "@/components/bottom-nav";
 import Link from "next/link";
 import { tracks as allTracks } from "@/lib/tracks.json";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { getUserProfile } from "@/ai/flows/get-user-profile";
 import { validateUnlockCode } from "@/ai/flows/validate-unlock-code";
 import type { ValidatedCode } from "@/lib/types";
@@ -208,6 +209,20 @@ export default function ProgramsPage() {
         setSelectedTrack(null);
     }
 
+    const handleAbandonChallenge = async () => {
+        // Placeholder for future Genkit flow
+        toast({ title: "Challenge Abandoned (Archived)", description: "Your progress has been archived."});
+        // await abandonChallengeFlow({ uid: user.uid });
+        // await fetchProfile();
+    }
+
+    const handleDeleteChallenge = async () => {
+        // Placeholder for future Genkit flow
+        toast({ variant: "destructive", title: "Challenge Data Deleted", description: "All data for this challenge has been permanently removed."});
+        // await deleteChallengeFlow({ uid: user.uid });
+        // await fetchProfile();
+    }
+
     const renderButton = (track: Track) => {
         if (!userProfile) return <Button disabled>Unlock Path</Button>;
 
@@ -263,10 +278,50 @@ export default function ProgramsPage() {
                             You are currently on the {activeTrack.full_name} path. Focus and continue your journey.
                         </CardDescription>
                     </CardHeader>
-                    <CardFooter>
-                        <Button asChild className="w-full">
+                    <CardFooter className="flex justify-between items-center">
+                        <Button asChild className="flex-grow">
                             <Link href="/">View Dashboard <ArrowRight className="ml-2"/></Link>
                         </Button>
+                        <div className="flex items-center ml-4">
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="ghost" size="icon" aria-label="Mark Complete">
+                                        <CheckCircle className="h-5 w-5 text-green-600"/>
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you sure you want to mark this challenge as complete?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This will abandon your current path and archive your progress. You will be able to start a new challenge. Are you sure you want to proceed?
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={handleAbandonChallenge} className="bg-green-600 hover:bg-green-700">Mark Complete</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="ghost" size="icon" aria-label="Delete Data">
+                                        <Trash2 className="h-5 w-5 text-destructive"/>
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently delete all your entries and progress for the active challenge. Are you sure you want to proceed?
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={handleDeleteChallenge} className="bg-destructive hover:bg-destructive/90">Delete Data</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </div>
                     </CardFooter>
                 </Card>
             )}
