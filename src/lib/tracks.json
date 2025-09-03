@@ -13,10 +13,22 @@
       "numberOfDays": 30,
       "numberOfWeeks": 4,
       "weeks": [
-        { "week": 1, "name": "Financial Foundation" },
-        { "week": 2, "name": "Wealth Discipline" },
-        { "week": 3, "name": "Abundance Wisdom" },
-        { "week": 4, "name": "Money Mastery" }
+        {
+          "week": 1,
+          "name": "Financial Foundation"
+        },
+        {
+          "week": 2,
+          "name": "Wealth Discipline"
+        },
+        {
+          "week": 3,
+          "name": "Abundance Wisdom"
+        },
+        {
+          "week": 4,
+          "name": "Money Mastery"
+        }
       ]
     },
     {
@@ -32,10 +44,22 @@
       "numberOfDays": 30,
       "numberOfWeeks": 4,
       "weeks": [
-        { "week": 1, "name": "Relationship Foundation" },
-        { "week": 2, "name": "Connection Discipline" },
-        { "week": 3, "name": "Social Wisdom" },
-        { "week": 4, "name": "Relationship Mastery" }
+        {
+          "week": 1,
+          "name": "Relationship Foundation"
+        },
+        {
+          "week": 2,
+          "name": "Connection Discipline"
+        },
+        {
+          "week": 3,
+          "name": "Social Wisdom"
+        },
+        {
+          "week": 4,
+          "name": "Relationship Mastery"
+        }
       ]
     },
     {
@@ -51,10 +75,22 @@
       "numberOfDays": 30,
       "numberOfWeeks": 4,
       "weeks": [
-        { "week": 1, "name": "Willpower Foundation" },
-        { "week": 2, "name": "Habit Discipline" },
-        { "week": 3, "name": "Execution Wisdom" },
-        { "week": 4, "name": "Self-Mastery" }
+        {
+          "week": 1,
+          "name": "Willpower Foundation"
+        },
+        {
+          "week": 2,
+          "name": "Habit Discipline"
+        },
+        {
+          "week": 3,
+          "name": "Execution Wisdom"
+        },
+        {
+          "week": 4,
+          "name": "Self-Mastery"
+        }
       ]
     },
     {
@@ -70,10 +106,22 @@
       "numberOfDays": 30,
       "numberOfWeeks": 4,
       "weeks": [
-        { "week": 1, "name": "Identity Foundation" },
-        { "week": 2, "name": "Ego Discipline" },
-        { "week": 3, "name": "Self-Awareness Wisdom" },
-        { "week": 4, "name": "Ego Mastery" }
+        {
+          "week": 1,
+          "name": "Identity Foundation"
+        },
+        {
+          "week": 2,
+          "name": "Ego Discipline"
+        },
+        {
+          "week": 3,
+          "name": "Self-Awareness Wisdom"
+        },
+        {
+          "week": 4,
+          "name": "Ego Mastery"
+        }
       ]
     }
   ]
