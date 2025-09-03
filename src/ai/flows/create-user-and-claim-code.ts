@@ -10,7 +10,7 @@
 import { ai } from '@/ai/genkit';
 import { db } from '@/lib/firebase';
 import { CreateUserAndClaimCodeInput, CreateUserAndClaimCodeInputSchema, CreateUserAndClaimCodeOutput, CreateUserAndClaimCodeOutputSchema } from '@/lib/types';
-import { doc, setDoc, updateDoc, Timestamp, collection, writeBatch } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, Timestamp, collection, writeBatch, increment, getDoc } from 'firebase/firestore';
 import { challenges as allChallenges } from '@/lib/challenges';
 import { tracks as allTracks } from '@/lib/tracks.json';
 import { format } from 'date-fns';
@@ -86,6 +86,7 @@ const createUserAndClaimCodeFlow = ai.defineFlow(
                 isClaimed: true,
                 claimedBy: uid,
                 claimedAt: Timestamp.now(),
+                useCount: increment(1),
             });
 
             // 4. Create transaction log

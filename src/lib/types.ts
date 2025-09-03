@@ -40,6 +40,7 @@ import { z } from 'zod';
 export const GenerateUnlockCodeInputSchema = z.object({
   accessType: z.enum(['userOne', 'adminOne', 'adminMulti', 'allCurrent', 'allEvergreen']),
   paths: z.union([z.array(z.string()), z.literal('all')]).describe('Array of track IDs or "all".'),
+  isMultiUse: z.boolean().optional().describe('Whether the code can be used multiple times.'),
 });
 export type GenerateUnlockCodeInput = z.infer<typeof GenerateUnlockCodeInputSchema>;
 
@@ -61,6 +62,7 @@ export const ValidateUnlockCodeOutputSchema = z.object({
   error: z.string().optional(),
   accessType: z.string().optional(),
   paths: z.union([z.array(z.string()), z.literal('all')]).optional(),
+  isMultiUse: z.boolean().optional(),
 });
 export type ValidateUnlockCodeOutput = z.infer<typeof ValidateUnlockCodeOutputSchema>;
 export type ValidatedCode = ValidateUnlockCodeOutput;

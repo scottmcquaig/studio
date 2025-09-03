@@ -9,7 +9,7 @@
 
 import { ai } from '@/ai/genkit';
 import { db } from '@/lib/firebase';
-import { doc, updateDoc, getDoc, Timestamp, arrayUnion, writeBatch, collection } from 'firebase/firestore';
+import { doc, updateDoc, getDoc, Timestamp, arrayUnion, writeBatch, collection, increment } from 'firebase/firestore';
 import { z } from 'zod';
 
 const UnlockAndAddPathsInputSchema = z.object({
@@ -58,6 +58,7 @@ const unlockAndAddPathsFlow = ai.defineFlow(
       isClaimed: true,
       claimedBy: uid,
       claimedAt: Timestamp.now(),
+      useCount: increment(1),
     });
 
     // Create transaction log

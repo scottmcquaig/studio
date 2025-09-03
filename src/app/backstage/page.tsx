@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetFooter, SheetClose } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { tracks as allTracks } from "@/lib/tracks.json";
-import { Edit, Archive, PlusCircle, FolderPlus, DollarSign, Heart, Target, Brain, KeyRound, Check, Loader2, Copy, Send, Settings } from "lucide-react";
+import { Edit, Archive, PlusCircle, FolderPlus, DollarSign, Heart, Target, Brain, KeyRound, Check, Loader2, Copy, Send, Settings, History, Repeat } from "lucide-react";
 import { useMemo, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -42,6 +42,7 @@ export default function BackstagePage() {
     const [isGenerateCodeOpen, setIsGenerateCodeOpen] = useState(false);
     const [accessType, setAccessType] = useState<GenerateUnlockCodeInput['accessType']>("userOne");
     const [selectedPaths, setSelectedPaths] = useState<string[]>([]);
+    const [isMultiUse, setIsMultiUse] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedCode, setGeneratedCode] = useState<string | null>(null);
     const [isCopied, setIsCopied] = useState(false);
@@ -115,7 +116,7 @@ export default function BackstagePage() {
         }
 
         try {
-            const result = await generateUnlockCode({ accessType, paths });
+            const result = await generateUnlockCode({ accessType, paths, isMultiUse });
             setGeneratedCode(result.code);
         } catch (error) {
             console.error("Error generating code:", error);
@@ -152,6 +153,7 @@ export default function BackstagePage() {
         setSelectedPaths([]);
         setGeneratedCode(null);
         setIsGenerating(false);
+        setIsMultiUse(false);
     }
 
     const accessOptions = [
@@ -247,6 +249,12 @@ export default function BackstagePage() {
                                     ))}
                                 </div>
                             )}
+
+                             <div className="flex items-center space-x-2 p-2 border rounded-md">
+                                <Checkbox id="multi-use" checked={isMultiUse} onCheckedChange={(checked) => setIsMultiUse(Boolean(checked))} />
+                                <Label htmlFor="multi-use">Allow multiple uses</Label>
+                            </div>
+
                         </div>
                         <DialogFooter>
                             <Button type="button" variant="outline" onClick={() => setIsGenerateCodeOpen(false)} disabled={isGenerating}>Cancel</Button>
@@ -313,6 +321,32 @@ export default function BackstagePage() {
                     </CardContent>
                 </Card>
             ))}
+            <div className="grid md:grid-cols-2 gap-8">
+                <Card>
+                    <CardHeader>
+                        <div className="flex items-center gap-3">
+                            <History className="h-6 w-6 text-accent"/>
+                            <CardTitle>Transaction History</CardTitle>
+                        </div>
+                        <CardDescription>A log of all access code redemptions and purchases.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-sm text-muted-foreground">Transaction history will be displayed here.</p>
+                    </CardContent>
+                </Card>
+                 <Card>
+                    <CardHeader>
+                        <div className="flex items-center gap-3">
+                            <Repeat className="h-6 w-6 text-accent"/>
+                            <CardTitle>Multi-use Codes</CardTitle>
+                        </div>
+                        <CardDescription>Codes that can be redeemed multiple times.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-sm text-muted-foreground">Active multi-use codes will be listed here.</p>
+                    </CardContent>
+                </Card>
+            </div>
         </div>
       </main>
 
@@ -378,5 +412,3 @@ export default function BackstagePage() {
     </div>
   );
 }
-
-    

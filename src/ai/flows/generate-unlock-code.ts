@@ -47,6 +47,8 @@ const generateUnlockCodeFlow = ai.defineFlow(
       accessType: input.accessType,
       paths: input.paths,
       isClaimed: false,
+      isMultiUse: input.isMultiUse || false,
+      useCount: 0,
       createdAt: new Date().toISOString(),
     });
 

@@ -35,7 +35,7 @@ const validateUnlockCodeFlow = ai.defineFlow(
 
     const codeData = docSnap.data();
 
-    if (codeData.isClaimed) {
+    if (codeData.isClaimed && !codeData.isMultiUse) {
       return {
         isValid: false,
         error: "This code has already been claimed. If you believe this is an error, please contact support@stoic-af.com for assistance.",
@@ -46,6 +46,7 @@ const validateUnlockCodeFlow = ai.defineFlow(
       isValid: true,
       accessType: codeData.accessType,
       paths: codeData.paths,
+      isMultiUse: codeData.isMultiUse,
     };
   }
 );
