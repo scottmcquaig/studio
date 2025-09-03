@@ -10,7 +10,7 @@ import BottomNav from "@/components/bottom-nav";
 import Link from "next/link";
 import { tracks as allTracks } from "@/lib/tracks.json";
 import { useToast } from "@/hooks/use-toast";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { getUserProfile } from "@/ai/flows/get-user-profile";
 import { validateUnlockCode } from "@/ai/flows/validate-unlock-code";
@@ -19,6 +19,8 @@ import { cn } from "@/lib/utils";
 import { unlockAndAddPaths } from "@/ai/flows/unlock-and-add-paths";
 import { switchActivePath } from "@/ai/flows/switch-active-path";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type Track = typeof allTracks[0];
 
@@ -47,6 +49,7 @@ export default function ProgramsPage() {
     
     const [validatedCode, setValidatedCode] = useState<ValidatedCode | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isUnlockPromptOpen, setIsUnlockPromptOpen] = useState(false);
     const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
 
     const activeTrack = userProfile?.activePath ? allTracks.find(t => t.id === userProfile.activePath) : null;
@@ -87,6 +90,7 @@ export default function ProgramsPage() {
                     title: "Invalid Code",
                     description: result.error,
                 });
+                setIsValidating(false);
                 return;
             }
             
@@ -97,8 +101,8 @@ export default function ProgramsPage() {
                 availablePaths = allTracks.filter(t => !unlockedIds.includes(t.id)).map(t => t.id);
             } else if (Array.isArray(result.paths) && Array.isArray(userProfile?.unlockedPaths)) {
                  availablePaths = result.paths.filter(p => !userProfile.unlockedPaths.includes(p));
-            } else {
-                 availablePaths = result.paths || [];
+            } else if (result.paths) {
+                 availablePaths = result.paths;
             }
             
             if (availablePaths.length === 0) {
@@ -106,6 +110,7 @@ export default function ProgramsPage() {
                     title: "No New Paths",
                     description: "This code is valid, but it doesn't grant access to any paths you don't already have.",
                 });
+                setIsValidating(false);
                 return;
             }
 
@@ -118,7 +123,8 @@ export default function ProgramsPage() {
                 setSelectedTrack(trackToSelect || null);
             }
             
-            setIsModalOpen(true);
+            setIsUnlockPromptOpen(false); // Close the individual unlock prompt
+            setIsModalOpen(true); // Open the main selection/confirmation modal
 
         } catch (error) {
             toast({
@@ -142,8 +148,14 @@ export default function ProgramsPage() {
             let pathsToAdd: string[] | 'all' = [];
             if (validatedCode.accessType === 'userOne' && selectedTrack) {
                 pathsToAdd = [selectedTrack.id];
-            } else {
-                pathsToAdd = validatedCode.paths || [];
+            } else if (validatedCode.paths) {
+                pathsToAdd = validatedCode.paths;
+            }
+            
+            if (pathsToAdd.length === 0) {
+                toast({ variant: "destructive", title: "No paths to unlock" });
+                setIsUnlocking(false);
+                return;
             }
             
             await unlockAndAddPaths({
@@ -208,6 +220,13 @@ export default function ProgramsPage() {
         setValidatedCode(null);
         setSelectedTrack(null);
     }
+    
+    const handleUnlockClick = (track: Track) => {
+        setSelectedTrack(track);
+        setUnlockCode("");
+        setIsUnlockPromptOpen(true);
+    };
+
 
     const handleAbandonChallenge = async () => {
         // Placeholder for future Genkit flow
@@ -239,7 +258,7 @@ export default function ProgramsPage() {
                 return <Button variant="secondary" onClick={() => handleSwitchTrack(track.id)} className="w-full">Start Challenge</Button>
              }
         }
-        return <Button variant="default" disabled className="w-full">Unlock Path for $4</Button>
+        return <Button variant="default" className="w-full" onClick={() => handleUnlockClick(track)}>Unlock Path</Button>
     }
 
     if (authLoading || loadingProfile) {
@@ -249,11 +268,16 @@ export default function ProgramsPage() {
     let availableTracksForModal: Track[] = [];
     if (validatedCode) {
         if (validatedCode.paths === 'all') {
-            availableTracksForModal = allTracks;
+            availableTracksForModal = allTracks.filter(t => {
+                 if (userProfile?.unlockedPaths === 'all') return false;
+                 if (Array.isArray(userProfile?.unlockedPaths)) return !userProfile.unlockedPaths.includes(t.id);
+                 return true;
+            });
         } else if (validatedCode.paths) {
             availableTracksForModal = allTracks.filter(t => validatedCode.paths!.includes(t.id));
         }
     }
+
 
     const isLockedByCode = validatedCode?.accessType === 'adminOne' && Array.isArray(validatedCode.paths) && validatedCode.paths.length === 1;
 
@@ -334,10 +358,10 @@ export default function ProgramsPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="flex gap-2">
-                    <input 
+                    <Input 
                         type="text" 
                         placeholder="Enter Your Code" 
-                        className="flex-grow p-2 border rounded-md"
+                        className="flex-grow"
                         value={unlockCode}
                         onChange={(e) => setUnlockCode(e.target.value)}
                         disabled={isValidating}
@@ -393,6 +417,39 @@ export default function ProgramsPage() {
             </Card>
         </div>
       </main>
+
+      <Dialog open={isUnlockPromptOpen} onOpenChange={setIsUnlockPromptOpen}>
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle>Unlock: {selectedTrack?.full_name}</DialogTitle>
+                 <DialogDescription>
+                    Enter your one-time access code to unlock this challenge path.
+                </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                    <Label htmlFor="code">Access Code</Label>
+                    <Input 
+                        id="code" 
+                        value={unlockCode}
+                        onChange={(e) => setUnlockCode(e.target.value)}
+                        placeholder="XXXX-XXXX-XXXX"
+                        disabled={isValidating}
+                    />
+                </div>
+                <p className="text-sm text-center text-muted-foreground">
+                    Need an access code? <a href="#" className="underline">Purchase one here.</a>
+                </p>
+            </div>
+            <DialogFooter>
+                <Button variant="outline" onClick={() => setIsUnlockPromptOpen(false)} disabled={isValidating}>Cancel</Button>
+                <Button onClick={handleValidateCode} disabled={isValidating || !unlockCode}>
+                     {isValidating ? <Loader2 className="mr-2 animate-spin" /> : <Lock className="mr-2" />}
+                    Submit Code
+                </Button>
+            </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={isModalOpen} onOpenChange={(isOpen) => { if(!isOpen) handleCloseModal() }}>
         <DialogContent>
