@@ -7,6 +7,7 @@ export interface Challenge {
     text: string;
     author: string;
   };
+  badgeTitle?: string;
   broTranslation?: string;
   challenge?: string;
   morningPrompt?: string;

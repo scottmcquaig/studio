@@ -238,6 +238,10 @@ export default function TrackEditorPage() {
                                 <Label htmlFor="title">Title</Label>
                                 <Input id="title" value={selectedDay.title} onChange={(e) => handleFieldChange('title', e.target.value)} />
                             </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="badgeTitle">Badge Title</Label>
+                                <Input id="badgeTitle" value={selectedDay.badgeTitle || ''} onChange={(e) => handleFieldChange('badgeTitle', e.target.value)} placeholder={`Day ${selectedDay.day}`} />
+                            </div>
                              <div className="space-y-2">
                                 <Label htmlFor="description">Description</Label>
                                 <Input id="description" value={selectedDay.description} onChange={(e) => handleFieldChange('description', e.target.value)} />
