@@ -88,7 +88,7 @@ export default function ProgressPage() {
                 <div className="flex justify-between text-sm mb-1">
                   <span className="font-medium text-muted-foreground">Overall Progress</span>
                   <div className="flex items-center gap-2">
-                    <Badge style={{ backgroundColor: '#EF4444', color: 'white' }} className="border-none">Relationships Track</Badge>
+                    <Badge style={{ backgroundColor: '#EF4444', color: 'white' }} className="border-none">Relationships</Badge>
                     <Badge variant="outline" className="font-normal">
                       <span className="font-bold text-foreground">{completedDaysSet.size}</span>
                       <span className="text-muted-foreground">/30 days complete</span>
