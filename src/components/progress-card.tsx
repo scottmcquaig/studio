@@ -41,7 +41,9 @@ export default function ProgressCard({ streak, daysCompleted, daysRemaining, pro
               <span className="font-medium text-muted-foreground">Overall Progress</span>
               {track && <Badge style={{ backgroundColor: '#EF4444', color: 'white' }} className="border-none">{track} Track</Badge>}
             </div>
-            <span className="font-bold text-foreground">{daysCompleted} of 30 days completed</span>
+            <span className="text-sm text-muted-foreground">
+              <span className="font-bold text-foreground">{daysCompleted}</span>/30 days complete
+            </span>
           </div>
           <Progress value={progress} className="h-2" />
         </div>
