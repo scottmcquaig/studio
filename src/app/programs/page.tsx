@@ -5,12 +5,12 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, DollarSign, Brain, Target, Lock, ArrowRight, Check, Loader2, AlertTriangle, Info, CheckCircle, Trash2, Star, Pause } from "lucide-react";
+import { Heart, DollarSign, Brain, Target, Lock, ArrowRight, Check, Loader2, AlertTriangle, Info, Pause, Trash2, Star } from "lucide-react";
 import BottomNav from "@/components/bottom-nav";
 import Link from "next/link";
 import { tracks as allTracks } from "@/lib/tracks.json";
 import { useToast } from "@/hooks/use-toast";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { getUserProfile } from "@/ai/flows/get-user-profile";
 import { validateUnlockCode } from "@/ai/flows/validate-unlock-code";
@@ -312,16 +312,37 @@ export default function ProgramsPage() {
         }
     }
     
-    let lockedPathsCount = allTracks.length;
+    let lockedPathsCount = 0;
     if (userProfile) {
-        if (userProfile.unlockedPaths === 'all') {
-            lockedPathsCount = 0;
-        } else if (Array.isArray(userProfile.unlockedPaths)) {
+        if (userProfile.unlockedPaths !== 'all') {
             lockedPathsCount = allTracks.length - userProfile.unlockedPaths.length;
         }
     }
-    const bundlePrice = lockedPathsCount * 3;
 
+    let bundlePrice = 0;
+    let retailPrice = 0;
+    const pathRetailPrice = 4;
+
+    if (lockedPathsCount > 0) {
+        retailPrice = lockedPathsCount * pathRetailPrice;
+        switch (lockedPathsCount) {
+            case 4: // 0 unlocked
+                bundlePrice = 10;
+                break;
+            case 3: // 1 unlocked
+                bundlePrice = 9;
+                break;
+            case 2: // 2 unlocked
+                bundlePrice = 5;
+                break;
+            case 1: // 3 unlocked
+                bundlePrice = 2;
+                break;
+            default:
+                bundlePrice = 0;
+        }
+    }
+    
 
     const isLockedByCode = validatedCode?.accessType === 'adminOne' && Array.isArray(validatedCode.paths) && validatedCode.paths.length === 1;
 
@@ -453,9 +474,17 @@ export default function ProgramsPage() {
                 </CardHeader>
                  <CardFooter className="flex flex-col sm:flex-row items-center gap-4">
                     <div className="flex-grow text-center sm:text-left">
-                        <p><span className="font-bold">One-time purchase:</span> <span className="line-through">${lockedPathsCount * 4}.00</span> <span className="font-bold text-accent">${bundlePrice}.00</span></p>
+                       {lockedPathsCount > 0 ? (
+                            <p>
+                                <span className="font-bold">One-time purchase:</span>{' '}
+                                <span className="line-through text-muted-foreground">${retailPrice.toFixed(2)}</span>{' '}
+                                <span className="font-bold text-accent">${bundlePrice.toFixed(2)}</span>
+                            </p>
+                        ) : (
+                            <p className="font-semibold text-primary">You have unlocked all paths!</p>
+                        )}
                     </div>
-                    <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent/90" onClick={() => handleUnlockClick(null)}>
+                    <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent/90" onClick={() => handleUnlockClick(null)} disabled={lockedPathsCount === 0}>
                         Unlock All
                     </Button>
                 </CardFooter>
@@ -528,7 +557,7 @@ export default function ProgramsPage() {
                                 )}
                             >
                                 <span className="flex-grow font-medium">{track.full_name}</span>
-                                {isSelected && <CheckCircle className="text-accent"/>}
+                                {isSelected && <Check className="text-accent"/>}
                             </button>
                         )
                     })}
