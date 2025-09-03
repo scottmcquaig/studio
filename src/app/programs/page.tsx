@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, DollarSign, Brain, Target, Lock, ArrowRight, Check, Loader2, AlertTriangle, Info, Pause, Trash2, Star } from "lucide-react";
+import { Heart, DollarSign, Brain, Target, Lock, ArrowRight, Check, Loader2, AlertTriangle, Info, Pause, Trash2, Star, CheckCircle } from "lucide-react";
 import BottomNav from "@/components/bottom-nav";
 import Link from "next/link";
 import { tracks as allTracks } from "@/lib/tracks.json";
@@ -292,7 +292,14 @@ export default function ProgramsPage() {
                 return <Button variant="secondary" onClick={() => handleSwitchTrack(track.id)} className="w-full">Start Challenge</Button>
              }
         }
-        return <Button variant="default" className="w-full bg-accent hover:bg-accent/90" onClick={() => handleUnlockClick(track)}>Unlock Path</Button>
+        return (
+            <Button variant="default" className="w-full bg-accent hover:bg-accent/90" onClick={() => handleUnlockClick(track)}>
+                <div className="flex items-center justify-center h-6 w-6 rounded-full bg-white/20 mr-2 text-xs font-bold">
+                    $4
+                </div>
+                Unlock Path
+            </Button>
+        );
     }
 
     if (authLoading || loadingProfile) {
