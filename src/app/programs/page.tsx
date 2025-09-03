@@ -86,7 +86,7 @@ export default function ProgramsPage() {
                                 </Link>
                             ) : (
                                 <Button className="w-full">
-                                    Get for ${program.price} <ArrowRight className="ml-2" />
+                                    Unlock path for ${program.price} <ArrowRight className="ml-2" />
                                 </Button>
                             )}
                         </CardFooter>
