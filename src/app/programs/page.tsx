@@ -366,7 +366,9 @@ export default function ProgramsPage() {
                     <CardHeader>
                         <div className="flex justify-between items-center">
                              <CardTitle className="font-headline text-2xl text-primary">Your Active Challenge</CardTitle>
-                             <Badge variant="default">In Progress</Badge>
+                             <Badge style={{ backgroundColor: activeTrack.color, color: 'white' }} className="border-none">
+                                {activeTrack.display_name}
+                            </Badge>
                         </div>
                         <CardDescription>
                             You are currently on the {activeTrack.full_name} path. Focus and continue your journey.
