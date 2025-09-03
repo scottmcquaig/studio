@@ -349,6 +349,10 @@ export default function BackstagePage() {
                         <Label htmlFor="icon" className="text-right">Icon</Label>
                         <Input id="icon" value={selectedTrack.icon} onChange={(e) => handleFieldChange('icon', e.target.value)} className="col-span-3" />
                     </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="numberOfDays" className="text-right">Days</Label>
+                        <Input id="numberOfDays" type="number" value={selectedTrack.numberOfDays} onChange={(e) => handleFieldChange('numberOfDays', parseInt(e.target.value, 10))} className="col-span-3" />
+                    </div>
                      <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="order" className="text-right">Order</Label>
                         <Input id="order" type="number" value={selectedTrack.order} onChange={(e) => handleFieldChange('order', parseInt(e.target.value, 10))} className="col-span-3" />
