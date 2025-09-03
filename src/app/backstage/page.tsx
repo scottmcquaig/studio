@@ -43,17 +43,32 @@ export default function BackstagePage() {
         setIsSheetOpen(true);
     };
 
-    const handleUpdateTrack = () => {
+    const handleUpdateTrack = async () => {
         if (!selectedTrack) return;
         
-        // This is where you would typically call an API to update the data.
-        // For now, we'll update the state locally and log it.
-        console.log("Updating track:", selectedTrack);
-        
         const updatedTracks = tracks.map(t => t.id === selectedTrack.id ? selectedTrack : t);
-        setTracks(updatedTracks);
-        setIsSheetOpen(false);
-        setSelectedTrack(null);
+
+        try {
+            const response = await fetch('/api/tracks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ tracks: updatedTracks }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update tracks');
+            }
+
+            setTracks(updatedTracks);
+            setIsSheetOpen(false);
+            setSelectedTrack(null);
+            
+        } catch (error) {
+            console.error("Error updating track:", error);
+            // Optionally, show an error message to the user
+        }
     };
 
     const handleFieldChange = (field: keyof Track, value: string | number) => {
