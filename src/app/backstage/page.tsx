@@ -89,7 +89,11 @@ export default function BackstagePage() {
             
         } catch (error) {
             console.error("Error updating track:", error);
-            // Optionally, show an error message to the user
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: "There was a problem updating the track.",
+            });
         }
     };
 

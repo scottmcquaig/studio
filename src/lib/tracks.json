@@ -1,11 +1,10 @@
-
 {
   "tracks": [
     {
       "id": "MONEY",
       "slug": "money",
       "display_name": "Money",
-      "full_name": "Money & Wealth Mindset",
+      "full_name": "Money & Wealth",
       "order": 1,
       "color": "#16A34A",
       "icon": "dollar-sign",
@@ -43,7 +42,7 @@
       "description": "Stop trying to control others and start controlling yourself",
       "category": "30-Day Stoic-AF Challenge",
       "numberOfDays": 30,
-      "numberOfWeeks": 5,
+      "numberOfWeeks": 4,
       "weeks": [
         {
           "week": 1,
@@ -60,10 +59,6 @@
         {
           "week": 4,
           "name": "Relationship Mastery"
-        },
-        {
-          "week": 5,
-          "name": "Completion"
         }
       ]
     },
@@ -131,5 +126,3 @@
     }
   ]
 }
-
-    
