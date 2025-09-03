@@ -375,47 +375,49 @@ export default function ProgramsPage() {
                         </CardDescription>
                     </CardHeader>
                     <CardFooter className="flex">
-                        <Button asChild className="flex-grow" variant="outline">
-                            <Link href="/">View Dashboard</Link>
-                        </Button>
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button variant="outline" size="icon" aria-label="Pause Challenge" className="ml-2">
-                                    <Pause className="h-5 w-5 text-accent"/>
-                                </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you sure you want to switch challenges?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        Your progress on the current challenge will be saved. You can always switch back later. A new challenge path will begin for this track.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={handleAbandonChallenge} className="bg-accent hover:bg-accent/90">Switch Challenge</AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button variant="outline" size="icon" aria-label="Delete Data" className="ml-2">
-                                    <Trash2 className="h-5 w-5 text-destructive"/>
-                                </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        This action cannot be undone. This will permanently delete all your entries and progress for the active challenge. Are you sure you want to proceed?
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={handleDeleteChallenge} className="bg-destructive hover:bg-destructive/90">Delete Data</AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
+                        <div className="flex w-full">
+                            <Button asChild className="flex-grow" variant="outline">
+                                <Link href="/">View Dashboard</Link>
+                            </Button>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="outline" size="icon" aria-label="Pause Challenge" className="ml-2">
+                                        <Pause className="h-5 w-5 text-accent"/>
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you sure you want to switch challenges?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Your progress on the current challenge will be saved. You can always switch back later. A new challenge path will begin for this track.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={handleAbandonChallenge} className="bg-accent hover:bg-accent/90">Switch Challenge</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="outline" size="icon" aria-label="Delete Data" className="ml-2">
+                                        <Trash2 className="h-5 w-5 text-destructive"/>
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently delete all your entries and progress for the active challenge. Are you sure you want to proceed?
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={handleDeleteChallenge} className="bg-destructive hover:bg-destructive/90">Delete Data</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </div>
                     </CardFooter>
                 </Card>
             )}
