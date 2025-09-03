@@ -17,6 +17,7 @@ import type { ValidatedCode } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { unlockAndAddPaths } from "@/ai/flows/unlock-and-add-paths";
 import { switchActivePath } from "@/ai/flows/switch-active-path";
+import { Badge } from "@/components/ui/badge";
 
 type Track = typeof allTracks[0];
 
