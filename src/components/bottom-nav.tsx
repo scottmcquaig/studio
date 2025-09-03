@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Book, Calendar, Layers, BarChart2, User, LogOut, Shield } from 'lucide-react';
+import { Book, Calendar, Layers, BarChart2, User, LogOut, Shield, Settings } from 'lucide-react';
 import { Button } from './ui/button';
 import Link from 'next/link';
 import {
@@ -9,6 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu"
 import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
@@ -62,6 +63,13 @@ export default function BottomNav({ activeTab = 'Dashboard', currentDay = 1 }: B
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-40 mb-2">
+                             <DropdownMenuItem asChild>
+                                <Link href="/settings">
+                                    <Settings className="mr-2" />
+                                    Settings
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
                              <DropdownMenuItem asChild>
                                 <Link href="/backstage">
                                     <Shield className="mr-2" />

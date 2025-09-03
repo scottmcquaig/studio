@@ -9,7 +9,7 @@
 
 import { ai } from '@/ai/genkit';
 import { db } from '@/lib/firebase';
-import { doc, updateDoc, getDoc, Timestamp, arrayUnion } from 'firebase/firestore';
+import { doc, updateDoc, getDoc, Timestamp, arrayUnion, writeBatch, collection } from 'firebase/firestore';
 import { z } from 'zod';
 
 const UnlockAndAddPathsInputSchema = z.object({
@@ -36,35 +36,45 @@ const unlockAndAddPathsFlow = ai.defineFlow(
   async ({ uid, pathsToAdd, unlockCode }) => {
     const userDocRef = doc(db, 'users', uid);
     const codeDocRef = doc(db, 'accessCodes', unlockCode);
-
+    
     const userDoc = await getDoc(userDocRef);
     if (!userDoc.exists()) {
         throw new Error("User profile not found.");
     }
     const userData = userDoc.data();
+    
+    const batch = writeBatch(db);
 
     // Don't add paths if the user already has 'all' access
-    if (userData.unlockedPaths === 'all') {
-        // Still burn the code
-        await updateDoc(codeDocRef, {
-            isClaimed: true,
-            claimedBy: uid,
-            claimedAt: Timestamp.now(),
+    if (userData.unlockedPaths !== 'all') {
+        // Update user's unlockedPaths
+        batch.update(userDocRef, {
+            unlockedPaths: arrayUnion(...pathsToAdd)
         });
-        return { success: true, message: "User already has all paths. Code claimed." };
     }
     
-    // Update user's unlockedPaths
-    await updateDoc(userDocRef, {
-      unlockedPaths: arrayUnion(...pathsToAdd)
-    });
-
     // Burn the code
-    await updateDoc(codeDocRef, {
+    batch.update(codeDocRef, {
       isClaimed: true,
       claimedBy: uid,
       claimedAt: Timestamp.now(),
     });
+
+    // Create transaction log
+    const transactionDocRef = doc(collection(db, 'transactions'));
+    batch.set(transactionDocRef, {
+        transactionId: transactionDocRef.id,
+        timestamp: Timestamp.now(),
+        type: 'access_code_redemption',
+        userId: uid,
+        details: {
+            accessCode: unlockCode,
+            unlockedPaths: pathsToAdd,
+            isNewUser: false,
+        }
+    });
+
+    await batch.commit();
 
     return {
       success: true,

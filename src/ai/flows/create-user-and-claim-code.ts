@@ -29,13 +29,14 @@ const createUserAndClaimCodeFlow = ai.defineFlow(
     },
     async (input) => {
         const { uid, selectedTrackId, unlockedPaths, reminders, unlockCode } = input;
+        const batch = writeBatch(db);
 
         // 1. Create the user document in the 'users' collection
         const userDocRef = doc(db, 'users', uid);
         const today = new Date();
         const activeChallengePath = `${selectedTrackId}_${format(today, 'yyyy-MM-dd')}`;
 
-        await setDoc(userDocRef, {
+        batch.set(userDocRef, {
             activePath: selectedTrackId,
             activeChallengePath: activeChallengePath,
             unlockedPaths,
@@ -49,7 +50,6 @@ const createUserAndClaimCodeFlow = ai.defineFlow(
             const trackChallenges = allChallenges.filter(c => c.track === selectedTrack.display_name);
             
             const userChallengeCollectionRef = collection(db, 'users', uid, activeChallengePath);
-            const batch = writeBatch(db);
 
             // Snapshot each day's challenge
             trackChallenges.forEach(challenge => {
@@ -76,20 +76,34 @@ const createUserAndClaimCodeFlow = ai.defineFlow(
                 streak: 0,
                 trackSettings: selectedTrack // Snapshot the track settings
             });
-
-            await batch.commit();
         }
 
 
-        // 3. If an unlock code was used, "burn" it
+        // 3. If an unlock code was used, "burn" it and log transaction
         if (unlockCode) {
             const codeDocRef = doc(db, 'accessCodes', unlockCode);
-            await updateDoc(codeDocRef, {
+            batch.update(codeDocRef, {
                 isClaimed: true,
                 claimedBy: uid,
                 claimedAt: Timestamp.now(),
             });
+
+            // 4. Create transaction log
+            const transactionDocRef = doc(collection(db, 'transactions'));
+            batch.set(transactionDocRef, {
+                transactionId: transactionDocRef.id,
+                timestamp: Timestamp.now(),
+                type: 'access_code_redemption',
+                userId: uid,
+                details: {
+                    accessCode: unlockCode,
+                    unlockedPaths: unlockedPaths,
+                    isNewUser: true,
+                }
+            });
         }
+        
+        await batch.commit();
 
         return {
             success: true,
