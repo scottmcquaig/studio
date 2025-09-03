@@ -2,7 +2,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { tracks as allTracks } from '@/lib/tracks.json';
 import { challenges as allChallenges } from '@/lib/challenges';
 import { Button } from '@/components/ui/button';
@@ -28,20 +28,26 @@ export default function TrackEditorPage() {
     const [challenges, setChallenges] = useState<Challenge[]>([]);
     const [selectedDay, setSelectedDay] = useState<Challenge | null>(null);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
+    const [weekNames, setWeekNames] = useState<Track['weeks']>([]);
 
-    useEffect(() => {
+
+    const fetchTrackData = useCallback(() => {
         if (params.slug) {
             const currentTrack = allTracks.find(t => t.slug === params.slug);
             if (currentTrack) {
                 setTrack(currentTrack);
+                setWeekNames(currentTrack.weeks);
                 const trackChallenges = allChallenges.filter(c => c.track === currentTrack.display_name);
                 setChallenges(trackChallenges);
             } else {
-                // Handle track not found, maybe redirect
                 router.push('/backstage');
             }
         }
     }, [params.slug, router]);
+
+    useEffect(() => {
+        fetchTrackData();
+    }, [fetchTrackData]);
 
     const handleEditDay = (day: Challenge) => {
         setSelectedDay(day);
@@ -86,8 +92,6 @@ export default function TrackEditorPage() {
                 throw new Error('Failed to update challenges');
             }
             
-            // This is a bit of a hack to get the client to see the new data
-            // In a real app, you'd likely re-fetch or use a more robust state management
             toast({
                 title: "Challenge Updated!",
                 description: "The daily challenge has been saved. Reloading to see changes.",
@@ -104,6 +108,48 @@ export default function TrackEditorPage() {
             });
         } finally {
             setIsSheetOpen(false);
+        }
+    };
+    
+    const handleAddWeek = () => {
+        setWeekNames(prev => [...prev, { week: prev.length + 1, name: `Week ${prev.length + 1}` }]);
+    };
+
+    const handleWeekNameChange = (index: number, newName: string) => {
+        setWeekNames(prev => {
+            const newWeeks = [...prev];
+            newWeeks[index].name = newName;
+            return newWeeks;
+        });
+    };
+    
+    const handleSaveWeeks = async () => {
+        if (!track) return;
+
+        const updatedTrack = { ...track, weeks: weekNames, numberOfWeeks: weekNames.length };
+        const updatedTracks = allTracks.map(t => t.id === updatedTrack.id ? updatedTrack : t);
+
+        try {
+            const response = await fetch('/api/tracks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tracks: updatedTracks }),
+            });
+
+            if (!response.ok) throw new Error('Failed to update tracks');
+
+            toast({
+                title: "Weeks Updated!",
+                description: "The week names have been saved.",
+            });
+            fetchTrackData(); // Re-fetch data to confirm
+        } catch (error) {
+            console.error("Error updating weeks:", error);
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: "There was a problem saving the week names.",
+            });
         }
     };
 
@@ -137,15 +183,20 @@ export default function TrackEditorPage() {
                             <CardDescription>Edit the names for each week of the challenge.</CardDescription>
                         </CardHeader>
                         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {track.weeks.map(week => (
+                            {weekNames.map((week, index) => (
                                 <div key={week.week} className="flex items-center gap-2">
                                     <Label htmlFor={`week-${week.week}`} className="w-20">Week {week.week}</Label>
-                                    <Input id={`week-${week.week}`} defaultValue={week.name} />
+                                    <Input 
+                                        id={`week-${week.week}`} 
+                                        value={week.name}
+                                        onChange={(e) => handleWeekNameChange(index, e.target.value)}
+                                    />
                                 </div>
                             ))}
                         </CardContent>
-                        <CardContent>
-                             <Button variant="secondary"><Save className="mr-2" />Save Week Names</Button>
+                        <CardContent className="flex gap-2">
+                             <Button variant="secondary" onClick={handleSaveWeeks}><Save className="mr-2" />Save Week Names</Button>
+                             <Button variant="outline" onClick={handleAddWeek}><PlusCircle className="mr-2" />Add Week</Button>
                         </CardContent>
                     </Card>
 
@@ -179,40 +230,40 @@ export default function TrackEditorPage() {
                         </SheetDescription>
                     </SheetHeader>
                     {selectedDay && (
-                        <div className="space-y-4 py-4">
-                            <div>
+                        <div className="space-y-4 py-4 pr-6">
+                            <div className="space-y-2">
                                 <Label htmlFor="title">Title</Label>
                                 <Input id="title" value={selectedDay.title} onChange={(e) => handleFieldChange('title', e.target.value)} />
                             </div>
-                             <div>
+                             <div className="space-y-2">
                                 <Label htmlFor="description">Description</Label>
                                 <Input id="description" value={selectedDay.description} onChange={(e) => handleFieldChange('description', e.target.value)} />
                             </div>
-                            <div>
+                            <div className="space-y-2">
                                 <Label htmlFor="quote-text">Quote Text</Label>
                                 <Textarea id="quote-text" value={selectedDay.quote.text} onChange={(e) => handleQuoteChange('text', e.target.value)} />
                             </div>
-                             <div>
+                             <div className="space-y-2">
                                 <Label htmlFor="quote-author">Quote Author</Label>
                                 <Input id="quote-author" value={selectedDay.quote.author} onChange={(e) => handleQuoteChange('author', e.target.value)} />
                             </div>
-                            <div>
+                            <div className="space-y-2">
                                 <Label htmlFor="bro-translation">Bro Translation</Label>
                                 <Textarea id="bro-translation" className="min-h-[120px]" value={selectedDay.broTranslation} onChange={(e) => handleFieldChange('broTranslation', e.target.value)} />
                             </div>
-                             <div>
+                             <div className="space-y-2">
                                 <Label htmlFor="challenge">Today's Challenge</Label>
                                 <Textarea id="challenge" className="min-h-[120px]" value={selectedDay.challenge} onChange={(e) => handleFieldChange('challenge', e.target.value)} />
                             </div>
-                              <div>
+                              <div className="space-y-2">
                                 <Label htmlFor="morning-prompt">Morning Prompt</Label>
                                 <Textarea id="morning-prompt" value={selectedDay.morningPrompt} onChange={(e) => handleFieldChange('morningPrompt', e.target.value)} />
                             </div>
-                             <div>
+                             <div className="space-y-2">
                                 <Label htmlFor="evening-prompt">Evening Prompt</Label>
                                 <Textarea id="evening-prompt" className="min-h-[120px]" value={selectedDay.eveningPrompt} onChange={(e) => handleFieldChange('eveningPrompt', e.target.value)} />
                             </div>
-                             <div>
+                             <div className="space-y-2">
                                 <Label htmlFor="wins-title">Wins Title</Label>
                                 <Input id="wins-title" value={selectedDay.winsTitle} onChange={(e) => handleFieldChange('winsTitle', e.target.value)} />
                             </div>
