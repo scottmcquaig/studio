@@ -13,16 +13,16 @@ import {
 
 
 interface BottomNavProps {
-    activeTab?: 'Dash' | 'Daily' | 'Programs' | 'Progress' | 'User';
+    activeTab?: 'Dashboard' | 'Daily' | 'Challenges' | 'Progress' | 'User';
     currentDay?: number;
 }
 
-export default function BottomNav({ activeTab = 'Dash', currentDay = 1 }: BottomNavProps) {
+export default function BottomNav({ activeTab = 'Dashboard', currentDay = 1 }: BottomNavProps) {
     const navItems = [
-        { icon: Book, label: 'Dash', href: '/' },
+        { icon: Book, label: 'Dashboard', href: '/' },
         { icon: Calendar, label: 'Daily', href: `/day/${currentDay}` },
         { icon: BarChart2, label: 'Progress', href: '/progress' },
-        { icon: Layers, label: 'Programs', href: '/programs' },
+        { icon: Layers, label: 'Challenges', href: '/programs' },
     ];
 
     return (
@@ -33,7 +33,7 @@ export default function BottomNav({ activeTab = 'Dash', currentDay = 1 }: Bottom
                         <Button
                             key={item.label}
                             variant="ghost"
-                            className={`flex flex-col items-center justify-center h-14 w-16 px-2 py-1 text-xs font-normal ${activeTab === item.label ? 'bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground' : 'text-muted-foreground hover:bg-accent/20'}`}
+                            className={`flex flex-col items-center justify-center h-14 w-16 px-2 py-1 text-[11px] font-normal leading-tight ${activeTab === item.label ? 'bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground' : 'text-muted-foreground hover:bg-accent/20'}`}
                             asChild
                         >
                             <Link href={item.href}>
@@ -46,7 +46,7 @@ export default function BottomNav({ activeTab = 'Dash', currentDay = 1 }: Bottom
                         <DropdownMenuTrigger asChild>
                              <Button
                                 variant="ghost"
-                                className={`flex flex-col items-center justify-center h-14 w-16 px-2 py-1 text-xs font-normal ${activeTab === 'User' ? 'bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground' : 'text-muted-foreground hover:bg-accent/20'}`}
+                                className={`flex flex-col items-center justify-center h-14 w-16 px-2 py-1 text-[11px] font-normal leading-tight ${activeTab === 'User' ? 'bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground' : 'text-muted-foreground hover:bg-accent/20'}`}
                             >
                                 <User className="h-5 w-5 mb-1" />
                                 <span>User</span>

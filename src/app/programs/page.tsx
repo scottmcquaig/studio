@@ -115,7 +115,7 @@ export default function ProgramsPage() {
             </Card>
         </div>
       </main>
-      <BottomNav activeTab="Programs" />
+      <BottomNav activeTab="Challenges" />
     </div>
   );
 }
