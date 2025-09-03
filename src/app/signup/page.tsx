@@ -3,16 +3,21 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, User } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, ArrowRight, Brain, Check, DollarSign, Heart, Loader2, Target, Bell, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Brain, Check, DollarSign, Heart, Loader2, Target, Bell, Sparkles, AlertTriangle } from "lucide-react";
 import { tracks as allTracks } from "@/lib/tracks.json";
 import { cn } from "@/lib/utils";
+import { validateUnlockCode } from "@/ai/flows/validate-unlock-code";
+import type { ValidatedCode } from "@/lib/types";
+import { Switch } from "@/components/ui/switch";
+import { createUserAndClaimCode } from "@/ai/flows/create-user-and-claim-code";
+
 
 const iconMap: { [key: string]: React.ComponentType<any> } = {
   "dollar-sign": DollarSign,
@@ -25,37 +30,63 @@ type Track = typeof allTracks[0];
 
 export default function SignupPage() {
   const [step, setStep] = useState(0);
-  
+  const router = useRouter();
+  const { toast } = useToast();
+
   // Step 0: Initial signup
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [unlockCode, setUnlockCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  
+  const [user, setUser] = useState<User | null>(null);
+  const [validatedCode, setValidatedCode] = useState<ValidatedCode | null>(null);
+
   // Step 1: Track selection
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
 
   // Step 2: Reminders
-  // Placeholder state for reminders
-
-  const router = useRouter();
-  const { toast } = useToast();
+  const [enablePush, setEnablePush] = useState(false);
+  const [enableEmail, setEnableEmail] = useState(false);
+  const [morningTime, setMorningTime] = useState('07:00');
+  const [eveningTime, setEveningTime] = useState('21:00');
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // TODO: Add logic to validate unlock code against Firestore
-    console.log("Unlock Code Entered:", unlockCode);
 
+    // 1. Validate code if provided
+    if (unlockCode) {
+      try {
+        const validationResult = await validateUnlockCode({ code: unlockCode });
+        if (!validationResult.isValid) {
+          toast({
+            variant: "destructive",
+            title: "Unlock Code Invalid",
+            description: validationResult.error,
+          });
+          setIsLoading(false);
+          return;
+        }
+        setValidatedCode(validationResult);
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: "Validation Error",
+          description: error.message,
+        });
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    // 2. Create Firebase user
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      // On successful signup, Firebase automatically logs the user in
-      // The AuthProvider will detect this and move to the next step
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      setUser(userCredential.user);
       setIsLoading(false);
-      setStep(1);
+      setStep(1); // Move to next step
     } catch (error: any) {
-       toast({
+      toast({
         variant: "destructive",
         title: "Signup Failed",
         description: error.message,
@@ -63,11 +94,61 @@ export default function SignupPage() {
       setIsLoading(false);
     }
   };
+  
+  const handleFinalize = async () => {
+      if (!user || !selectedTrack) {
+        toast({
+            variant: 'destructive',
+            title: 'Missing Information',
+            description: 'Something went wrong. Please try again.'
+        })
+        return;
+      }
 
-  const handleSelectTrack = (track: Track) => {
-      setSelectedTrack(track);
+      setIsLoading(true);
+      try {
+        await createUserAndClaimCode({
+            uid: user.uid,
+            selectedTrackId: selectedTrack.id,
+            unlockedPaths: validatedCode?.paths || [selectedTrack.id],
+            reminders: {
+                pushEnabled: enablePush,
+                emailEnabled: enableEmail,
+                morningTime,
+                eveningTime,
+            },
+            unlockCode: unlockCode || null,
+        });
+
+        router.push('/');
+
+      } catch (error: any) {
+          toast({
+            variant: "destructive",
+            title: "Setup Failed",
+            description: "There was a problem saving your profile. Please try again.",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+
   }
 
+  const handleSelectTrack = (track: Track) => {
+    if (validatedCode?.accessType === 'adminOne' && validatedCode.paths !== 'all' && !validatedCode.paths.includes(track.id)) {
+        return; // Don't allow selection if code is for a specific track
+    }
+    setSelectedTrack(track);
+  }
+
+  // Pre-select track if code dictates it
+  if (step === 1 && validatedCode?.accessType === 'adminOne' && validatedCode.paths !== 'all' && validatedCode.paths.length === 1 && !selectedTrack) {
+    const trackToSelect = allTracks.find(t => t.id === validatedCode.paths[0]);
+    if (trackToSelect) {
+        setSelectedTrack(trackToSelect);
+    }
+  }
+  
   const renderStep = () => {
     switch (step) {
       case 0:
@@ -88,8 +169,8 @@ export default function SignupPage() {
                     <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="6+ characters" />
                     </div>
                     <div className="space-y-2">
-                    <Label htmlFor="unlock-code">Unlock Code (Optional)</Label>
-                    <Input id="unlock-code" type="text" placeholder="Have a code? Enter it here" value={unlockCode} onChange={(e) => setUnlockCode(e.target.value)} />
+                    <Label htmlFor="unlock-code">Have a code?</Label>
+                    <Input id="unlock-code" type="text" placeholder="Enter Unlock Code (Optional)" value={unlockCode} onChange={(e) => setUnlockCode(e.target.value)} />
                     </div>
                 </CardContent>
                 <CardFooter>
@@ -107,6 +188,16 @@ export default function SignupPage() {
             "Relationships": "Communication, boundaries, managing expectations",
             "Money": "Financial stress, career pressure, comparison with others",
         };
+        const isLockedByCode = validatedCode?.accessType === 'adminOne' && validatedCode.paths !== 'all' && validatedCode.paths.length > 0;
+
+        let availableTracks = allTracks;
+        if (isLockedByCode && validatedCode.paths !== 'all') {
+            availableTracks = allTracks.filter(t => validatedCode.paths.includes(t.id));
+        }
+        if (validatedCode?.accessType === 'userOne') {
+            availableTracks = allTracks; // User gets to pick one from all
+        }
+        
 
         return (
              <div className="w-full max-w-md">
@@ -115,36 +206,44 @@ export default function SignupPage() {
                     <h1 className="text-2xl font-bold font-headline text-primary">What's Your Biggest Struggle?</h1>
                     <p className="text-muted-foreground mt-2">We'll customize your 30-day journey based on what you're dealing with most. Choose the one that hits hardest.</p>
                 </div>
+                {isLockedByCode && (
+                    <div className="mb-4 p-3 rounded-md bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 flex items-center gap-2">
+                        <AlertTriangle className="h-5 w-5" />
+                        <p className="text-sm">Your unlock code has pre-selected your track.</p>
+                    </div>
+                )}
                 <div className="space-y-4">
                     {allTracks.map(track => {
                          const Icon = iconMap[track.icon];
+                         const isSelectable = availableTracks.some(at => at.id === track.id);
+                         const isSelected = selectedTrack?.id === track.id;
+
                          return (
                             <button
                                 key={track.id}
-                                onClick={() => handleSelectTrack(track)}
+                                onClick={() => isSelectable && handleSelectTrack(track)}
+                                disabled={!isSelectable}
                                 className={cn(
                                     "w-full text-left p-4 border rounded-lg flex items-center gap-4 transition-all",
-                                    selectedTrack?.id === track.id
+                                    isSelected
                                         ? "border-accent ring-2 ring-accent bg-accent/10"
-                                        : "bg-secondary/30 hover:bg-secondary/60"
+                                        : "bg-secondary/30",
+                                    isSelectable ? "cursor-pointer hover:bg-secondary/60" : "opacity-50 cursor-not-allowed"
                                 )}
                             >
-                                <div className="p-3 rounded-md" style={{ backgroundColor: selectedTrack?.id === track.id ? track.color : `${track.color}20`}}>
-                                    {Icon && <Icon className="h-6 w-6" style={{ color: selectedTrack?.id === track.id ? 'white' : track.color}} />}
+                                <div className="p-3 rounded-md" style={{ backgroundColor: isSelected ? track.color : `${track.color}20`}}>
+                                    {Icon && <Icon className="h-6 w-6" style={{ color: isSelected ? 'white' : track.color}} />}
                                 </div>
                                 <div className="flex-grow">
-                                    <h3 className="font-semibold text-primary">{track.display_name} & Pride</h3>
-                                    <p className="text-sm text-muted-foreground">{trackDescriptions[track.display_name]}</p>
+                                    <h3 className="font-semibold text-primary">{track.full_name}</h3>
+                                    <p className="text-sm text-muted-foreground">{track.description}</p>
                                 </div>
                                 <ArrowRight className="h-5 w-5 text-muted-foreground" />
                             </button>
                          )
                     })}
                 </div>
-                <div className="flex justify-between mt-8">
-                     <Button variant="ghost" onClick={() => setStep(0)}>
-                        <ArrowLeft className="mr-2" /> Back
-                    </Button>
+                <div className="flex justify-end mt-8">
                     <Button onClick={() => setStep(2)} disabled={!selectedTrack}>
                         Continue <ArrowRight className="ml-2" />
                     </Button>
@@ -157,7 +256,7 @@ export default function SignupPage() {
                 <div className="text-center mb-8">
                     <div className="mb-2 text-sm font-semibold text-accent">Step 2 of 3</div>
                     <h1 className="text-2xl font-bold font-headline text-primary">Setup Daily Reminders</h1>
-                    <p className="text-muted-foreground mt-2">Consistency is key. We'll help you stay on track.</p>
+                    <p className="text-muted-foreground mt-2">Consistency is key. We'll help you stay on track. You can change this later.</p>
                 </div>
                 
                 <Card>
@@ -167,20 +266,30 @@ export default function SignupPage() {
                                 <Bell className="h-6 w-6 text-accent"/>
                                 <div>
                                     <Label htmlFor="push-notifications" className="font-semibold">Push Notifications</Label>
-                                    <p className="text-sm text-muted-foreground">Get alerts on your phone.</p>
+                                    <p className="text-sm text-muted-foreground">Get alerts on your phone. (Coming soon)</p>
                                 </div>
                            </div>
-                           <Input type="checkbox" id="push-notifications" className="h-5 w-5" />
+                           <Switch id="push-notifications" checked={enablePush} onCheckedChange={setEnablePush} disabled/>
                         </div>
                          <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-lg">
                            <div className="flex items-center gap-4">
                                 <Sparkles className="h-6 w-6 text-accent"/>
                                 <div>
                                     <Label htmlFor="email-reminders" className="font-semibold">Email Reminders</Label>
-                                    <p className="text-sm text-muted-foreground">Receive daily prompts in your inbox.</p>
+                                    <p className="text-sm text-muted-foreground">Daily prompts in your inbox. (Coming soon)</p>
                                 </div>
                            </div>
-                           <Input type="checkbox" id="email-reminders" className="h-5 w-5" />
+                           <Switch id="email-reminders" checked={enableEmail} onCheckedChange={setEnableEmail} disabled/>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 pt-2">
+                             <div className="space-y-2">
+                                <Label htmlFor="morning-time">Morning Intention Time</Label>
+                                <Input id="morning-time" type="time" value={morningTime} onChange={(e) => setMorningTime(e.target.value)} />
+                             </div>
+                              <div className="space-y-2">
+                                <Label htmlFor="evening-time">Evening Reflection Time</Label>
+                                <Input id="evening-time" type="time" value={eveningTime} onChange={(e) => setEveningTime(e.target.value)} />
+                             </div>
                         </div>
                     </CardContent>
                 </Card>
@@ -221,9 +330,11 @@ export default function SignupPage() {
                                 </div>
                             </div>
                          )}
-                         <div className="mt-4">
+                         <div className="mt-4 space-y-1">
                             <h4 className="font-semibold mb-2">Reminder Settings</h4>
-                            <p className="text-sm text-muted-foreground">You can change these later in your profile.</p>
+                            <p className="text-sm text-muted-foreground">Morning Intention: {morningTime}</p>
+                            <p className="text-sm text-muted-foreground">Evening Reflection: {eveningTime}</p>
+                            <p className="text-sm text-muted-foreground pt-2">You can change these later in your profile.</p>
                          </div>
                     </CardContent>
                 </Card>
@@ -232,8 +343,9 @@ export default function SignupPage() {
                     <Button variant="ghost" onClick={() => setStep(2)}>
                         <ArrowLeft className="mr-2" /> Back
                     </Button>
-                    <Button size="lg" onClick={() => router.push('/')}>
-                        Start Challenge <Check className="ml-2" />
+                    <Button size="lg" onClick={handleFinalize} disabled={isLoading}>
+                         {isLoading ? <Loader2 className="animate-spin" /> : "Start Challenge"}
+                         {!isLoading && <Check className="ml-2" />}
                     </Button>
                 </div>
             </div>
