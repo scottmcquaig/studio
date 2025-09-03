@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heart, DollarSign, Brain, Target, Lock, ArrowRight, Check, Loader2, AlertTriangle, Info, Pause, Trash2, Star, CheckCircle } from "lucide-react";
 import BottomNav from "@/components/bottom-nav";
@@ -96,7 +96,7 @@ export default function ProgramsPage() {
     };
 
     const handleValidateCode = async () => {
-        if (!unlockCode) return;
+        if (unlockCode.replace(/-/g, '').length < 12) return;
         setIsValidating(true);
         try {
             const result = await validateUnlockCode({ code: unlockCode });
@@ -327,11 +327,9 @@ export default function ProgramsPage() {
     }
 
     let bundlePrice = 0;
-    let retailPrice = 0;
-    const pathRetailPrice = 4;
+    const retailPrice = 16.00;
 
     if (lockedPathsCount > 0) {
-        retailPrice = lockedPathsCount * pathRetailPrice;
         switch (lockedPathsCount) {
             case 4: // 0 unlocked
                 bundlePrice = 10;
@@ -598,3 +596,5 @@ export default function ProgramsPage() {
     </div>
   );
 }
+
+    
