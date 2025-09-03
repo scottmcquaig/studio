@@ -258,7 +258,7 @@ export default function ProgramsPage() {
                 return <Button variant="secondary" onClick={() => handleSwitchTrack(track.id)} className="w-full">Start Challenge</Button>
              }
         }
-        return <Button variant="default" className="w-full" onClick={() => handleUnlockClick(track)}>Unlock Path</Button>
+        return <Button variant="default" className="w-full bg-accent hover:bg-accent/90" onClick={() => handleUnlockClick(track)}>Unlock Path</Button>
     }
 
     if (authLoading || loadingProfile) {
@@ -410,7 +410,7 @@ export default function ProgramsPage() {
                     <div className="flex-grow text-center sm:text-left">
                         <p><span className="font-bold">One-time purchase:</span> <span className="line-through">$16.00</span> <span className="font-bold text-accent">$9.00</span></p>
                     </div>
-                    <Button size="lg" className="w-full sm:w-auto" disabled>
+                    <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent/90" disabled>
                         Unlock All
                     </Button>
                 </CardFooter>
