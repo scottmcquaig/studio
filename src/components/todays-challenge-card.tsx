@@ -26,7 +26,6 @@ export default function TodaysChallengeCard({ day, challenge }: TodaysChallengeC
               <Calendar className="h-3 w-3"/>
               Day {day} of 30
             </Badge>
-             {challenge.track && <Badge style={{ backgroundColor: '#EF4444', color: 'white' }} className="border-none">{challenge.track} Track</Badge>}
           </div>
           <h2 className="text-xl font-bold font-headline text-primary mt-3">Begin Today's Challenge</h2>
           <p className="text-muted-foreground text-sm mt-1">Set your intention and begin today's stoic practice.</p>
