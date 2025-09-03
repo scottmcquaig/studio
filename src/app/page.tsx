@@ -88,7 +88,7 @@ export default function Home() {
           <BuildLegacyCard />
         </div>
       </main>
-      <BottomNav activeTab="Dashboard" currentDay={currentDay} />
+      <BottomNav activeTab="Dash" currentDay={currentDay} />
     </div>
   );
 }
