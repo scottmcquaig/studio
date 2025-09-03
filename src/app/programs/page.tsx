@@ -187,9 +187,7 @@ export default function ProgramsPage() {
 
     const handleSwitchTrack = async (trackId: string) => {
         if (!user) return;
-        if (!confirm("Are you sure you want to switch your active challenge? Your current progress will be saved.")) {
-            return;
-        }
+
         try {
             await switchActivePath({ uid: user.uid, newTrackId: trackId });
             await fetchProfile();
@@ -249,11 +247,29 @@ export default function ProgramsPage() {
         const isActive = userProfile.activePath === track.id;
 
         if (isActive) {
-            return <Button variant="secondary" className="w-full bg-green-200 text-green-800 hover:bg-green-300" disabled>Active Challenge</Button>
+            return <Button variant="secondary" className="w-full bg-green-200 text-green-800 hover:bg-green-300" disabled>Challenge In-Progress</Button>
         }
         if (isUnlocked) {
              if (userProfile.activePath) {
-                return <Button variant="secondary" onClick={() => handleSwitchTrack(track.id)} className="w-full">Switch to this Challenge</Button>
+                return (
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button variant="secondary" className="w-full">Switch to this Challenge</Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Are you sure you want to switch challenges?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Your progress on the current challenge will be saved. You can always switch back later. A new challenge path will begin for this track.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleSwitchTrack(track.id)}>Switch Challenge</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                )
              } else {
                 return <Button variant="secondary" onClick={() => handleSwitchTrack(track.id)} className="w-full">Start Challenge</Button>
              }
@@ -277,6 +293,16 @@ export default function ProgramsPage() {
             availableTracksForModal = allTracks.filter(t => validatedCode.paths!.includes(t.id));
         }
     }
+    
+    let lockedPathsCount = allTracks.length;
+    if (userProfile) {
+        if (userProfile.unlockedPaths === 'all') {
+            lockedPathsCount = 0;
+        } else if (Array.isArray(userProfile.unlockedPaths)) {
+            lockedPathsCount = allTracks.length - userProfile.unlockedPaths.length;
+        }
+    }
+    const bundlePrice = lockedPathsCount * 3;
 
 
     const isLockedByCode = validatedCode?.accessType === 'adminOne' && Array.isArray(validatedCode.paths) && validatedCode.paths.length === 1;
@@ -403,12 +429,12 @@ export default function ProgramsPage() {
                         </Badge>
                     </div>
                      <CardDescription>
-                        Get access to all Stoic AF 30-day challenge paths for a discounted price.
+                        Get access to all 30-day Stoic Challenges for a discounted price.
                     </CardDescription>
                 </CardHeader>
                  <CardFooter className="flex flex-col sm:flex-row items-center gap-4">
                     <div className="flex-grow text-center sm:text-left">
-                        <p><span className="font-bold">One-time purchase:</span> <span className="line-through">$16.00</span> <span className="font-bold text-accent">$9.00</span></p>
+                        <p><span className="font-bold">One-time purchase:</span> <span className="line-through">${lockedPathsCount * 4}.00</span> <span className="font-bold text-accent">${bundlePrice}.00</span></p>
                     </div>
                     <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent/90" disabled>
                         Unlock All
