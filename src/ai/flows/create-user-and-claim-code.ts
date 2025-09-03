@@ -43,7 +43,7 @@ const createUserAndClaimCodeFlow = ai.defineFlow(
             createdAt: Timestamp.now(),
         });
         
-        // 2. Snapshot the challenges for the user
+        // 2. Snapshot the challenges and progress for the user
         const selectedTrack = allTracks.find(t => t.id === selectedTrackId);
         if (selectedTrack) {
             const trackChallenges = allChallenges.filter(c => c.track === selectedTrack.display_name);
@@ -51,6 +51,7 @@ const createUserAndClaimCodeFlow = ai.defineFlow(
             const userChallengeCollectionRef = collection(db, 'users', uid, activeChallengePath);
             const batch = writeBatch(db);
 
+            // Snapshot each day's challenge
             trackChallenges.forEach(challenge => {
                 const dayDocRef = doc(userChallengeCollectionRef, `day_${challenge.day}`);
                 const userChallengeData = {
@@ -66,6 +67,16 @@ const createUserAndClaimCodeFlow = ai.defineFlow(
                 };
                 batch.set(dayDocRef, userChallengeData);
             });
+
+            // Create the progress document
+            const progressDocRef = doc(userChallengeCollectionRef, 'progress');
+            batch.set(progressDocRef, {
+                currentDay: 1,
+                completedDays: [],
+                streak: 0,
+                trackSettings: selectedTrack // Snapshot the track settings
+            });
+
             await batch.commit();
         }
 

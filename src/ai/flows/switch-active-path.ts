@@ -59,7 +59,7 @@ const switchActivePathFlow = ai.defineFlow(
       activeChallengePath: newActiveChallengePath,
     });
 
-    // 2. Snapshot the new challenge data if it doesn't exist already
+    // 2. Snapshot the new challenge data and progress doc if it doesn't exist already
     const selectedTrack = allTracks.find(t => t.id === newTrackId);
     if (selectedTrack) {
         const trackChallenges = allChallenges.filter(c => c.track === selectedTrack.display_name);
@@ -67,6 +67,7 @@ const switchActivePathFlow = ai.defineFlow(
         const userChallengeCollectionRef = collection(db, 'users', uid, newActiveChallengePath);
         const batch = writeBatch(db);
 
+        // Snapshot each day
         trackChallenges.forEach(challenge => {
             const dayDocRef = doc(userChallengeCollectionRef, `day_${challenge.day}`);
             const userChallengeData = {
@@ -82,6 +83,16 @@ const switchActivePathFlow = ai.defineFlow(
             };
             batch.set(dayDocRef, userChallengeData);
         });
+
+        // Create the progress document
+        const progressDocRef = doc(userChallengeCollectionRef, 'progress');
+        batch.set(progressDocRef, {
+            currentDay: 1,
+            completedDays: [],
+            streak: 0,
+            trackSettings: selectedTrack // Snapshot the track settings
+        });
+
         await batch.commit();
     }
 
