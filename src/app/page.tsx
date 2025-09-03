@@ -78,6 +78,7 @@ export default function Home() {
             daysCompleted={completedDays.size}
             daysRemaining={daysRemaining}
             progress={progress}
+            track={currentChallenge.track}
           />
           <TodaysChallengeCard 
             day={currentDay}
@@ -87,7 +88,7 @@ export default function Home() {
           <BuildLegacyCard />
         </div>
       </main>
-      <BottomNav activeTab="Journal" currentDay={currentDay} />
+      <BottomNav activeTab="Dashboard" currentDay={currentDay} />
     </div>
   );
 }

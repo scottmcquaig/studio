@@ -1,17 +1,20 @@
+
 'use client';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Flame, CheckCircle2, Calendar } from 'lucide-react';
+import { Badge } from './ui/badge';
 
 interface ProgressCardProps {
   streak: number;
   daysCompleted: number;
   daysRemaining: number;
   progress: number;
+  track?: string;
 }
 
-export default function ProgressCard({ streak, daysCompleted, daysRemaining, progress }: ProgressCardProps) {
+export default function ProgressCard({ streak, daysCompleted, daysRemaining, progress, track }: ProgressCardProps) {
   return (
     <Card className="bg-secondary/30 border-none shadow-sm">
       <CardContent className="pt-6">
@@ -33,9 +36,12 @@ export default function ProgressCard({ streak, daysCompleted, daysRemaining, pro
           </div>
         </div>
         <div>
-          <div className="flex justify-between text-sm mb-1">
-            <span className="font-medium text-muted-foreground">Challenge Progress</span>
-            <span className="font-bold text-foreground">{progress}% Complete</span>
+          <div className="flex justify-between items-center text-sm mb-1">
+            <div className="flex items-center gap-2">
+              <span className="font-medium text-muted-foreground">Challenge Progress</span>
+              {track && <Badge style={{ backgroundColor: '#EF4444', color: 'white' }} className="border-none">{track} Track</Badge>}
+            </div>
+            <span className="font-bold text-foreground">{daysCompleted}/30 days</span>
           </div>
           <Progress value={progress} className="h-2" />
         </div>

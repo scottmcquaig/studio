@@ -13,13 +13,13 @@ import {
 
 
 interface BottomNavProps {
-    activeTab?: 'Journal' | 'Daily' | 'Programs' | 'Progress' | 'User';
+    activeTab?: 'Dashboard' | 'Daily' | 'Programs' | 'Progress' | 'User';
     currentDay?: number;
 }
 
-export default function BottomNav({ activeTab = 'Journal', currentDay = 1 }: BottomNavProps) {
+export default function BottomNav({ activeTab = 'Dashboard', currentDay = 1 }: BottomNavProps) {
     const navItems = [
-        { icon: Book, label: 'Journal', href: '/' },
+        { icon: Book, label: 'Dashboard', href: '/' },
         { icon: Calendar, label: 'Daily', href: `/day/${currentDay}` },
         { icon: BarChart2, label: 'Progress', href: '/progress' },
         { icon: Layers, label: 'Programs', href: '/programs' },
