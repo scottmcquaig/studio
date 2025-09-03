@@ -464,7 +464,13 @@ export default function ProgramsPage() {
                     />
                 </div>
                 <p className="text-sm text-center text-muted-foreground">
-                    Need an access code? <a href="#" className="underline">Purchase one here.</a>
+                    Need an access code?{' '}
+                    <button 
+                        onClick={() => toast({ title: "Online payment is currently down.", description: "Please email support@stoic-af.com to purchase."})}
+                        className="underline font-medium text-accent hover:text-accent/80"
+                    >
+                        Purchase one here.
+                    </button>
                 </p>
             </div>
             <DialogFooter>
