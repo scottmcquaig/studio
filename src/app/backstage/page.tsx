@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetFooter, SheetClose } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { tracks as allTracks } from "@/lib/tracks.json";
-import { Edit, Archive, PlusCircle, FolderPlus, DollarSign, Heart, Target, Brain, KeyRound, Check, Loader2 } from "lucide-react";
+import { Edit, Archive, PlusCircle, FolderPlus, DollarSign, Heart, Target, Brain, KeyRound, Check, Loader2, Copy, Send } from "lucide-react";
 import { useMemo, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -35,10 +35,14 @@ export default function BackstagePage() {
     const [tracks, setTracks] = useState<Track[]>(allTracks);
     const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
+    
+    // State for Generate Code Dialog
     const [isGenerateCodeOpen, setIsGenerateCodeOpen] = useState(false);
     const [accessType, setAccessType] = useState<GenerateUnlockCodeInput['accessType']>("userOne");
     const [selectedPaths, setSelectedPaths] = useState<string[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
+    const [generatedCode, setGeneratedCode] = useState<string | null>(null);
+    const [isCopied, setIsCopied] = useState(false);
 
 
     const tracksByCategory = useMemo(() => {
@@ -97,6 +101,7 @@ export default function BackstagePage() {
      const handleGenerateCode = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsGenerating(true);
+        setGeneratedCode(null);
         
         let paths: string[] | 'all' = 'all';
         if (accessType === 'adminOne' || accessType === 'adminMulti') {
@@ -105,16 +110,7 @@ export default function BackstagePage() {
 
         try {
             const result = await generateUnlockCode({ accessType, paths });
-            toast({
-                title: "Code Generated Successfully!",
-                description: (
-                    <div>
-                        <p>Share this one-time unlock code:</p>
-                        <p className="font-mono text-lg bg-secondary p-2 rounded-md mt-2">{result.code}</p>
-                    </div>
-                ),
-            });
-            setIsGenerateCodeOpen(false);
+            setGeneratedCode(result.code);
         } catch (error) {
             console.error("Error generating code:", error);
             toast({
@@ -137,6 +133,21 @@ export default function BackstagePage() {
         }
     };
 
+    const handleCopyToClipboard = () => {
+        if (!generatedCode) return;
+        navigator.clipboard.writeText(generatedCode).then(() => {
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+        });
+    };
+
+    const resetGenerateCodeDialog = () => {
+        setAccessType('userOne');
+        setSelectedPaths([]);
+        setGeneratedCode(null);
+        setIsGenerating(false);
+    }
+
     const accessOptions = [
         { id: 'userOne', label: 'Single Path: User Selects'},
         { id: 'adminOne', label: 'Single Path: Admin Selects'},
@@ -152,7 +163,7 @@ export default function BackstagePage() {
         <div className="container mx-auto px-4 max-w-5xl flex justify-between items-center">
           <h1 className="text-xl font-bold font-headline text-primary">Backstage Admin</h1>
           <div className="flex gap-2">
-            <Dialog open={isGenerateCodeOpen} onOpenChange={setIsGenerateCodeOpen}>
+            <Dialog open={isGenerateCodeOpen} onOpenChange={(isOpen) => { setIsGenerateCodeOpen(isOpen); if (!isOpen) { resetGenerateCodeDialog() }}}>
               <DialogTrigger asChild>
                 <Button variant="outline">
                     <KeyRound className="mr-2" />
@@ -160,48 +171,86 @@ export default function BackstagePage() {
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle>Generate Unlock Code</DialogTitle>
-                  <DialogDescription>
-                    Create a one-time code for a user to unlock challenge paths.
+                 <DialogHeader>
+                  <DialogTitle>{generatedCode ? "Code Generated" : "Generate Unlock Code"}</DialogTitle>
+                   <DialogDescription>
+                    {generatedCode ? "Share this code with the user." : "Create a one-time code for a user to unlock challenge paths."}
                   </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={handleGenerateCode}>
-                    <div className="grid gap-4 py-4">
-                        <RadioGroup value={accessType} onValueChange={(value) => {setAccessType(value as GenerateUnlockCodeInput['accessType']); setSelectedPaths([])}} className="grid grid-cols-1 gap-2 p-2 border rounded-md">
-                            <Label className="font-semibold mb-2">Access Level</Label>
-                            {accessOptions.map(opt => (
-                                <div key={opt.id} className="flex items-center space-x-2">
-                                    <RadioGroupItem value={opt.id} id={opt.id} />
-                                    <Label htmlFor={opt.id}>{opt.label}</Label>
-                                </div>
-                            ))}
-                        </RadioGroup>
-                        
-                        {(accessType === 'adminOne' || accessType === 'adminMulti') && (
-                            <div className="grid grid-cols-1 gap-2 p-2 border rounded-md max-h-48 overflow-y-auto">
-                                <Label className="font-semibold mb-2">Select Paths</Label>
-                                {allTracks.map(track => (
-                                    <div key={track.id} className="flex items-center space-x-2">
-                                        <Checkbox 
-                                            id={track.id}
-                                            checked={selectedPaths.includes(track.id)}
-                                            onCheckedChange={() => handlePathSelection(track.id)}
-                                        />
-                                        <Label htmlFor={track.id}>{track.full_name}</Label>
+
+                {generatedCode ? (
+                    <div className="space-y-4 py-4">
+                        <div className="flex items-center space-x-2">
+                            <Input value={generatedCode} readOnly className="font-mono text-lg flex-grow"/>
+                             <Button onClick={handleCopyToClipboard} variant="outline" size="icon">
+                                {isCopied ? <Check className="text-green-500" /> : <Copy />}
+                            </Button>
+                        </div>
+                        <div className="text-center text-sm text-green-500 h-4">
+                            {isCopied && "Copied to clipboard!"}
+                        </div>
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <span className="w-full border-t" />
+                            </div>
+                            <div className="relative flex justify-center text-xs uppercase">
+                                <span className="bg-background px-2 text-muted-foreground">Or</span>
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="send-email">Send code to user (placeholder)</Label>
+                             <div className="flex items-center space-x-2">
+                                <Input id="send-email" type="email" placeholder="user@example.com" />
+                                <Button variant="secondary">
+                                    <Send className="mr-2"/>
+                                    Send
+                                </Button>
+                            </div>
+                        </div>
+
+                         <DialogFooter className="pt-4">
+                            <Button type="button" onClick={resetGenerateCodeDialog}>Generate Another Code</Button>
+                        </DialogFooter>
+                    </div>
+
+                ) : (
+                    <form onSubmit={handleGenerateCode}>
+                        <div className="grid gap-4 py-4">
+                            <RadioGroup value={accessType} onValueChange={(value) => {setAccessType(value as GenerateUnlockCodeInput['accessType']); setSelectedPaths([])}} className="grid grid-cols-1 gap-2 p-2 border rounded-md">
+                                <Label className="font-semibold mb-2">Access Level</Label>
+                                {accessOptions.map(opt => (
+                                    <div key={opt.id} className="flex items-center space-x-2">
+                                        <RadioGroupItem value={opt.id} id={opt.id} />
+                                        <Label htmlFor={opt.id}>{opt.label}</Label>
                                     </div>
                                 ))}
-                            </div>
-                        )}
-                    </div>
-                    <DialogFooter>
-                        <Button type="button" variant="outline" onClick={() => setIsGenerateCodeOpen(false)} disabled={isGenerating}>Cancel</Button>
-                        <Button type="submit" disabled={isGenerating}>
-                            {isGenerating ? <Loader2 className="mr-2 animate-spin" /> : <Check className="mr-2" />}
-                            {isGenerating ? 'Generating...' : 'Generate Code'}
-                        </Button>
-                    </DialogFooter>
-                </form>
+                            </RadioGroup>
+                            
+                            {(accessType === 'adminOne' || accessType === 'adminMulti') && (
+                                <div className="grid grid-cols-1 gap-2 p-2 border rounded-md max-h-48 overflow-y-auto">
+                                    <Label className="font-semibold mb-2">Select Paths</Label>
+                                    {allTracks.map(track => (
+                                        <div key={track.id} className="flex items-center space-x-2">
+                                            <Checkbox 
+                                                id={track.id}
+                                                checked={selectedPaths.includes(track.id)}
+                                                onCheckedChange={() => handlePathSelection(track.id)}
+                                            />
+                                            <Label htmlFor={track.id}>{track.full_name}</Label>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                        <DialogFooter>
+                            <Button type="button" variant="outline" onClick={() => setIsGenerateCodeOpen(false)} disabled={isGenerating}>Cancel</Button>
+                            <Button type="submit" disabled={isGenerating}>
+                                {isGenerating ? <Loader2 className="mr-2 animate-spin" /> : <Check className="mr-2" />}
+                                {isGenerating ? 'Generating...' : 'Generate Code'}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                )}
               </DialogContent>
             </Dialog>
             <Button variant="outline">
