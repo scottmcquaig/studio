@@ -42,7 +42,7 @@
       "description": "Stop trying to control others and start controlling yourself",
       "category": "30-Day Stoic-AF Challenge",
       "numberOfDays": 30,
-      "numberOfWeeks": 4,
+      "numberOfWeeks": 5,
       "weeks": [
         {
           "week": 1,
@@ -59,6 +59,10 @@
         {
           "week": 4,
           "name": "Relationship Mastery"
+        },
+        {
+          "week": 5,
+          "name": "Completion"
         }
       ]
     },

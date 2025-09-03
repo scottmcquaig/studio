@@ -137,12 +137,15 @@ export default function TrackEditorPage() {
             });
 
             if (!response.ok) throw new Error('Failed to update tracks');
-
+            
             toast({
                 title: "Weeks Updated!",
-                description: "The week names have been saved.",
+                description: "The week names have been saved. Reloading page.",
             });
-            fetchTrackData(); // Re-fetch data to confirm
+
+            // Reload the page to reflect changes and avoid HMR issues
+            window.location.reload();
+
         } catch (error) {
             console.error("Error updating weeks:", error);
             toast({
@@ -281,5 +284,3 @@ export default function TrackEditorPage() {
         </div>
     );
 }
-
-    
