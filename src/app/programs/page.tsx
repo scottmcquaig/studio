@@ -293,8 +293,8 @@ export default function ProgramsPage() {
              }
         }
         return (
-            <Button variant="default" className="w-full bg-accent hover:bg-accent/90" onClick={() => handleUnlockClick(track)}>
-                <div className="flex items-center justify-center h-6 w-6 rounded-full bg-white/20 mr-2 text-xs font-bold">
+            <Button variant="default" className="w-full bg-accent hover:bg-accent/90 gap-1" onClick={() => handleUnlockClick(track)}>
+                <div className="flex items-center justify-center h-6 w-6 rounded-full bg-white/20 font-headline text-sm font-bold">
                     $4
                 </div>
                 Unlock Path
