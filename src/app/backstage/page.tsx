@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetFooter, SheetClose } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { tracks as allTracks } from "@/lib/tracks.json";
-import { Edit, Archive, PlusCircle, FolderPlus, DollarSign, Heart, Target, Brain, KeyRound, Check, Loader2, Copy, Send } from "lucide-react";
+import { Edit, Archive, PlusCircle, FolderPlus, DollarSign, Heart, Target, Brain, KeyRound, Check, Loader2, Copy, Send, Settings, BookCopy } from "lucide-react";
 import { useMemo, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -18,6 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { generateUnlockCode } from "@/ai/flows/generate-unlock-code";
 import { Toaster } from "@/components/ui/toaster";
 import type { GenerateUnlockCodeInput } from "@/lib/types";
+import Link from "next/link";
 
 
 // Helper to get the correct icon component
@@ -56,7 +57,7 @@ export default function BackstagePage() {
         }, {} as Record<string, typeof allTracks>);
     }, [tracks]);
     
-    const handleEditClick = (track: Track) => {
+    const handleSettingsClick = (track: Track) => {
         setSelectedTrack(track);
         setIsSheetOpen(true);
     };
@@ -286,9 +287,15 @@ export default function BackstagePage() {
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <Button variant="ghost" size="icon" onClick={() => handleEditClick(track)}>
-                                            <Edit className="h-5 w-5" />
-                                            <span className="sr-only">Edit Track</span>
+                                        <Button variant="ghost" size="icon" asChild>
+                                            <Link href={`/backstage/tracks/${track.slug}`}>
+                                                <BookCopy className="h-5 w-5" />
+                                                <span className="sr-only">Edit Days</span>
+                                            </Link>
+                                        </Button>
+                                         <Button variant="ghost" size="icon" onClick={() => handleSettingsClick(track)}>
+                                            <Settings className="h-5 w-5" />
+                                            <span className="sr-only">Track Settings</span>
                                         </Button>
                                         <Button variant="ghost" size="icon">
                                             <Archive className="h-5 w-5" />
@@ -307,9 +314,9 @@ export default function BackstagePage() {
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetContent className="w-[400px] sm:w-[540px]">
             <SheetHeader>
-                <SheetTitle>Edit Track</SheetTitle>
+                <SheetTitle>Edit Track Settings</SheetTitle>
                 <SheetDescription>
-                    Make changes to the track details here. Click save when you're done.
+                    Make changes to the track metadata here. Click save when you're done.
                 </SheetDescription>
             </SheetHeader>
             {selectedTrack && (

@@ -44,13 +44,14 @@ If you can't think of strengths or good moments, that's data too. Maybe it's tim
   },
   {
     day: 3,
+    track: "General",
     title: 'Practice Voluntary Discomfort',
     description: "Choose one small, voluntary discomfort today. Take a cold shower, skip a meal (if health permits), or walk instead of driving.",
     quote: { text: "It is not the man who has too little, but the man who craves more, that is poor.", author: "Seneca" }
   },
-  // Add 27 more challenges to make it 30
   ...Array.from({ length: 27 }, (_, i) => ({
     day: i + 4,
+    track: "General",
     title: `Challenge Day ${i + 4}`,
     description: `This is a placeholder for the challenge on day ${i + 4}. The goal is to consistently practice stoic principles.`,
     quote: { text: "The obstacle is the way.", author: "Marcus Aurelius" }
