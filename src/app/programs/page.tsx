@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, DollarSign, Brain, Target, Lock, ArrowRight, Check, Loader2, AlertTriangle, Info, CheckCircle, Trash2 } from "lucide-react";
+import { Heart, DollarSign, Brain, Target, Lock, ArrowRight, Check, Loader2, AlertTriangle, Info, CheckCircle, Trash2, Star } from "lucide-react";
 import BottomNav from "@/components/bottom-nav";
 import Link from "next/link";
 import { tracks as allTracks } from "@/lib/tracks.json";
@@ -230,16 +230,16 @@ export default function ProgramsPage() {
         const isActive = userProfile.activePath === track.id;
 
         if (isActive) {
-            return <Button variant="secondary" className="w-full bg-accent/20 text-accent-foreground hover:bg-accent/30" disabled>Active Challenge</Button>
+            return <Button variant="secondary" className="w-full bg-green-200 text-green-800 hover:bg-green-300" disabled>Active Challenge</Button>
         }
         if (isUnlocked) {
              if (userProfile.activePath) {
-                return <Button onClick={() => handleSwitchTrack(track.id)} className="w-full">Switch to this Challenge</Button>
+                return <Button variant="secondary" onClick={() => handleSwitchTrack(track.id)} className="w-full">Switch to this Challenge</Button>
              } else {
-                return <Button onClick={() => handleSwitchTrack(track.id)} className="w-full">Start Challenge</Button>
+                return <Button variant="secondary" onClick={() => handleSwitchTrack(track.id)} className="w-full">Start Challenge</Button>
              }
         }
-        return <Button disabled className="w-full">Unlock Path for $4</Button>
+        return <Button variant="default" disabled className="w-full">Unlock Path for $4</Button>
     }
 
     if (authLoading || loadingProfile) {
@@ -372,11 +372,14 @@ export default function ProgramsPage() {
             <Card>
                 <CardHeader>
                     <div className="flex justify-between items-center">
-                        <CardTitle className="font-headline text-2xl text-primary">Unlock All Tracks</CardTitle>
-                        <Badge variant="destructive">Best Value</Badge>
+                        <CardTitle className="font-headline text-2xl text-primary">Bundle & Save</CardTitle>
+                        <Badge className="bg-yellow-400 text-yellow-900 hover:bg-yellow-400/80 gap-1">
+                            <Star className="h-3 w-3"/>
+                            Best Value
+                        </Badge>
                     </div>
                      <CardDescription>
-                        Get access to all current and future Stoic AF challenge tracks for a one-time price.
+                        Get access to all Stoic AF 30-day challenge paths for a discounted price.
                     </CardDescription>
                 </CardHeader>
                  <CardFooter className="flex flex-col sm:flex-row items-center gap-4">
@@ -384,7 +387,7 @@ export default function ProgramsPage() {
                         <p><span className="font-bold">One-time purchase:</span> <span className="line-through">$16.00</span> <span className="font-bold text-accent">$9.00</span></p>
                     </div>
                     <Button size="lg" className="w-full sm:w-auto" disabled>
-                        Unlock Everything
+                        Unlock All
                     </Button>
                 </CardFooter>
             </Card>
@@ -449,3 +452,5 @@ export default function ProgramsPage() {
     </div>
   );
 }
+
+    
