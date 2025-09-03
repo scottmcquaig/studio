@@ -46,15 +46,15 @@ export default function ProgressPage() {
 
           <Card>
             <CardHeader>
-              <div className="flex items-center gap-3">
-                <Activity className="h-6 w-6 text-accent" />
-                <CardTitle className="font-headline text-2xl text-primary">Challenge Overview</CardTitle>
-              </div>
-               <div className="pl-9">
-                 <Badge style={{ backgroundColor: '#EF4444', color: 'white' }} className="border-none">Relationship Track</Badge>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                    <Activity className="h-6 w-6 text-accent" />
+                    <CardTitle className="font-headline text-2xl text-primary">Challenge Overview</CardTitle>
+                </div>
+                <Badge style={{ backgroundColor: '#EF4444', color: 'white' }} className="border-none">Relationship Track</Badge>
                </div>
             </CardHeader>
-            <CardContent className="space-y-6 pl-9">
+            <CardContent className="space-y-6">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                 <div className="flex flex-col items-center p-4 bg-secondary/30 rounded-lg">
                     <div className="p-2 bg-background rounded-full mb-2">
@@ -105,6 +105,7 @@ export default function ProgressPage() {
                 <CardContent className="space-y-4">
                     {weeklyProgress.map((week) => {
                         const isCurrentWeek = week.week === currentWeek;
+                        const isCompleted = week.completed === week.total;
                         const weekProgress = (week.completed / week.total) * 100;
                         return (
                             <div key={week.week} className="flex flex-col gap-2 p-3 bg-secondary/30 rounded-lg">
@@ -112,7 +113,8 @@ export default function ProgressPage() {
                                     <Badge
                                         className={cn(
                                             "mr-4",
-                                            isCurrentWeek ? "bg-accent text-primary-foreground" : ""
+                                            isCurrentWeek && "bg-accent text-primary-foreground",
+                                            !isCurrentWeek && "bg-background text-foreground border"
                                         )}
                                     >
                                         Week {week.week} - {week.title}
