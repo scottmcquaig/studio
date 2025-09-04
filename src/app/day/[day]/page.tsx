@@ -4,7 +4,7 @@
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useMemo, useState, useEffect } from 'react';
-import type { Challenge } from '@/lib/types';
+import type { Challenge, UserProfile } from '@/lib/types';
 import { challenges as allChallenges } from '@/lib/challenges';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,39 +15,67 @@ import { ArrowLeft, ArrowRight, CheckCircle, Edit, Lock, Heart, Sunrise, Sunset,
 import BottomNav from '@/components/bottom-nav';
 import { Progress } from '@/components/ui/progress';
 import PrivateRoute from '@/components/private-route';
+import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/hooks/use-toast';
+import { mockUser } from '@/lib/user';
 
-// This is a placeholder for a more robust state management
-const MOCK_COMPLETED_DAYS = new Set([1]);
-const CURRENT_CHALLENGE_DAY = 2; // Assuming Day 2 is the current challenge
-const MOCK_STREAK = 1;
 
 function DailyPromptPageContent() {
   const params = useParams();
-  const day = parseInt(params.day as string, 10);
+  const { user } = useAuth();
+  const { toast } = useToast();
+  
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const [formattedDate, setFormattedDate] = useState('');
 
+  const day = parseInt(params.day as string, 10);
+  
   useEffect(() => {
-    if (day) {
-      const today = new Date();
-      today.setDate(today.getDate() - (CURRENT_CHALLENGE_DAY - day));
-      setFormattedDate(today.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' }));
-    }
-  }, [day]);
+    const fetchProfile = async () => {
+      if (user) {
+        try {
+          setLoadingProfile(true);
+          const profile = mockUser;
+          setUserProfile(profile);
+
+          if (day && profile.activePath) {
+            const today = new Date();
+            const currentDay = profile.currentChallenge[profile.activePath];
+            today.setDate(today.getDate() - (currentDay - day));
+            setFormattedDate(today.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' }));
+          }
+
+        } catch (error) {
+          console.error("Failed to fetch user profile:", error);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Could not load your profile. Please try again."
+          });
+        } finally {
+          setLoadingProfile(false);
+        }
+      } else {
+        setLoadingProfile(false);
+      }
+    };
+    fetchProfile();
+  }, [user, toast, day]);
 
   const challenge: Challenge | undefined = useMemo(() => {
-    if (isNaN(day) || day < 1 || day > 30) {
+    if (isNaN(day) || day < 1 || day > 30 || !userProfile?.activePath) {
       return undefined;
     }
-    return allChallenges[day - 1];
-  }, [day]);
-
-  const isCompleted = MOCK_COMPLETED_DAYS.has(day);
-  const isCurrentDay = day === CURRENT_CHALLENGE_DAY;
-  const isFutureDay = day > CURRENT_CHALLENGE_DAY;
+    return allChallenges.find(c => c.day === day && c.track === "Relationships");
+  }, [day, userProfile]);
   
-  const progress = Math.round((MOCK_COMPLETED_DAYS.size / 30) * 100);
+  if (loadingProfile) {
+      return <div className="flex h-screen items-center justify-center">Loading...</div>
+  }
 
-  if (!challenge) {
+  if (!challenge || !userProfile?.activePath) {
+    const currentDay = userProfile?.activePath ? userProfile.currentChallenge[userProfile.activePath] : 1;
     return (
       <div className="flex flex-col min-h-screen bg-background text-foreground">
         <main className="flex-grow container mx-auto px-4 py-8 max-w-3xl text-center">
@@ -60,11 +88,21 @@ function DailyPromptPageContent() {
             </Link>
           </Button>
         </main>
-        <BottomNav activeTab="Daily" currentDay={CURRENT_CHALLENGE_DAY}/>
+        <BottomNav activeTab="Daily" currentDay={currentDay}/>
       </div>
     );
   }
   
+  const activePath = userProfile.activePath;
+  const completedDaysSet = new Set(userProfile.completedChallenges[activePath]);
+  const currentChallengeDay = userProfile.currentChallenge[activePath];
+
+  const isCompleted = completedDaysSet.has(day);
+  const isCurrentDay = day === currentChallengeDay;
+  const isFutureDay = day > currentChallengeDay;
+  
+  const progress = Math.round((completedDaysSet.size / 30) * 100);
+
   const navLinks = {
     prev: day > 1 ? `/day/${day - 1}` : null,
     next: day < 30 ? `/day/${day + 1}` : null,
@@ -95,7 +133,7 @@ function DailyPromptPageContent() {
               <div className="flex justify-between items-center text-sm">
                   <div className="flex items-center gap-2 text-destructive font-semibold">
                       <Flame className="h-5 w-5" />
-                      <span>{MOCK_STREAK} day streak</span>
+                      <span>{userProfile.streak} day streak</span>
                   </div>
                   <Badge variant="outline" className="flex items-center gap-2">
                       <Calendar className="h-4 w-4" />
@@ -214,7 +252,7 @@ function DailyPromptPageContent() {
                 <Link href={navLinks.prev}><ArrowLeft className="mr-2" /> Day {day-1}</Link>
               </Button>
             ) : <div />}
-            {navLinks.next && isCompleted && day < CURRENT_CHALLENGE_DAY ? (
+            {navLinks.next && isCompleted && day < currentChallengeDay ? (
               <Button variant="outline" asChild>
                 <Link href={navLinks.next}>Day {day+1} <ArrowRight className="ml-2" /></Link>
               </Button>
@@ -222,7 +260,7 @@ function DailyPromptPageContent() {
           </div>
         </div>
       </main>
-      <BottomNav activeTab="Daily" currentDay={CURRENT_CHALLENGE_DAY}/>
+      <BottomNav activeTab="Daily" currentDay={currentChallengeDay}/>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 
 
+
 export interface Challenge {
   day: number;
   title: string;
@@ -34,6 +35,24 @@ export interface JournalEntry {
   evening: string;
   wins: string;
 }
+
+export interface UserProfile {
+  activePath: 'Relationships' | 'Money' | 'Discipline' | 'Ego' | null;
+  currentChallenge: {
+    Relationships: number;
+    Money: number;
+    Discipline: number;
+    Ego: number;
+  };
+  completedChallenges: {
+    Relationships: number[];
+    Money: number[];
+    Discipline: number[];
+    Ego: number[];
+  };
+  streak: number;
+}
+
 
 import { z } from 'zod';
 
