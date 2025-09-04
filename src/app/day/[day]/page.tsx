@@ -39,13 +39,6 @@ function DailyPromptPageContent() {
           const profile = mockUser;
           setUserProfile(profile);
 
-          if (day && profile.activePath) {
-            const today = new Date();
-            const currentDay = profile.currentChallenge[profile.activePath];
-            today.setDate(today.getDate() - (currentDay - day));
-            setFormattedDate(today.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' }));
-          }
-
         } catch (error) {
           console.error("Failed to fetch user profile:", error);
           toast({
@@ -61,12 +54,22 @@ function DailyPromptPageContent() {
       }
     };
     fetchProfile();
-  }, [user, toast, day]);
+  }, [user, toast]);
+
+  useEffect(() => {
+    if (day && userProfile?.activePath) {
+      const today = new Date();
+      const currentDay = userProfile.currentChallenge[userProfile.activePath];
+      today.setDate(today.getDate() - (currentDay - day));
+      setFormattedDate(today.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' }));
+    }
+  }, [day, userProfile]);
 
   const challenge: Challenge | undefined = useMemo(() => {
     if (isNaN(day) || day < 1 || day > 30 || !userProfile?.activePath) {
       return undefined;
     }
+    // In a real app, this would dynamically select the track.
     return allChallenges.find(c => c.day === day && c.track === "Relationships");
   }, [day, userProfile]);
   

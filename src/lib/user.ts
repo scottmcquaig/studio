@@ -1,3 +1,4 @@
+
 import type { UserProfile } from './types';
 
 export const mockUser: UserProfile = {

@@ -1,5 +1,5 @@
 
-
+import { z } from 'zod';
 
 export interface Challenge {
   day: number;
@@ -52,9 +52,6 @@ export interface UserProfile {
   };
   streak: number;
 }
-
-
-import { z } from 'zod';
 
 export const GenerateUnlockCodeInputSchema = z.object({
   accessType: z.enum(['userOne', 'adminOne', 'adminMulti', 'allCurrent', 'allEvergreen']),

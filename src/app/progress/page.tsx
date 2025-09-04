@@ -22,7 +22,7 @@ const achievements = [
     { title: "First Week", description: "Complete your first week", icon: Award, unlocked: false },
     { title: "Week Warrior", description: "7-day streak", icon: Trophy, unlocked: false },
     { title: "Relationship Master", description: "Complete all 30 days", icon: Star, unlocked: false },
-]
+];
 
 interface CalendarDay {
   day: number;
@@ -48,35 +48,6 @@ function ProgressPageContent() {
           const profile = mockUser;
           setUserProfile(profile);
 
-          if (profile.activePath) {
-            const today = new Date();
-            const currentDay = profile.currentChallenge[profile.activePath];
-            const completedDaysSet = new Set(profile.completedChallenges[profile.activePath]);
-
-            const days: CalendarDay[] = Array.from({ length: TOTAL_CHALLENGE_DAYS }, (_, i) => {
-                const day = i + 1;
-                const isCompleted = completedDaysSet.has(day);
-                const isActive = day === currentDay;
-                const isClickable = day <= currentDay;
-                
-                let completionDateStr: string | undefined;
-                if (isCompleted) {
-                    const completionDate = new Date(today);
-                    completionDate.setDate(today.getDate() - (currentDay - day));
-                    completionDateStr = completionDate.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
-                }
-                
-                return {
-                    day,
-                    isCompleted,
-                    isActive,
-                    isClickable,
-                    completionDate: completionDateStr,
-                };
-            });
-            setCalendarDays(days);
-          }
-
         } catch (error) {
           console.error("Failed to fetch user profile:", error);
           toast({
@@ -93,6 +64,37 @@ function ProgressPageContent() {
     };
     fetchProfile();
   }, [user, toast]);
+
+  useEffect(() => {
+    if (userProfile?.activePath) {
+      const today = new Date();
+      const currentDay = userProfile.currentChallenge[userProfile.activePath];
+      const completedDaysSet = new Set(userProfile.completedChallenges[userProfile.activePath]);
+
+      const days: CalendarDay[] = Array.from({ length: TOTAL_CHALLENGE_DAYS }, (_, i) => {
+          const day = i + 1;
+          const isCompleted = completedDaysSet.has(day);
+          const isActive = day === currentDay;
+          const isClickable = day <= currentDay;
+          
+          let completionDateStr: string | undefined;
+          if (isCompleted) {
+              const completionDate = new Date(today);
+              completionDate.setDate(today.getDate() - (currentDay - day));
+              completionDateStr = completionDate.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
+          }
+          
+          return {
+              day,
+              isCompleted,
+              isActive,
+              isClickable,
+              completionDate: completionDateStr,
+          };
+      });
+      setCalendarDays(days);
+    }
+  }, [userProfile]);
 
   if (loadingProfile) {
     return <div className="flex h-screen items-center justify-center">Loading...</div>;
