@@ -265,7 +265,7 @@ export default function ProgramsPage() {
         const isActive = userProfile.activePath === track.id;
 
         if (isActive) {
-            return <Button variant="outline" className="w-full bg-green-200 text-green-800 hover:bg-green-300" disabled>Challenge In-Progress</Button>
+            return <Button variant="secondary" className="w-full bg-green-200 text-green-800 hover:bg-green-300" disabled>Challenge In-Progress</Button>
         }
         if (isUnlocked) {
              if (userProfile.activePath) {
@@ -374,14 +374,14 @@ export default function ProgramsPage() {
                             You are currently on the {activeTrack.full_name} path. Focus and continue your journey.
                         </CardDescription>
                     </CardHeader>
-                    <CardFooter className="flex">
-                        <div className="flex w-full">
-                            <Button asChild className="flex-grow" variant="outline">
-                                <Link href="/">View Dashboard</Link>
-                            </Button>
+                    <CardFooter className="flex justify-between items-center">
+                        <Button asChild className="flex-grow">
+                            <Link href="/">View Dashboard <ArrowRight className="ml-2"/></Link>
+                        </Button>
+                        <div className="flex items-center ml-4">
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <Button variant="outline" size="icon" aria-label="Pause Challenge" className="ml-2">
+                                    <Button variant="ghost" size="icon" aria-label="Pause Challenge">
                                         <Pause className="h-5 w-5 text-accent"/>
                                     </Button>
                                 </AlertDialogTrigger>
@@ -400,7 +400,7 @@ export default function ProgramsPage() {
                             </AlertDialog>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                    <Button variant="outline" size="icon" aria-label="Delete Data" className="ml-2">
+                                    <Button variant="ghost" size="icon" aria-label="Delete Data">
                                         <Trash2 className="h-5 w-5 text-destructive"/>
                                     </Button>
                                 </AlertDialogTrigger>
@@ -598,3 +598,5 @@ export default function ProgramsPage() {
     </div>
   );
 }
+
+    

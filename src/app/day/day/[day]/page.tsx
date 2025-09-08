@@ -14,14 +14,13 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, ArrowRight, CheckCircle, Edit, Lock, Heart, Sunrise, Sunset, Flame, Calendar } from 'lucide-react';
 import BottomNav from '@/components/bottom-nav';
 import { Progress } from '@/components/ui/progress';
-import PrivateRoute from '@/components/private-route';
 
 // This is a placeholder for a more robust state management
 const MOCK_COMPLETED_DAYS = new Set([1]);
 const CURRENT_CHALLENGE_DAY = 2; // Assuming Day 2 is the current challenge
 const MOCK_STREAK = 1;
 
-function DailyPromptPageContent() {
+export default function DailyPromptPage() {
   const params = useParams();
   const day = parseInt(params.day as string, 10);
   const [formattedDate, setFormattedDate] = useState('');
@@ -173,7 +172,7 @@ function DailyPromptPageContent() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {challenge.eveningPrompt && <p className="text-muted-foreground whitespace-pre-line">{challenge.eveningPrompt}</p>}
-                  <Textarea id="evening-reflection" placeholder="What did you learn? Where did you succeed? Where did you fail? How can you improve tomorrow?" className="min-h-[100px]" readOnly={isCompleted && !isCurrentDay} defaultValue={isCompleted ? "This is a pre-filled entry for a completed day." : ""} />
+                  <Textarea id="evening-reflection" placeholder="What did you learn? Where did you succeed? Where did you fail? How can you improve tomorrow?" className="min-h-[100px]" readOnly={isCompleted && !isCurentDay} defaultValue={isCompleted ? "This is a pre-filled entry for a completed day." : ""} />
                 </CardContent>
               </Card>
               
@@ -225,12 +224,4 @@ function DailyPromptPageContent() {
       <BottomNav activeTab="Daily" currentDay={CURRENT_CHALLENGE_DAY}/>
     </div>
   );
-}
-
-export default function DailyPromptPage() {
-  return (
-    <PrivateRoute>
-      <DailyPromptPageContent />
-    </PrivateRoute>
-  )
 }

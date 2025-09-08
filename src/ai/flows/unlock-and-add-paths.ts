@@ -14,7 +14,7 @@ import { z } from 'zod';
 
 const UnlockAndAddPathsInputSchema = z.object({
   uid: z.string().describe("The user's unique ID."),
-  pathsToAdd: z.union([z.array(z.string()), z.literal('all')]).describe("An array of new track IDs to add to the user's unlocked paths."),
+  pathsToAdd: z.array(z.string()).describe("An array of new track IDs to add to the user's unlocked paths."),
   unlockCode: z.string().describe("The code being used to unlock these paths."),
 });
 
@@ -47,13 +47,10 @@ const unlockAndAddPathsFlow = ai.defineFlow(
 
     // Don't add paths if the user already has 'all' access
     if (userData.unlockedPaths !== 'all') {
-        if (pathsToAdd === 'all') {
-            batch.update(userDocRef, { unlockedPaths: 'all' });
-        } else {
-            batch.update(userDocRef, {
-                unlockedPaths: arrayUnion(...pathsToAdd)
-            });
-        }
+        // Update user's unlockedPaths
+        batch.update(userDocRef, {
+            unlockedPaths: arrayUnion(...pathsToAdd)
+        });
     }
     
     // Burn the code

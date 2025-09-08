@@ -3,19 +3,24 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Activity, Flame, CheckCircle2, Target, Award, Calendar, Trophy, Zap, Star, BarChart2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import BottomNav from '@/components/bottom-nav';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/context/AuthContext';
-import { useToast } from '@/hooks/use-toast';
-import { mockUser } from '@/lib/user';
-import type { UserProfile } from '@/lib/types';
-import PrivateRoute from '@/components/private-route';
 
+const MOCK_COMPLETED_DAYS = new Set([1]);
+const MOCK_STREAK = 1;
+const CURRENT_CHALLENGE_DAY = 2; // Day 2 is the current day
 const TOTAL_CHALLENGE_DAYS = 30;
+
+const weeklyProgress = [
+    { week: 1, title: "Foundation", completed: 1, total: 7 },
+    { week: 2, title: "Discipline", completed: 0, total: 7 },
+    { week: 3, title: "Wisdom", completed: 0, total: 7 },
+    { week: 4, title: "Mastery", completed: 0, total: 7 },
+]
 
 const achievements = [
     { title: "First Streak", description: "Complete 3 days in a row", icon: Zap, unlocked: false },
@@ -32,103 +37,41 @@ interface CalendarDay {
   completionDate?: string;
 }
 
-function ProgressPageContent() {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [loadingProfile, setLoadingProfile] = useState(true);
+export default function ProgressPage() {
   const [calendarDays, setCalendarDays] = useState<CalendarDay[]>([]);
-  
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (user) {
-        try {
-          setLoadingProfile(true);
-          // In a real app, you would fetch this from your backend
-          const profile = mockUser;
-          setUserProfile(profile);
-
-          if (profile.activePath) {
-            const today = new Date();
-            const currentDay = profile.currentChallenge[profile.activePath];
-            const completedDaysSet = new Set(profile.completedChallenges[profile.activePath]);
-
-            const days: CalendarDay[] = Array.from({ length: TOTAL_CHALLENGE_DAYS }, (_, i) => {
-                const day = i + 1;
-                const isCompleted = completedDaysSet.has(day);
-                const isActive = day === currentDay;
-                const isClickable = day <= currentDay;
-                
-                let completionDateStr: string | undefined;
-                if (isCompleted) {
-                    const completionDate = new Date(today);
-                    completionDate.setDate(today.getDate() - (currentDay - day));
-                    completionDateStr = completionDate.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
-                }
-                
-                return {
-                    day,
-                    isCompleted,
-                    isActive,
-                    isClickable,
-                    completionDate: completionDateStr,
-                };
-            });
-            setCalendarDays(days);
-          }
-
-        } catch (error) {
-          console.error("Failed to fetch user profile:", error);
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Could not load your profile. Please try again."
-          });
-        } finally {
-          setLoadingProfile(false);
-        }
-      } else {
-        setLoadingProfile(false);
-      }
-    };
-    fetchProfile();
-  }, [user, toast]);
-
-  if (loadingProfile) {
-    return <div className="flex h-screen items-center justify-center">Loading...</div>;
-  }
-  
-  if (!userProfile?.activePath) {
-      return (
-          <div className="flex flex-col min-h-screen bg-background text-foreground">
-              <header className="py-4 bg-card border-b">
-                <div className="container mx-auto px-4 max-w-3xl text-center">
-                <h1 className="text-xl font-bold font-headline text-primary">Your Progress</h1>
-                </div>
-            </header>
-            <main className="flex-grow container mx-auto px-4 py-8 max-w-3xl text-center">
-                <p>Start a challenge to see your progress.</p>
-                <Button asChild className="mt-4"><Link href="/programs">View Challenges</Link></Button>
-            </main>
-            <BottomNav activeTab="Progress" />
-          </div>
-      )
-  }
-  
-  const activePath = userProfile.activePath;
-  const currentDay = userProfile.currentChallenge[activePath];
-  const completedDaysSet = new Set(userProfile.completedChallenges[activePath]);
+  const completedDaysSet = MOCK_COMPLETED_DAYS;
   const progress = Math.round((completedDaysSet.size / TOTAL_CHALLENGE_DAYS) * 100);
-  const currentWeek = Math.ceil(currentDay / 7);
+  const currentWeek = Math.ceil(CURRENT_CHALLENGE_DAY / 7);
 
-  const weeklyProgress = [
-    { week: 1, title: "Foundation", completed: Array.from(completedDaysSet).filter(d => d <= 7).length, total: 7 },
-    { week: 2, title: "Discipline", completed: Array.from(completedDaysSet).filter(d => d > 7 && d <= 14).length, total: 7 },
-    { week: 3, title: "Wisdom", completed: Array.from(completedDaysSet).filter(d => d > 14 && d <= 21).length, total: 7 },
-    { week: 4, title: "Mastery", completed: Array.from(completedDaysSet).filter(d => d > 21 && d <= 28).length, total: 7 },
-  ];
   const totalDaysInWeeks = weeklyProgress.reduce((acc, week) => acc + week.total, 0);
   const remainingDays = Array.from({ length: TOTAL_CHALLENGE_DAYS - totalDaysInWeeks }, (_, i) => totalDaysInWeeks + i + 1);
+
+
+  useEffect(() => {
+    const today = new Date();
+    const days: CalendarDay[] = Array.from({ length: TOTAL_CHALLENGE_DAYS }, (_, i) => {
+        const day = i + 1;
+        const isCompleted = completedDaysSet.has(day);
+        const isActive = day === CURRENT_CHALLENGE_DAY;
+        const isClickable = day <= CURRENT_CHALLENGE_DAY;
+        
+        let completionDateStr: string | undefined;
+        if (isCompleted) {
+            const completionDate = new Date(today);
+            completionDate.setDate(today.getDate() - (CURRENT_CHALLENGE_DAY - day));
+            completionDateStr = completionDate.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
+        }
+        
+        return {
+            day,
+            isCompleted,
+            isActive,
+            isClickable,
+            completionDate: completionDateStr,
+        };
+    });
+    setCalendarDays(days);
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
@@ -156,7 +99,7 @@ function ProgressPageContent() {
                     <div className="p-2 bg-background rounded-full mb-2">
                         <Flame className="h-8 w-8 text-destructive" />
                     </div>
-                  <p className="text-2xl font-bold">{userProfile.streak}</p>
+                  <p className="text-2xl font-bold">{MOCK_STREAK}</p>
                   <p className="text-xs text-muted-foreground">Current Streak</p>
                 </div>
                 <div className="flex flex-col items-center p-4 bg-secondary/30 rounded-lg">
@@ -185,7 +128,7 @@ function ProgressPageContent() {
                 <div className="flex justify-between text-sm mb-1">
                   <span className="font-medium text-muted-foreground">Overall Progress</span>
                   <div className="flex items-center gap-2">
-                    <Badge style={{ backgroundColor: '#EF4444', color: 'white' }} className="border-none">{activePath}</Badge>
+                    <Badge style={{ backgroundColor: '#EF4444', color: 'white' }} className="border-none">Relationships</Badge>
                     <Badge variant="outline" className="font-normal">
                       <span className="font-bold text-foreground">{completedDaysSet.size}</span>
                       <span className="text-muted-foreground">/{TOTAL_CHALLENGE_DAYS} days complete</span>
@@ -289,7 +232,7 @@ function ProgressPageContent() {
                             }
 
                             return (
-                                <div key={day} className="opacity-50">
+                                <div key={day}>
                                     {dayContent}
                                 </div>
                             )
@@ -328,16 +271,7 @@ function ProgressPageContent() {
 
         </div>
       </main>
-      <BottomNav activeTab="Progress" currentDay={currentDay}/>
+      <BottomNav activeTab="Progress" />
     </div>
   );
-}
-
-
-export default function ProgressPage() {
-    return (
-        <PrivateRoute>
-            <ProgressPageContent />
-        </PrivateRoute>
-    )
 }
